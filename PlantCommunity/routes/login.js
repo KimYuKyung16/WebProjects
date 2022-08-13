@@ -65,7 +65,7 @@ router.post('/process', function(req, res){ // 클라이언트에서 요청한 �
         req.session.cookie.maxAge = 1000 * 60 * 60; // 세션 만료 시간을 1시간으로 설정 (단위: ms, 1000은 1초)
         req.session.u_id = input_id; // 세션을 위해 추가
         req.session.authenticator = 'yes'; // 세션을 위해 추가
-        res.redirect("/");
+        res.send();
       } else {
         console.log("패스워드가 틀렸습니다");
       }

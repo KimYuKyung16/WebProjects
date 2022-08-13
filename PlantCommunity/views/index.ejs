@@ -11,14 +11,114 @@
 </head>
 <body>
   <%- include('C:\\Users\\kyk17\\Desktop\\NodejsProject\\PlantServer\\views\\head.ejs') -%>
+
+  <main>
+    <div id="side_menu">
+      <div id="side_menu1" class="side_menu" style="display:block"> <!-- 로그인 안했을 경우의 사이드 영역 -->
+        <ul class="main_login">
+          <form id="login-Form" action="check_login.php" method="POST"> <!-- 로그인 버튼을 누르면 check_login.php로 이동 -->
+            <li>
+              <h2 class="login_title">로그인</h2>
+            </li>
+            <li><input id="u_id" class="login_element" type="text" name="id" placeholder="아이디"></li>  <!-- id 입력 -->
+            <li><input id="u_pw" class="login_element" type="password" name="pw" placeholder="비밀번호"></li>  <!-- pw 입력 -->
+            <div id="login_signup_btn_div">
+              <li><input id="login_btn" type="button" value="로그인"></li>  <!-- 로그인 버튼 -->
+              <li><input id="signup_btn" type="button" value="회원가입"></li>  <!-- 회원가입 버튼 -->
+            </div>
+          </form>
+        </ul>
+      </div>
+      <div id="side_menu2" class="side_menu" style="display:none">  <!-- 로그인 했을 경우의 사이드 영역: 평소에는 display:none으로 안보이게 설정 -->
+        <ul class="main_login">
+          <li>
+            <div id="my_profile_div">
+              <image id="my_profile" src="./profile/<?= $profile ? $profile : 'other.JPG' ?>">
+                <ul>
+                  <li>아이디: <?= $_SESSION['id'] ?></li>
+                  <li>닉네임: <?= $nickname ?></li>
+                </ul>
+            </div>
+          </li>
+          <li id="write_btn"><input type="button" value="글쓰기"></li>
+          <li><input id="logout_btn" type="button" value="로그아웃"></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="main_div">
+      <div class="content_list_div">
+
+        <div class="popular_div"> <!-- 인기글 영역 -->
+          <div class="title">
+            <h2>인기글</h2>
+          </div>
+          <table id="popular_content_list">
+            <thead>
+              <tr>
+                <th class="num">번호</th>
+                <th class="content_title">제목</th>
+                <th class="writer">작성자</th>
+                <th class="date">날짜</th>
+                <th class="click_count">조회수</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr class="content_list">
+                  <td class="num"><?= $row['num'] ?></td>
+                  <td class="content_title"><a href='read.php?num=<?= $row['num'] ?>'><?= $row['title'] ?></a></td>
+                  <td class="writer">
+                    <image id="contents_profile" src="./profile/<?= $profile_row['profile'] ? $profile_row['profile'] : 'other.JPG' ?>"><?= $row['writer'] ?>
+                  </td>
+                  <td class="date"><?= $row['date'] ?></td>
+                  <td class="click_count"><?= $row['click_count'] ?></td>
+                </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+
+        <div class="test"> <!-- 전체글 영역 -->
+          <div class="title">
+            <h2>전체글</h2>
+          </div>
+          <table id="content_list">
+            <thead>
+              <tr>
+                <th class="num">번호</th>
+                <th class="content_title">제목</th>
+                <th class="writer">작성자</th>
+                <th class="date">날짜</th>
+                <th class="click_count">조회수</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr class="content_list">
+                  <td class="num"><?= $row['num'] ?></td>
+                  <td class="content_title"><a href='read.php?num=<?= $row['num'] ?>'><?= $row['title'] ?></a></td>
+                  <td class="writer">
+                    <image id="contents_profile" src="./profile/<?= $profile_row['profile'] ? $profile_row['profile'] : 'other.JPG' ?>"><?= $row['writer'] ?>
+                  </td>
+                  <td class="date"><?= $row['date'] ?></td>
+                  <td class="click_count"><?= $row['click_count'] ?></td>
+                </tr>
+            </tbody>
+          </table>
+
+          <!-- 페이지 -->
+          <div class="pager">
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="copyright">
+    <p>제작: Ireum</p>
+  </footer>
 </body>
 
 <script type="module" src="javascript/index.js"></script>
-<script>
-  const my_info = document.getElementById("my_info"); // 내 정보창 변수 
-  
-  my_info.addEventListener("click", function() { // 내 정보를 누르면 '/login'으로 이동 : 로그인 유무는 /login에서 처리
-      location.href = '/login'
-  });
-</script>
 </html>
