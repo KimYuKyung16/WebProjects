@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>식물 정보 공유</title>
+
+  <link rel="stylesheet" href="css/main3.css">
+  <link rel="stylesheet" href="css/c_plant_info_share.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&family=Source+Sans+Pro:wght@200&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/e8028249b4.js" crossorigin="anonymous"></script>
+</head>
+
+
+<body>
+  <header class="main_title">
+    <h1 id="main_title">Plant Community</h1> <!-- 메인 로고 -->
+    <div class="navbar_togglebBtn"> <!-- 토글 버튼 -->
+      <i class="fas fa-bars"></i>
+    </div>
+  </header>
+  
+  <nav class="navbar"> <!-- 네비게이션 바 -->
+    <ul class="navbar_menu">
+      <li><a href="#">식물 기본 정보</a></li> <!-- 메뉴1 -->
+      <li><a href="plant_info_share.php">식물 정보 공유</a></li> <!-- 메뉴2 -->
+      <li><a href="introduce_plant.php">내 식물 자랑</a></li> <!-- 메뉴3 -->
+    </ul>
+    <ul class="navbar_icons"> <!-- 내 정보 아이콘 -->
+      <li><i id="my_info" class="fas fa-user-circle fa-lg"></i></li>
+      <input type="hidden" name="page_num" id="page_num" value="my_info">
+    </ul>
+  </nav>
+
+</body>
+
+</html>

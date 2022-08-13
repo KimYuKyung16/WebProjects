@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/main3.css">
+  <title>index</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&family=Source+Sans+Pro:wght@200&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/e8028249b4.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <%- include('C:\\Users\\kyk17\\Desktop\\NodejsProject\\PlantServer\\views\\head.ejs') -%>
+</body>
+
+<script type="module" src="javascript/index.js"></script>
+<script>
+  const my_info = document.getElementById("my_info"); // 내 정보창 변수 
+  
+  my_info.addEventListener("click", function() { // 내 정보를 누르면 '/login'으로 이동 : 로그인 유무는 /login에서 처리
+      location.href = '/login'
+  });
+</script>
+</html>

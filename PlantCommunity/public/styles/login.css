@@ -1,0 +1,101 @@
+hr {
+  width: 10%;
+  margin: 20px;
+}
+
+.login-2 {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.login_list-Div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10vh;
+}
+
+.form_label {
+  margin-bottom: 5px;
+  color: rgb(82, 82, 82);
+}
+
+.form_control {
+  width: 20vw;
+  height: 20px;
+  padding: 1em;
+  border-radius: 3px;
+  border-color: rgb(195, 195, 195);
+  background-color: rgb(245, 245, 245);
+  border-style: solid;
+}
+
+#login_confirm_btn, #google_login_confirm_btn {
+  width: 15vw;
+  height: 50px;
+  margin-top: 20px;
+  background-color: rgb(186, 218, 199);
+  color: rgb(255, 255, 255);
+  font-size: 17px;
+  border: none;
+  box-shadow: none;
+}
+
+#google_login_confirm_btn {
+  width: 15vw;
+  background-color: rgb(155, 177, 255);
+  /* background-image: url('../images/google.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: contain; */
+  margin-bottom: 30px;
+}
+
+#login_confirm_btn:hover, #google_login_confirm_btn:hover {
+  background-color: rgb(153, 186, 166);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#google_login_confirm_btn:hover {
+  background-color: rgb(100, 125, 213);
+}
+
+.bottomText>p>a {
+  color: rgb(95, 95, 95);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.bottomText>p>a:hover {
+  color: rgb(0, 139, 25);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
+
+@media screen and (max-width: 830px) {
+  .form_control {
+    width: 50vw;
+  }
+
+  #login_confirm_btn, #google_login_confirm_btn {
+    width: 30vw;
+  }
+
+}
+
+@media screen and (max-width: 500px) {
+  .form_control {
+    width: 70vw;
+  }
+
+  #login_confirm_btn, #google_login_confirm_btn {
+    width: 50vw;
+  }
+}

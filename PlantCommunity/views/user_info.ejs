@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/main3.css">
+  <link rel="stylesheet" href="styles/user_info.css">
+  <title>Document</title>
+</head>
+<body>
+  <%- include('C:\\Users\\kyk17\\Desktop\\NodejsProject\\PlantServer\\views\\head.ejs') -%>
+
+  <div id="total_div">
+    <div id="user_div">
+      <h1>현재 유저 정보</h1>
+      <table id="user_table">
+        <tr>
+          <td>
+            <p id="user_profile">유저의 프로필 사진</p>
+            <image id="profile" src="./profile/<?= $row['profile'] ? $row['profile'] : "other.JPG" ?>"> <!-- 현재 로그인되어 있는 아이디의 프로필 사진 설정 -->
+          </td>
+        </tr>
+        <tr>
+          <td id="user_nickname">유저의 닉네임: <?= $row['nickname'] ?></td> <!-- 현재 로그인되어 있는 아이디의 닉네임 -->
+        </tr>
+        <tr>
+          <td><input id="info_revise_btn" type="button" value="내 정보 수정하기"></td> <!-- 내 정보 수정하기 버튼 -->
+        </tr>
+        <tr>
+          <td><input id="logout_btn" type="button" value="로그아웃"></td> <!-- 로그아웃 버튼 -->
+        </tr>
+      </table>
+    </div>
+
+    <div id="main_div">
+
+      <div class="content_list_div">
+        <p class="tmp_title">유저가 쓴 글</p>
+        <div class="test">
+          <table id="content_list">
+            <thead>
+              <!-- 게시글의 상단 부분 -->
+              <tr>
+                <th class="num">번호</th>
+                <th class="content_title">제목</th>
+                <th class="writer">작성자</th>
+                <th class="date">날짜</th>
+                <th class="click_count">조회수</th>
+              </tr>
+            </thead>
+            <tbody>
+            
+            </tbody>
+          </table>
+
+
+          <div class="pager"> <!-- 페이지 출력 -->
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  const logout_btn = document.getElementById("logout_btn"); // 아이디
+
+  logout_btn.addEventListener("click", function(){
+    makeRequest('http://localhost:5000/logout');
+  })
+
+  /* 서버로 요청할 때 */
+  function makeRequest(url) {
+  httpRequest = new XMLHttpRequest();
+
+  if(!httpRequest) {
+    alert('XMLHTTP 인스턴스 생성 오류');
+    return false;
+  }
+
+  // XMLHttpRequest 객체의 readyState 프로퍼티 값이 변할 때마다 자동으로 호출되는 함수를 설정
+  httpRequest.onreadystatechange = alertContents;
+  httpRequest.open('GET', url, true);
+  httpRequest.setRequestHeader('Content-Type', 'application/json');
+  // request에 실어 보내는 데이터(body)의 type 정보를 표현
+  // application/json : {key: value}의 형태로 전송
+  // application/x-www-form-urlencoded : key=value&key=value 형태로 전송
+  httpRequest.send(); // json형태로 데이터 보내기
+  }
+
+  /* 서버에서 요청에 성공했을 때 */
+  function alertContents() { //
+    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+      if (httpRequest.status === 200) { //서버에서 요청에 성공했을 때
+        var result = httpRequest.responseText;
+        // var txt = JSON.parse(httpRequest.responseText)
+        // $("#content_list").html(result);
+        // console.log(result);
+        alert("로그아웃 되었습니다");
+        location.href = "/";
+      } else {
+        alert('request에 문제가 있습니다.');
+      }
+    }
+  }
+
+</script>
+</html>
