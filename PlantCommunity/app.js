@@ -25,11 +25,14 @@ app.use(
 );
 
 /* 라우터 설정 */
-const plant_info_share = require('./routes/plant_info_share.js'); // 식물 정보 공유 메뉴
 const login = require('./routes/login.js'); // 로그인 메뉴
-const logout = require('./routes/logout.js'); // 로그인 메뉴
+const logout = require('./routes/logout.js'); // 로그아웃 메뉴
 const signup = require('./routes/signup.js'); // 회원가입 메뉴
 const user_info = require('./routes/user_info.js'); // 내 정보
+
+const plant_info_share = require('./routes/plant_info_share.js'); // 식물 정보 공유 메뉴
+
+
 
 /* ejs 사용을 위해 추가 */
 app.set('view engine', 'ejs') 
@@ -55,8 +58,6 @@ app.use('/login', login);
 app.use('/logout', logout);
 app.use('/signup', signup);
 app.use('/user_info', user_info);
-
-
 
 var request = require('request');
 const parser = require('xml2json');

@@ -5,9 +5,65 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles/main3.css">
+  <link rel="stylesheet" href="styles/plant_info_share.css">
+
   <title>Document</title>
 </head>
 <body>
   <%- include('C:\\Users\\kyk17\\Desktop\\NodejsProject\\PlantServer\\views\\head.ejs') -%>
+
+  <main>
+    <div class="content_list_div">
+      <!-- 게시판 div -->
+      <div class="test">
+
+        <div class="title">
+          <h2>식물 정보 공유 게시판</h2>
+          <input id="search" type="text">
+          <input type="button" value="검색"> <!-- 글 검색 -->
+        </div>
+
+        <table id="content_list">
+          <!-- 게시판 테이블 -->
+          <thead>
+            <!-- 게시판 메뉴 부분 -->
+            <tr>
+              <th class="num">번호</th>
+              <th class="content_title">제목</th>
+              <th class="writer">작성자</th>
+              <th class="date">날짜</th>
+              <th class="click_count">조회수</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr class="content_list">
+                <td class="num"><?= $row['num'] ?></td> <!-- 번호 -->
+                <td class="content_title"><a href='read.php?num=<?= $row['num'] ?>'><?= $row['title'] ?></a></td> <!-- 제목 -->
+                <td class="writer" id="writer1">
+                   <!-- 프로필이 있으면 존재하는 프로필로 설정하고 없으면 기본 프로필로 설정 -->
+                  <image id="contents_profile" src="./profile/<?= $profile_row['profile'] ? $profile_row['profile'] : 'other.JPG' ?>"><?= $row['writer'] ?>
+                </td> <!-- 작성자 -->
+                <td class="date"><?= $row['date'] ?></td> <!-- 날짜 -->
+                <td class="click_count"><?= $row['click_count'] ?></td> <!-- 조회수 -->
+              </tr>
+          </tbody>
+        </table>
+
+        <div class="pager">
+          <!-- 게시판 페이지 버튼 -->
+          <!-- 게시판 페이지 버튼 코드 추가 -->
+        </div>
+
+      </div>
+    </div>
+
+    <div class="button_div">
+      <!-- 글쓰기 버튼 -->
+      <input id="write_button" type="button" value="글쓰기">
+    </div>
+
+  </main>
+
 </body>
+<script type="module" src="javascript/plant_info_share.js"></script>
 </html>
