@@ -34,7 +34,8 @@ function alertContents() { //
       var authentication = httpRequest.responseText; // 인증 여부
       
       if (authentication == 'true') { // 회원일 때
-        location.href = "/contents?board=plant_info_share";
+        // makeRequest('http://localhost:5000/contents/plant_info_share');
+        location.href = "/contents/plant_info_share";
       } else { // 회원이 아닐 때
         alert("로그인이 되어있지 않습니다. 로그인 후 이용해주세요");
         location.href = "/login";

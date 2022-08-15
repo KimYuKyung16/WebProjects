@@ -31,7 +31,7 @@ const signup = require('./routes/signup.js'); // 회원가입 메뉴
 const user_info = require('./routes/user_info.js'); // 내 정보
 
 const plant_info_share = require('./routes/plant_info_share.js'); // 식물 정보 공유 메뉴
-
+const write = require('./routes/write.js'); // 글쓰기 페이지
 
 
 /* ejs 사용을 위해 추가 */
@@ -58,6 +58,7 @@ app.use('/login', login);
 app.use('/logout', logout);
 app.use('/signup', signup);
 app.use('/user_info', user_info);
+app.use('/contents', write);
 
 var request = require('request');
 const parser = require('xml2json');

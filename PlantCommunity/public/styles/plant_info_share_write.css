@@ -1,0 +1,122 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    display: flex;
+    background-color: rgb(234, 234, 234);
+    align-items: center;
+    /* height: 1000px; */
+    flex-direction: column;
+    /* padding: 10px; */
+    padding-top: 20px;
+    width: 100%;
+    margin: 0;
+    height: 100%;
+}
+
+#write_form,
+#revise_form {
+    width: 70%;
+}
+
+#write_list {
+    width: 100%;
+}
+
+
+#title-li1 {
+    height: 60px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#title-li1>input {
+    height: 100%;
+    width: 100%;
+    font-size: 20px;
+    padding: 0 10px;
+}
+
+
+#board-li2 {
+    width: 100%;
+    margin: 10px 0;
+}
+
+
+#content-li3 {
+    height: 1000px;
+    width: 100%;
+}
+
+#content-li3 textarea {
+    width: 100%;
+    height: 80%;
+    font-size: 20px;
+    padding: 10px;
+}
+
+#content-li3 div {
+    text-align: right;
+}
+
+#save_btn {
+    width: 20%;
+    height: 35px;
+    background-color: rgb(186, 218, 199);
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    border: none;
+    box-shadow: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 10%;
+}
+
+#write_list>li>p {
+    color: rgb(93, 95, 94);
+    font-weight: bold;
+}
+
+
+textarea,
+input {
+    outline: none;
+}
+
+li {
+    list-style: none;
+}
+
+@media screen and (max-width: 1300px) {}
+
+
+@media screen and (max-width: 500px) {
+
+    #write_form,
+    #revise_form {
+        width: 100%;
+    }
+
+    #title-li1 {
+        height: 40px;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #content-li3 {
+        height: 800px;
+        width: 100%;
+    }
+
+
+    #content-li3>textarea {
+        font-size: 15px;
+    }
+
+
+}

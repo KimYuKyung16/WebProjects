@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>식물 정보 공유 글쓰기 메뉴</title>
+
+  <link rel="stylesheet" href="styles/main3.css">
+  <link rel="stylesheet" href="styles/plant_info_share_write.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&family=Source+Sans+Pro:wght@200&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/e8028249b4.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+  <%- include('C:\\Users\\kyk17\\Desktop\\NodejsProject\\PlantServer\\views\\head.ejs') -%>
+  <!-- 메인타이틀/네비게이션바 추가-->
+  <main>
+    <form action="write.php" id="write_form" method="POST">
+      <!-- write.php로 글 정보 보내기-->
+      <ul id="write_list">
+        <li id="title-li1">
+          <!-- 글 제목 div-->
+          <p>제목</p>
+          <input name="title" id="title" type="text">
+        </li>
+        <li id="board-li2">
+          <!-- 게시판 선택 div-->
+          <select id="board_select" class="board_select" name="board_select">
+            <!-- 저장할 게시판 선택하기-->
+            <option value='plant_info_share' selected>식물 정보 공유</option>
+            <option value='plant_introduce'>내 식물 자랑</option>
+          </select>
+        </li>
+        <li id="content-li3">
+          <!-- 글 내용 div-->
+          <p>내용</p>
+          <textarea name="content" id="content" style="resize: none;"></textarea>
+          <div>
+            <input id="save_btn" type="button" value="저장">
+          </div>
+        </li>
+      </ul>
+    </form>
+  </main>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="module" src="./js/index.js"></script>
+</body>
+<script>
+  const title = document.getElementById("title"); // 글 제목
+  const content = document.getElementById("content"); // 글 내용
+  const board = document.getElementById("board_select"); // 게시판
+  const save_btn = document.getElementById("save_btn"); // 글 저장 버튼
+
+  save_btn.addEventListener("click", function(){
+    let board_value = board.options[board.selectedIndex].value; // 선택한 게시판
+    let data = {'title': title.value, 'content': content.value, 'board': board_value}; 
+    data = JSON.stringify(data);
+
+    makeRequest('http://localhost:5000/contents/plant_info_share', data);
+  })
+
+  var httpRequest;
+
+  /* 서버 요청 : 제목과 내용을 db에 저장하기 위해 값 전달*/
+  function makeRequest(url, data) {
+    httpRequest = new XMLHttpRequest();
+
+    if(!httpRequest) {
+      alert('XMLHTTP 인스턴스 생성 오류');
+      return false;
+    }
+
+    httpRequest.onreadystatechange = alertContents;
+    httpRequest.open('POST', url, true); // POST형태 - 데이터 저장
+    httpRequest.setRequestHeader('Content-Type', 'application/json'); 
+    httpRequest.send(data); // JSON형태로 데이터 전송
+  }
+
+  /* 서버에서 요청에 성공했을 때 */
+  function alertContents() { //
+    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+      if (httpRequest.status === 200) { //서버에서 요청에 성공했을 때
+        alert("글이 잘 저장되었습니다");
+      } else {
+        alert('request에 뭔가 문제가 있어요.');
+      }
+    }
+  }
+
+
+</script>
+
+
+
+
+</html>
