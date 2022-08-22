@@ -1,15 +1,21 @@
-import React, { useState} from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import Layout from "./layout/layout";
+
+import Header from "./layout/header";
+import Main from "./main/main";
+import Login from "./login/login";
 
 function App() {
 
   return (
-    <Layout>
-    
-    </Layout>
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Main />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+      </Routes>
+    </>
   );
 }
 

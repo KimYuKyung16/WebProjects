@@ -1,7 +1,16 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import './header.css';
+import { Link } from 'react-router-dom';
 
-function Header() {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
+
+
+
+function Header({ location, history }) {
+
+  console.log(history);
+
   return (
     <>
       <header class="main_title">
@@ -18,7 +27,7 @@ function Header() {
           <li><a href="introduce_plant.php">내 식물 자랑</a></li>
         </ul>
         <ul class="navbar_icons">
-          <li><i id="my_info" class="fas fa-user-circle fa-lg"></i></li>
+          <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={()=> {history.push('/login')}}/></li>
           <input type="hidden" name="page_num" id="page_num" value="my_info" />
         </ul>
       </nav>
