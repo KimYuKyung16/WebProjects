@@ -1,15 +1,31 @@
 import React, { useState } from 'react';
 import './header.css';
-import { Link } from 'react-router-dom';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
 
 
+function Header() {
+  const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
-function Header({ location, history }) {
-
-  console.log(history);
+  function login_confirm() {
+    axios.get('http://localhost:5000/login', {
+      withCredentials: true
+    }) // 서버로 get 요청 (세션 확인)
+      .then(function (response) { // 서버에서 응답이 왔을 때
+        console.log(response.data.session)
+        if (response.data.session === 'ok') { // 로그인이 되어있을 때
+          // navigate('/'); // 내 정보 페이지로 이동
+        } else { // 로그인이 되어있지 않을 때
+          navigate('/login'); // 로그인 페이지로 이동
+        }  
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
   return (
     <>
@@ -27,7 +43,7 @@ function Header({ location, history }) {
           <li><a href="introduce_plant.php">내 식물 자랑</a></li>
         </ul>
         <ul class="navbar_icons">
-          <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={()=> {history.push('/login')}}/></li>
+          <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={login_confirm}/></li>
           <input type="hidden" name="page_num" id="page_num" value="my_info" />
         </ul>
       </nav>
