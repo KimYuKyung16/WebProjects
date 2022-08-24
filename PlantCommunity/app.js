@@ -4,7 +4,14 @@ const app = express();
 const cors = require('cors');
 const ejs = require("ejs");
 
-app.use(cors()); // cors 에러 해결 위해 추가
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
+
+app.use(cors({
+  origin: 'http://localhost:3001',
+  credentials: true
+})); // cors 에러 해결 위해 추가
 
 const session = require("express-session"); //세션
 const MySQLStore = require('express-mysql-session')(session); //mysql 세션
@@ -12,17 +19,17 @@ const MySQLStore = require('express-mysql-session')(session); //mysql 세션
 const options = require('./config/session_db.js'); // session_db 모듈 불러오기
 var sessionStore = new MySQLStore(options);
 
-// /* 세션 관련 미들웨어 */
-app.use( 
-  session({
-    key: "session_cookie_name",
-    secret: "session_cookie_secret", //쿠키를 임의로 변조하는 것을 방지하기 위한 값
-    store: sessionStore,
-    resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
-    saveUninitialized: false,
-    cookie: {maxAge: 24000 * 60 * 1}
-  })
-);
+/* 세션 관련 미들웨어 */
+// app.use( 
+//   session({
+//     key: "user_cookie",
+//     secret: "session_cookie_secret", //쿠키를 임의로 변조하는 것을 방지하기 위한 값
+//     store: sessionStore,
+//     resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
+//     saveUninitialized: false,
+//     cookie: { maxAge: 24000 * 60 * 1},
+//   })
+// );
 
 /* 라우터 설정 */
 const login = require('./routes/login.js'); // 로그인 메뉴
@@ -41,11 +48,10 @@ app.set('views', './views');
 app.get('/', function(req, res){
     fs.readFile('./views/index.ejs', "utf-8", function(error, data){
       res.writeHead(200, {'Content-Type': 'text/html' });
-      res.end(ejs.render(data));
+      // res.end(ejs.render(data));
     })
-    // req.session.state = 'exist'; // 세션을 위해 추가
 
-    console.log(req.session.u_id);
+    // res.cookie('user_cookie', userid);  // 응답 객체에 쿠키를 생성한다.
 })
 
 /* css적용을 위해 추가 : public, views 폴더에서 파일을 찾는다. */
@@ -62,6 +68,7 @@ app.use('/contents', write);
 
 var request = require('request');
 const parser = require('xml2json');
+// const cookieParser = require('cookie-parser');
 
 var url = 'http://openapi.nature.go.kr/openapi/service/rest/PlantService/plntIlstrSearch';
 var queryParams = '?' + encodeURIComponent('serviceKey') + '=UV5m4ySwHIUkRftLMpcP4ESCQpWdR1g2vSHzYb4pN6ACCSW16gsVTRYKRdSUEf%2BDUwxR0BzFh4I9jZu%2BWM9vjg%3D%3D'; /* Service Key*/

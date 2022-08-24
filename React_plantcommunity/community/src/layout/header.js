@@ -6,25 +6,20 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
 
+import cookies from 'react-cookies'; // 쿠키
+
 
 function Header() {
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
   function login_confirm() {
-    axios.get('http://localhost:5000/login', {
-      withCredentials: true
-    }) // 서버로 get 요청 (세션 확인)
-      .then(function (response) { // 서버에서 응답이 왔을 때
-        console.log(response.data.session)
-        if (response.data.session === 'ok') { // 로그인이 되어있을 때
-          // navigate('/'); // 내 정보 페이지로 이동
+    var login_cookie = cookies.load('user_login');
+
+        if (login_cookie !== undefined) { // 로그인이 되어있을 때
+          navigate('/user_info'); // 내 정보 페이지로 이동
         } else { // 로그인이 되어있지 않을 때
           navigate('/login'); // 로그인 페이지로 이동
         }  
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
   }
 
   return (
