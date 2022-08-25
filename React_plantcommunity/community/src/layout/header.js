@@ -1,15 +1,63 @@
 import React, { useState } from 'react';
 import './header.css';
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, NavLink } from "react-router-dom";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 import cookies from 'react-cookies'; // 쿠키
 
+import styled from "styled-components"; // styled in js
 
-function Header() {
+
+const Title_background = styled.header`
+background-color: ${(props) => props.title_setting.title_backcolor};
+display: flex;
+justify-content: center;
+padding: 40px 0px;
+`;
+
+const Main_title = styled.h1`
+color: ${(props) => props.title_setting.title_textcolor};
+font-family: 'Cairo';
+font-size: 2.5rem;
+`;
+
+const Navbar = styled.nav`
+display: flex;
+position: sticky;
+top: 0;
+justify-content: space-between;
+background-color: ${(props) => props.navbar_setting.navbar_backcolor};
+padding: 10px 0px;
+`;
+
+const StyledLink = styled(Link)`
+padding: 5px 20px;
+color: ${(props) => props.navbar_setting.navbar_textcolor};
+font-weight: 700;
+text-decoration-line: none;
+
+&:hover{  
+  border-radius: 4px;
+  background-color : ${(props) => props.navbar_setting.navbar_textcolor};
+  color : ${(props) => props.navbar_setting.navbar_backcolor};
+}
+`;
+
+const NavbarIcon = styled.ul`
+display: flex;
+list-style: none;
+font-size: 1.5rem;
+color: ${(props) => props.navbar_setting.navbar_textcolor};
+margin-right: 10vw;
+padding-left: 0;
+`;
+
+function Header(props) {
+
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
   function login_confirm() {
@@ -24,24 +72,27 @@ function Header() {
 
   return (
     <>
-      <header class="main_title">
-        <h1 id="main_title">Plant Community</h1>
+      <Title_background {...props}>
+        <Main_title {...props} >Plant Community</Main_title>
         <div class="navbar_togglebBtn">
-          <i class="fas fa-bars"></i>
+          <FontAwesomeIcon icon={faBars}/>
         </div>
-      </header>
+      </Title_background>
       
-      <nav class="navbar"> 
+      <Navbar {...props}> 
         <ul class="navbar_menu">
-          <li><a href="#">식물 기본 정보</a></li>
-          <li><a href="plant_info_share.php">식물 정보 공유</a></li> 
-          <li><a href="introduce_plant.php">내 식물 자랑</a></li>
+          {/* <li><Link style={{textDecoration: 'none', color: props.title_setting.title_textcolor}} to="/plant_info_share">식물 기본 정보</Link></li>
+          <li><Link style={{textDecoration: 'none', color: props.title_setting.title_textcolor}} to="/plant_info_share">식물 정보 공유</Link></li> 
+          <li><Link style={{textDecoration: 'none', color: props.title_setting.title_textcolor}} to="/plant_info_share">내 식물 자랑</Link></li> */}
+          <li><StyledLink {...props} to="/plant_info_share">식물 기본 정보</StyledLink></li>
+          <li><StyledLink {...props} to="/plant_info_share">식물 정보 공유</StyledLink></li> 
+          <li><StyledLink {...props} to="/plant_info_share">내 식물 자랑</StyledLink></li>
+
         </ul>
-        <ul class="navbar_icons">
+        <NavbarIcon {...props}>
           <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={login_confirm}/></li>
-          <input type="hidden" name="page_num" id="page_num" value="my_info" />
-        </ul>
-      </nav>
+        </NavbarIcon>
+      </Navbar>
     </>
   );
 }
