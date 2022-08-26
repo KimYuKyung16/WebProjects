@@ -29,9 +29,12 @@ router.route('/:board')
 
   })
   .post((req, res) => { /* 게시판에서 글쓰고 저장할 때 */
-    let title = req.body.title;
-    let content = req.body.content;
-    let board = req.body.board;
+    // let title = req.body.title;
+    // let content = req.body.content;
+    // let board = req.body.board;
+    let title = req.body.contents_send_val.title;
+    let content = req.body.contents_send_val.content;
+    let board = req.body.contents_send_val.board;
 
     var insertValArr = [title, content, board]; // mysql에 넣을 배열값 : [제목, 내용]
     sql = "INSERT INTO contents (title, content, board) VALUES (?, ?, ?)";
