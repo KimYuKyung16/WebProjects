@@ -1,0 +1,12 @@
+.ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+  min-height: 700px;
+  margin-bottom: 20px;
+}
+
+.App {
+  margin: 0px 20%;
+}
+
+/* .content_title {
+  width: 100%;
+} */

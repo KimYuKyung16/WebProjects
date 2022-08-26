@@ -8,6 +8,7 @@ import Signup from "./login/signup";
 import User_info from "./user_info/user_info";
 
 import Plant_info_share from "./menu/plant_info_share";
+import Write from "./menu/write";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/user_info" element={<User_info />}></Route>
 
         <Route path="/plant_info_share" element={<Plant_info_share />}></Route>
+        <Route path="/write" element={<Write />}></Route>
       </Routes>
     </>
   );

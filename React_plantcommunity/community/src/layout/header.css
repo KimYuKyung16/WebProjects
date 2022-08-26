@@ -54,14 +54,14 @@ html {
   color: rgb(255, 255, 255)
 } */
 
-.navbar_icons {
+/* .navbar_icons {
   display: flex;
   list-style: none;
   font-size: 1.5rem;
   color: rgb(107, 164, 255);
   margin-right: 10vw;
   padding-left: 0;
-}
+} */
 
 .navbar_togglebBtn {
   display: none;
