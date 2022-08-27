@@ -3,6 +3,9 @@ import axios from "axios";
 import './login.css';
 import { useNavigate } from 'react-router-dom';
 
+import Header from '../layout/header';
+import { colorConfig } from "../config/color"; // 홈페이지 색감 정보
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
 import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js';
@@ -85,9 +88,22 @@ function Login(location) {
     });
   }
 
+  /* 홈페이지 메인 타이틀 세팅값 */
+  const title_setting = {
+    title_backcolor: colorConfig.main_color,
+    title_textcolor: colorConfig.sub_color
+  }
 
+  /* 네비게이션바 세팅값 */
+  const navbar_setting = {
+    navbar_backcolor: colorConfig.main_color,
+    navbar_textcolor: colorConfig.sub_color
+  }
+  
 
   return (
+    <>
+      <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
       <div>  
         <div class="login_list-Div">
           <h2>로그인</h2>
@@ -103,12 +119,12 @@ function Login(location) {
           <button onClick={login_response} id="login_confirm_btn" type="submit" class="btn">로그인 하기</button> 
           <button onClick={authpopup} type="submit" id="google_login_confirm_btn" class="btn">구글 로그인 하기</button>
           
-        <div class="bottomText">
+          <div class="bottomText">
             <p>계정이 없다면 <a href="/signup">Sign up</a></p>
           </div>
-
         </div>
       </div>
+    </>
   );
 
 }

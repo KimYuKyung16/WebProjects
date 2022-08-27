@@ -4,6 +4,7 @@ import './main.css';
 
 
 import Header from "../layout/header";
+import { colorConfig } from "../config/color"; // 홈페이지 색감 정보
 
 import styled from "styled-components"; // styled in js
 import { text } from '@fortawesome/fontawesome-svg-core';
@@ -19,13 +20,13 @@ const UserDiv = styled.div`
 function Main() {
 
   const title_setting = {
-    title_backcolor: "rgb(255, 255, 255)",
-    title_textcolor: "rgb(107, 164, 255)"
+    title_backcolor: colorConfig.sub_color,
+    title_textcolor: colorConfig.main_color
   }
 
   const navbar_setting = {
-    navbar_backcolor: "rgb(255, 255, 255)",
-    navbar_textcolor: "rgb(107, 164, 255)"
+    navbar_backcolor: colorConfig.sub_color,
+    navbar_textcolor: colorConfig.main_color
   }
   
   return (

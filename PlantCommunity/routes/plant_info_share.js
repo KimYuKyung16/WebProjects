@@ -3,6 +3,10 @@ const router = express.Router();
 var fs = require('fs');
 const ejs = require("ejs");
 
+const mysql = require('mysql'); // mysql 모듈
+const dbconfig = require('../config/plant_db.js'); // db 모듈 불러오기
+const connection = mysql.createConnection(dbconfig); // db 연결
+
 router.get('/', function(req, res){
   fs.readFile('./views/plant_info_share.ejs', "utf-8", function(error, data){
     res.writeHead(200, {'Content-Type': 'text/html' });
@@ -19,6 +23,16 @@ router.get('/authentication', function(req, res){
     console.log("로그인이 되어있지 않습니다");
     res.send('false');
   }
+})
+
+/* 식물 정보 공유 게시판에 쓰여진 글 목록 출력 */
+router.get('/contents', function(req, res){ 
+  sql = "SELECT * FROM contents WHERE board = 'plant_info_share' ORDER BY num DESC limit 10";
+
+  connection.query(sql, function(error, rows){ // db에 글 저장
+    if (error) throw error;
+    res.send(rows);
+  });
 })
 
 
