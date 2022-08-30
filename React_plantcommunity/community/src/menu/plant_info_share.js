@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 import Header from "../layout/header";
@@ -34,9 +34,13 @@ function Plant_info_share() {
 
   const [contents, setContents] = useState([]);
 
-  Contents_request();
-  login_confirm();
+  total_contents_request();
+  // login_confirm();
 
+  // // Effect가 수행되는 시점에 이미 DOM이 업데이트 되어있음을 보장함.
+  // useEffect(() => { // 렌더링이 된 후에 실행하는 생명주기 메서드(첫 번째 렌더링, 업데이트 후에 일어나는 렌더링)
+  //   document.title = `You clicked 3 times`;
+  // });
 
   function Contents_request() {
     axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
@@ -50,6 +54,58 @@ function Plant_info_share() {
         console.log(error);
       });
   }
+
+  let [total_contents, setTotalcontents] = useState();
+  let one_page_contents = 10; // 한 페이지 당 게시글의 개수
+
+  let [total_pages, setTotalpages] = useState();
+  let [remain_contents, setRemaincontents] = useState();
+
+  console.log(total_pages);
+  
+  function total_contents_request() {
+    axios.get('http://localhost:5000/plant_info_share/total_contents', { // 서버로 post 요청
+        num: 1
+      })
+      .then(function (response) { // 서버에서 응답이 왔을 때
+        setTotalcontents(response.data[0].count); // 게시글의 총 개수
+        setTotalcontents(25);
+
+        setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수
+
+        console.log(total_pages)
+        setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 
+
+        if (remain_contents) total_pages += 1;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  useEffect(()=>{}, [total_contents])
+
+  // function contents_request() {
+  // axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
+  //     num: 1
+  //   })
+  //   .then(function (response) { // 서버에서 응답이 왔을 때
+  //     total_contents = (response.data[0].count); // 게시글의 총 개수
+  //   })
+  //   .catch(function (error) {
+  //     console.log(error);
+  //   });
+  // }
+
+  function page_button_create() {
+    console.log(total_pages);
+    let button_array = [];
+    for (var i=0; i<total_pages; i++) {
+      button_array.push(<input type="button" value={i} />)
+    }
+    return button_array;
+  }
+
 
   function login_confirm() {
     console.log(cookies.load('user_login'));
@@ -88,6 +144,9 @@ function Plant_info_share() {
         </tbody>
       </table>
 
+      <div>
+        {page_button_create()}
+      </div>
      
       <div class="button_div">
         <input onClick={() => {navigate('/write');}} id="write_button" type="button" value="글쓰기" />

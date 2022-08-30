@@ -27,7 +27,17 @@ router.get('/authentication', function(req, res){
 
 /* 식물 정보 공유 게시판에 쓰여진 글 목록 출력 */
 router.get('/contents', function(req, res){ 
-  sql = "SELECT * FROM contents WHERE board = 'plant_info_share' ORDER BY num DESC limit 10";
+  sql = "SELECT * FROM contents WHERE board = 'plant_info_share' ORDER BY num DESC";
+
+  connection.query(sql, function(error, rows){ // db에 글 저장
+    if (error) throw error;
+    res.send(rows);
+  });
+})
+
+/* 식물 정보 공유 게시판에 쓰여진 글 목록 출력 */
+router.get('/total_contents', function(req, res){ 
+  sql = "SELECT count(*) as count FROM contents WHERE board = 'plant_info_share'";
 
   connection.query(sql, function(error, rows){ // db에 글 저장
     if (error) throw error;
