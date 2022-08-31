@@ -34,7 +34,7 @@ function Plant_info_share() {
 
   const [contents, setContents] = useState([]);
 
-  total_contents_request();
+   // 한 번은 무조건 렌더링, total_contents 값이 바뀌면 렌더링
   // login_confirm();
 
   // // Effect가 수행되는 시점에 이미 DOM이 업데이트 되어있음을 보장함.
@@ -55,26 +55,20 @@ function Plant_info_share() {
       });
   }
 
-  let [total_contents, setTotalcontents] = useState();
+  let [total_contents, setTotalcontents] = useState(); // 게시글의 총 개수
   let one_page_contents = 10; // 한 페이지 당 게시글의 개수
 
-  let [total_pages, setTotalpages] = useState();
-  let [remain_contents, setRemaincontents] = useState();
-
-  console.log(total_pages);
+  let [total_pages, setTotalpages] = useState(); // 총 페이지 개수
+  let [remain_contents, setRemaincontents] = useState(); // 나머지 게시글 개수
   
   function total_contents_request() {
-    axios.get('http://localhost:5000/plant_info_share/total_contents', { // 서버로 post 요청
-        num: 1
-      })
+    axios.get('http://localhost:5000/plant_info_share/total_contents') // 서버로 post 요청
       .then(function (response) { // 서버에서 응답이 왔을 때
-        setTotalcontents(response.data[0].count); // 게시글의 총 개수
+        setTotalcontents(response.data[0].count); // 게시글의 총 개수 설정
         setTotalcontents(25);
 
-        setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수
-
-        console.log(total_pages)
-        setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 
+        setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
+        setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
 
         if (remain_contents) total_pages += 1;
       })
@@ -83,7 +77,7 @@ function Plant_info_share() {
       });
   }
 
-  useEffect(()=>{}, [total_contents])
+ 
 
   // function contents_request() {
   // axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
@@ -101,15 +95,42 @@ function Plant_info_share() {
     console.log(total_pages);
     let button_array = [];
     for (var i=0; i<total_pages; i++) {
-      button_array.push(<input type="button" value={i} />)
+      button_array.push(<input key={i} type="button" value={i} onClick={() => { test(i) }} />)
     }
     return button_array;
+  }
+
+  function test(current_page) {
+    return function() {
+      each_page_contents(current_page);
+    }
+  }
+
+
+
+  function each_page_contents(current_page) {
+    console.log(current_page)
+    console.log("눌렀음");
+    axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
+      params: {
+        current_page: current_page,
+        one_page_contents: one_page_contents
+      }  
+    })
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
 
   function login_confirm() {
     console.log(cookies.load('user_login'));
   }
+
+  useEffect(()=>{ total_contents_request(); }, [total_contents])
 
 
   return (

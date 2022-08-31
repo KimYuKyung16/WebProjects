@@ -25,8 +25,12 @@ router.get('/authentication', function(req, res){
   }
 })
 
+router.use(express.json()); 
+
 /* 식물 정보 공유 게시판에 쓰여진 글 목록 출력 */
 router.get('/contents', function(req, res){ 
+  console.log(req.query.current_page);
+  console.log("테스트중")
   sql = "SELECT * FROM contents WHERE board = 'plant_info_share' ORDER BY num DESC";
 
   connection.query(sql, function(error, rows){ // db에 글 저장
