@@ -8,21 +8,23 @@ remain_contents ? total_pages += 1 : total_pages; // 나머지 게시글이 있�
 
 let current_page = 1; // 현재 페이지
 
-// 만약에 1페이지면
-let last_value = current_page * one_page_contents // last_value까지 출력하면 총 10개의 게시글 출력
 
-let start_page; // 시작 페이지
+let start_value; // 페이지의 첫번째 값
 let last_page; // 마지막 페이지
 
-start_page = (current_page-1) * one_page_contents; 
+start_value = (current_page-1) * one_page_contents; // 시작값
+let output_num;
+ 
 
 if (current_page == total_pages) { // 현재 페이지가 마지막 페이지라면
-  remain_contents? last_page = start_page + remain_contents : last_page = (current_page) * one_page_contents - 1; 
+  remain_contents? last_page = start_page + remain_contents : last_page = (current_page) * one_page_contents - 1;
+  output_num = remain_contents; 
 } else { // 현재 페이지가 마지막 페이지가 아니라면 
   last_page = (current_page) * one_page_contents - 1;
+  output_num = one_page_contents;
 }
 
 
-// 몇부터 몇까지 출력 (x, y)
-sql = "SELECT * FROM contents WHERE board = 'plant_info_share' ORDER BY num DESC limit 10";
+// 몇부터 몇개를 출력 (x, y) : x는 시작, y는 출력 개수
+sql = "SELECT * FROM contents WHERE board = 'plant_info_share' ORDER BY num DESC limit (start_value, output_num)";
  

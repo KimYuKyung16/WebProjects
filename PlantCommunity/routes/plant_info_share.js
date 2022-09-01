@@ -27,13 +27,40 @@ router.get('/authentication', function(req, res){
 
 router.use(express.json()); 
 
+let total_contents; // 총 게시글의 개수
+
 /* 식물 정보 공유 게시판에 쓰여진 글 목록 출력 */
 router.get('/contents', function(req, res){ 
-  console.log(req.query.current_page);
-  console.log("테스트중")
-  sql = "SELECT * FROM contents WHERE board = 'plant_info_share' ORDER BY num DESC";
+  // sql = "SELECT count(*) as count FROM contents WHERE board = 'plant_info_share'";
+  // connection.query(sql, function(error, rows){ // db에 글 저장
+  //   if (error) throw error;
+  //   console.log(rows[0].count);
+  // });
 
-  connection.query(sql, function(error, rows){ // db에 글 저장
+  // console.log(typeof req.query.one_page_contents)
+
+  let one_page_contents = parseInt(req.query.one_page_contents); // 한 페이지당 게시글 개수
+
+  let total_pages = parseInt(total_contents / one_page_contents); // 총 페이지 개수
+  let remain_contents = total_contents % one_page_contents; // 나머지 게시글 개수 
+  
+  remain_contents ? total_pages += 1 : total_pages; // 나머지 게시글이 있으면 페이지 개수 추가
+
+  let current_page = req.query.current_page; // 현재 페이지
+  let start_value = (current_page-1) * one_page_contents; // 시작값
+  let output_num; // 출력 개수
+
+  if (current_page == total_pages) { // 현재 페이지가 마지막 페이지라면
+    output_num = remain_contents; // 출력 개수는 나머지 게시글의 개수
+  } else { // 현재 페이지가 마지막 페이지가 아니라면 
+    output_num = one_page_contents; // 출력 개수는 한 페이지당 게시글의 개수
+  }
+
+  console.log(start_value, output_num);
+
+  sql = "SELECT * FROM contents WHERE board = 'plant_info_share' ORDER BY num DESC limit ?, ?";
+  var insertValArr = [start_value, output_num];
+  connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
     if (error) throw error;
     res.send(rows);
   });
@@ -45,6 +72,7 @@ router.get('/total_contents', function(req, res){
 
   connection.query(sql, function(error, rows){ // db에 글 저장
     if (error) throw error;
+    total_contents = rows[0].count;
     res.send(rows);
   });
 })

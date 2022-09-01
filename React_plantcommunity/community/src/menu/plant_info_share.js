@@ -42,42 +42,74 @@ function Plant_info_share() {
   //   document.title = `You clicked 3 times`;
   // });
 
-  function Contents_request() {
-    axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
-        num: 1
-      })
-      .then(function (response) { // 서버에서 응답이 왔을 때
-        const data = [...response.data];
-        setContents(data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+  // function Contents_request() {
+  //   axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
+  //       num: 1
+  //     })
+  //     .then(function (response) { // 서버에서 응답이 왔을 때
+  //       const data = [...response.data];
+  //       setContents(data);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // }
 
   let [total_contents, setTotalcontents] = useState(); // 게시글의 총 개수
   let one_page_contents = 10; // 한 페이지 당 게시글의 개수
 
-  let [total_pages, setTotalpages] = useState(); // 총 페이지 개수
+  let [total_pages, setTotalpages] = useState(1); // 총 페이지 개수
   let [remain_contents, setRemaincontents] = useState(); // 나머지 게시글 개수
+
+  // let [current_page, setCurrentpage] = useState(1);
   
-  function total_contents_request() {
+  function total_contents_request() { // 게시글의 총 개수
     axios.get('http://localhost:5000/plant_info_share/total_contents') // 서버로 post 요청
       .then(function (response) { // 서버에서 응답이 왔을 때
-        setTotalcontents(response.data[0].count); // 게시글의 총 개수 설정
-        setTotalcontents(25);
+        
+        // function test()  {
+        //   setTotalcontents(total_contents => response.data[0].count);
+        // }
 
-        setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
-        setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
+        async function test2() {
+          setTotalcontents(total_contents => response.data[0].count);
+          console.log(total_contents);
+          setTotalpages(total_pages => parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
+          setRemaincontents(remain_contents => total_contents % one_page_contents); // 나머지 게시글 개수 설정
+          console.log(total_pages);
+          console.log(remain_contents);
+          return 'ㅎㅎ';
+        }
 
-        if (remain_contents) total_pages += 1;
+        test2().then(console.log(total_pages, total_contents, remain_contents));
+;   
+            
+
+        
+        
+       
+        if (remain_contents) { // 현재 페이지가 1페이지가 아니고 나머지 페이지가 있다면
+          setTotalpages(total_pages+1) // 총 페이지에 +1
+        } else {
+          setTotalpages(total_pages); 
+        }
+        // remain_contents ? setTotalpages(total_pages+1) : setTotalpages(total_pages); // 나머지 게시글이 있으면 페이지 개수 추가
       })
       .catch(function (error) {
         console.log(error);
       });
   }
 
- 
+  // total_contents_request().then(() => {
+  //   setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
+  //   setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
+  // }
+  // )
+
+
+
+  // console.log(total_contents, total_pages, remain_contents);
+
 
   // function contents_request() {
   // axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
@@ -91,39 +123,46 @@ function Plant_info_share() {
   //   });
   // }
 
-  function page_button_create() {
-    console.log(total_pages);
-    let button_array = [];
-    for (var i=0; i<total_pages; i++) {
-      button_array.push(<input key={i} type="button" value={i} onClick={() => { test(i) }} />)
-    }
-    return button_array;
-  }
-
-  function test(current_page) {
-    return function() {
-      each_page_contents(current_page);
-    }
-  }
-
-
-
   function each_page_contents(current_page) {
-    console.log(current_page)
-    console.log("눌렀음");
     axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
       params: {
-        current_page: current_page,
+        current_page: current_page, 
         one_page_contents: one_page_contents
       }  
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
-      
+      const data = [...response.data];
+      setContents(data);
     })
     .catch(function (error) {
       console.log(error);
     });
   }
+
+  function page_middle_process(current_page) {
+    return function() {
+      each_page_contents(current_page);
+    }
+  }
+
+  // 클로저를 이용해서 가장 마지막 값만 출력되는 오류를 해결
+  function page_button_create() { // 페이지 버튼 생성
+    console.log(total_pages);
+    let button_array = [];
+    for (var i=1; i<total_pages+1; i++) {
+      button_array.push(<input key={i} type="button" value={i} onClick={page_middle_process(i)} />)
+    }
+    return button_array;
+  }
+
+  function final() {
+
+  }
+
+
+
+
+
 
 
   function login_confirm() {
@@ -131,6 +170,8 @@ function Plant_info_share() {
   }
 
   useEffect(()=>{ total_contents_request(); }, [total_contents])
+
+
 
 
   return (
