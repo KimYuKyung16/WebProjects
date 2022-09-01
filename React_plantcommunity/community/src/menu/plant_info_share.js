@@ -56,44 +56,63 @@ function Plant_info_share() {
   // }
 
   let [total_contents, setTotalcontents] = useState(); // 게시글의 총 개수
-  let one_page_contents = 10; // 한 페이지 당 게시글의 개수
+  let one_page_contents = 20; // 한 페이지 당 게시글의 개수
 
   let [total_pages, setTotalpages] = useState(1); // 총 페이지 개수
   let [remain_contents, setRemaincontents] = useState(); // 나머지 게시글 개수
 
+  
   // let [current_page, setCurrentpage] = useState(1);
+
+  function each_page_contents(current_page) {
+    axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
+      params: {
+        current_page: current_page, 
+        one_page_contents: one_page_contents
+      }  
+    })
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      const data = [...response.data];
+      setContents(data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+
+  function page_middle_process(current_page) {
+    return function() {
+      each_page_contents(current_page);
+    }
+  }
+
+    // 클로저를 이용해서 가장 마지막 값만 출력되는 오류를 해결
+  function page_button_create() { // 페이지 버튼 생성
+    let button_array = [];
+    for (var i=1; i<total_pages+1; i++) {
+      button_array.push(<input key={i} type="button" value={i} onClick={page_middle_process(i)} />)
+    }
+    return button_array;
+  }
+  
+
   
   function total_contents_request() { // 게시글의 총 개수
     axios.get('http://localhost:5000/plant_info_share/total_contents') // 서버로 post 요청
       .then(function (response) { // 서버에서 응답이 왔을 때
-        
+        setTotalcontents(response.data[0].count);
         // function test()  {
         //   setTotalcontents(total_contents => response.data[0].count);
         // }
 
-        async function test2() {
-          setTotalcontents(total_contents => response.data[0].count);
-          console.log(total_contents);
-          setTotalpages(total_pages => parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
-          setRemaincontents(remain_contents => total_contents % one_page_contents); // 나머지 게시글 개수 설정
-          console.log(total_pages);
-          console.log(remain_contents);
-          return 'ㅎㅎ';
-        }
-
-        test2().then(console.log(total_pages, total_contents, remain_contents));
-;   
-            
-
-        
-        
+   
+        setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
+        setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
        
         if (remain_contents) { // 현재 페이지가 1페이지가 아니고 나머지 페이지가 있다면
-          setTotalpages(total_pages+1) // 총 페이지에 +1
-        } else {
-          setTotalpages(total_pages); 
-        }
-        // remain_contents ? setTotalpages(total_pages+1) : setTotalpages(total_pages); // 나머지 게시글이 있으면 페이지 개수 추가
+          setTotalpages(totalpages => total_pages+1) // 총 페이지에 +1
+        } 
       })
       .catch(function (error) {
         console.log(error);
@@ -123,37 +142,10 @@ function Plant_info_share() {
   //   });
   // }
 
-  function each_page_contents(current_page) {
-    axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
-      params: {
-        current_page: current_page, 
-        one_page_contents: one_page_contents
-      }  
-    })
-    .then(function (response) { // 서버에서 응답이 왔을 때
-      const data = [...response.data];
-      setContents(data);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
 
-  function page_middle_process(current_page) {
-    return function() {
-      each_page_contents(current_page);
-    }
-  }
 
-  // 클로저를 이용해서 가장 마지막 값만 출력되는 오류를 해결
-  function page_button_create() { // 페이지 버튼 생성
-    console.log(total_pages);
-    let button_array = [];
-    for (var i=1; i<total_pages+1; i++) {
-      button_array.push(<input key={i} type="button" value={i} onClick={page_middle_process(i)} />)
-    }
-    return button_array;
-  }
+
+
 
   function final() {
 
@@ -169,7 +161,8 @@ function Plant_info_share() {
     console.log(cookies.load('user_login'));
   }
 
-  useEffect(()=>{ total_contents_request(); }, [total_contents])
+  useEffect(() => {each_page_contents(1)}, [])
+  useEffect(()=>{ total_contents_request(); }, [total_contents, remain_contents])
 
 
 
@@ -185,21 +178,21 @@ function Plant_info_share() {
       <table>
         <thead>
           <tr>
-            <th class="num">번호</th>
-            <th class="content_title">제목</th>
-            <th class="writer">작성자</th>
-            <th class="date">날짜</th>
-            <th class="click_count">조회수</th>
+            <th className="num">번호</th>
+            <th className="content_title">제목</th>
+            <th className="writer">작성자</th>
+            <th className="date">날짜</th>
+            <th className="click_count">조회수</th>
           </tr>
         </thead>
         <tbody>
           {contents.map((x) => (
             <tr>
-              <td class="num">{x.num}</td>
-              <td class="content_title">{x.title}</td>
-              <td class="writer" id="writer1"></td>
-              <td class="date"></td>
-              <td class="click_count"></td>
+              <td className="num">{x.num}</td>
+              <td className="content_title">{x.title}</td>
+              <td className="writer" id="writer1"></td>
+              <td className="date"></td>
+              <td className="click_count"></td>
             </tr>
           ))
           }
@@ -210,7 +203,7 @@ function Plant_info_share() {
         {page_button_create()}
       </div>
      
-      <div class="button_div">
+      <div className="button_div">
         <input onClick={() => {navigate('/write');}} id="write_button" type="button" value="글쓰기" />
       </div>
 
