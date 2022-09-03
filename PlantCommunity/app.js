@@ -37,7 +37,8 @@ const logout = require('./routes/logout.js'); // 로그아웃 메뉴
 const signup = require('./routes/signup.js'); // 회원가입 메뉴
 const user_info = require('./routes/user_info.js'); // 내 정보
 
-const plant_info_share = require('./routes/plant_info_share.js'); // 식물 정보 공유 메뉴
+// const plant_info_share = require('./routes/plant_info_share.js'); // 식물 정보 공유 메뉴
+const board = require('./routes/board.js'); // 게시판 메뉴
 const write = require('./routes/write.js'); // 글쓰기 페이지
 
 
@@ -59,12 +60,18 @@ app.use(express.static('public'));
 app.use(express.static('views'));
 
 // use() 메서드를 이용하여 미들 웨어를 추가했다.
-app.use('/plant_info_share', plant_info_share);
+// app.use('/plant_info_share', plant_info_share);
+// app.use('/login', login);
+// app.use('/logout', logout);
+// app.use('/signup', signup);
+// app.use('/user_info', user_info);
+// app.use('/contents', write);
+app.use('/board', board);
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/signup', signup);
 app.use('/user_info', user_info);
-app.use('/contents', write);
+app.use('/write', write);
 
 var request = require('request');
 const parser = require('xml2json');

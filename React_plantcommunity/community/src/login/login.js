@@ -64,7 +64,6 @@ function Login(location) {
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
       if (response.data.login_status === 'success') { // 로그인에 성공했다면
-
         if (login_cookie == undefined) { // 로그인 쿠키가 없다면 쿠키 생성
           const expires = new Date();
           expires.setFullYear(expires.getFullYear() + 10);
@@ -75,6 +74,13 @@ function Login(location) {
               secure: true
             }   
           )
+          cookies.save('nickname', response.data.nickname, //쿠키 생성하기
+          {
+            path: '/', // 모든 페이지에서 쿠키 사용 가능
+            expires, 
+            secure: true
+          }   
+        )
         } else { // 로그인 쿠키가 있다면 쿠키 생성X
           console.log("쿠키 존재");
         }
@@ -105,21 +111,21 @@ function Login(location) {
     <>
       <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
       <div>  
-        <div class="login_list-Div">
+        <div className="login_list-Div">
           <h2>로그인</h2>
           <hr noshade color="#BDBDBD" />
-          <div class="login-2">
-            <label for="id" class="form_label">아이디</label> 
-            <input onChange={onChangeId} value={id} id="id" class="form_control" name="id" type="text" placeholder="아이디" /> 
+          <div className="login-2">
+            <label for="id" className="form_label">아이디</label> 
+            <input onChange={onChangeId} value={id} id="id" className="form_control" name="id" type="text" placeholder="아이디" /> 
           </div>
-          <div class="login-2">
-            <label for="pw" class="form_label">비밀번호</label>
-            <input onChange={onChangePw} value={pw} id="pw" class="form_control" name="pw" type="password" placeholder="비밀번호" />
+          <div className="login-2">
+            <label for="pw" className="form_label">비밀번호</label>
+            <input onChange={onChangePw} value={pw} id="pw" className="form_control" name="pw" type="password" placeholder="비밀번호" />
           </div>
-          <button onClick={login_response} id="login_confirm_btn" type="submit" class="btn">로그인 하기</button> 
-          <button onClick={authpopup} type="submit" id="google_login_confirm_btn" class="btn">구글 로그인 하기</button>
+          <button onClick={login_response} id="login_confirm_btn" type="submit" className="btn">로그인 하기</button> 
+          <button onClick={authpopup} type="submit" id="google_login_confirm_btn" className="btn">구글 로그인 하기</button>
           
-          <div class="bottomText">
+          <div className="bottomText">
             <p>계정이 없다면 <a href="/signup">Sign up</a></p>
           </div>
         </div>

@@ -78,13 +78,13 @@ function Header(props) {
     <>
       <Title_background {...props}>
         <Main_title {...props} >Plant Community</Main_title>
-        <div class="navbar_togglebBtn">
+        <div className="navbar_togglebBtn">
           <FontAwesomeIcon icon={faBars}/>
         </div>
       </Title_background>
       
       <Navbar {...props}> 
-        <ul class="navbar_menu">
+        <ul className="navbar_menu">
           <li><StyledLink {...props} to="/plant_info_share">식물 기본 정보</StyledLink></li>
           <li><StyledLink {...props} to="/plant_info_share">식물 정보 공유</StyledLink></li> 
           <li><StyledLink {...props} to="/plant_info_share">내 식물 자랑</StyledLink></li>

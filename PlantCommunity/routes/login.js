@@ -69,7 +69,8 @@ router.post('/process', function(req, res){ // 클라이언트에서 요청한 �
         req.session.user_cookie = req.sessionID; // 세션id 저장
         req.session.u_id = input_id; // 세션을 위해 추가
         req.session.authenticator = 'yes'; // 세션을 위해 추가
-        res.send({'login_status' : 'success', 'cookie': req.session.user_cookie});
+
+        res.send({'login_status' : 'success', 'cookie': req.session.user_cookie, 'nickname': rows[0].nickname});
       } else {
         console.log("패스워드가 틀렸습니다");
         res.send({'login_status' : 'fail'});

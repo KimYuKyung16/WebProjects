@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import Header from "../layout/header";
 import { colorConfig } from '../config/color';
@@ -34,26 +34,10 @@ function Plant_info_share() {
 
   const [contents, setContents] = useState([]);
 
-   // 한 번은 무조건 렌더링, total_contents 값이 바뀌면 렌더링
-  // login_confirm();
-
-  // // Effect가 수행되는 시점에 이미 DOM이 업데이트 되어있음을 보장함.
   // useEffect(() => { // 렌더링이 된 후에 실행하는 생명주기 메서드(첫 번째 렌더링, 업데이트 후에 일어나는 렌더링)
-  //   document.title = `You clicked 3 times`;
+  //   document.title = `you clicked 3 times`;
   // });
 
-  // function Contents_request() {
-  //   axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
-  //       num: 1
-  //     })
-  //     .then(function (response) { // 서버에서 응답이 왔을 때
-  //       const data = [...response.data];
-  //       setContents(data);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }
 
   let [total_contents, setTotalcontents] = useState(); // 게시글의 총 개수
   let one_page_contents = 20; // 한 페이지 당 게시글의 개수
@@ -65,7 +49,7 @@ function Plant_info_share() {
   // let [current_page, setCurrentpage] = useState(1);
 
   function each_page_contents(current_page) {
-    axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
+    axios.get('http://localhost:5000/board/plant_info_share', { // 서버로 post 요청
       params: {
         current_page: current_page, 
         one_page_contents: one_page_contents
@@ -91,7 +75,7 @@ function Plant_info_share() {
   function page_button_create() { // 페이지 버튼 생성
     let button_array = [];
     for (var i=1; i<total_pages+1; i++) {
-      button_array.push(<input key={i} type="button" value={i} onClick={page_middle_process(i)} />)
+      button_array.push(<input type="button" value={i} onClick={page_middle_process(i)} />)
     }
     return button_array;
   }
@@ -99,7 +83,7 @@ function Plant_info_share() {
 
   
   function total_contents_request() { // 게시글의 총 개수
-    axios.get('http://localhost:5000/plant_info_share/total_contents') // 서버로 post 요청
+    axios.get('http://localhost:5000/board/plant_info_share/total_contents') // 서버로 post 요청
       .then(function (response) { // 서버에서 응답이 왔을 때
         setTotalcontents(response.data[0].count);
         // function test()  {
@@ -119,53 +103,22 @@ function Plant_info_share() {
       });
   }
 
-  // total_contents_request().then(() => {
-  //   setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
-  //   setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
-  // }
-  // )
-
-
-
-  // console.log(total_contents, total_pages, remain_contents);
-
-
-  // function contents_request() {
-  // axios.get('http://localhost:5000/plant_info_share/contents', { // 서버로 post 요청
-  //     num: 1
-  //   })
-  //   .then(function (response) { // 서버에서 응답이 왔을 때
-  //     total_contents = (response.data[0].count); // 게시글의 총 개수
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   });
-  // }
-
-
-
-
-
-
-  function final() {
-
-  }
-
-
-
-
-
 
 
   function login_confirm() {
-    console.log(cookies.load('user_login'));
+    var login_cookie = cookies.load('user_login'); // user_login이라는 이름의 쿠키 불러오기
+
+    if (login_cookie !== undefined) { // 로그인이 되어있을 때
+      navigate('/write'); // 글쓰기 페이지로 이동
+    } else { // 로그인이 되어있지 않을 때
+      alert("글을 쓸 권한이 없습니다. 로그인을 먼저 해주세요.");
+      navigate('/login'); // 로그인 페이지로 이동
+    }  
   }
 
-  useEffect(() => {each_page_contents(1)}, [])
-  useEffect(()=>{ total_contents_request(); }, [total_contents, remain_contents])
-
-
-
+  // Effect가 수행되는 시점에 이미 DOM이 업데이트 되어있음을 보장함.
+  useEffect(() => { each_page_contents(1) }, []) // 처음에 무조건 한 번 실행
+  useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
 
   return (
     <>
@@ -186,16 +139,18 @@ function Plant_info_share() {
           </tr>
         </thead>
         <tbody>
-          {contents.map((x) => (
+          {contents.map((x) => {
+            let link = `/plant_info_share/contents/${x.num}`;
+            return (
             <tr>
               <td className="num">{x.num}</td>
-              <td className="content_title">{x.title}</td>
-              <td className="writer" id="writer1"></td>
-              <td className="date"></td>
-              <td className="click_count"></td>
-            </tr>
-          ))
-          }
+              <td className="content_title"><Link to = {link}>{x.title}</Link></td>
+              <td className="writer" id="writer1">{x.writer}</td>
+              <td className="date">{x.date}</td>
+              <td className="click_count">{x.clickcount}</td>
+            </tr>   
+            )        
+          })}
         </tbody>
       </table>
 
@@ -204,7 +159,7 @@ function Plant_info_share() {
       </div>
      
       <div className="button_div">
-        <input onClick={() => {navigate('/write');}} id="write_button" type="button" value="글쓰기" />
+        <input onClick={login_confirm} id="write_button" type="button" value="글쓰기" />
       </div>
 
     </>

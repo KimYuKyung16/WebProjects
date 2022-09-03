@@ -49,17 +49,17 @@ function User_info() {
 
       <div id="main_div">
 
-        <div class="content_list_div">
-          <p class="tmp_title">유저가 쓴 글</p>
-          <div class="test">
+        <div className="content_list_div">
+          <p className="tmp_title">유저가 쓴 글</p>
+          <div className="test">
             <table id="content_list">
               <thead>
                 <tr>
-                  <th class="num">번호</th>
-                  <th class="content_title">제목</th>
-                  <th class="writer">작성자</th>
-                  <th class="date">날짜</th>
-                  <th class="click_count">조회수</th>
+                  <th className="num">번호</th>
+                  <th className="content_title">제목</th>
+                  <th className="writer">작성자</th>
+                  <th className="date">날짜</th>
+                  <th className="click_count">조회수</th>
                 </tr>
               </thead>
               <tbody>
@@ -68,7 +68,7 @@ function User_info() {
             </table>
 
 
-            <div class="pager"> 
+            <div className="pager"> 
             </div>
           </div>
         </div>

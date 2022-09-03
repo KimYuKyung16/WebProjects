@@ -7,6 +7,8 @@ import './write.css';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
+import cookies from 'react-cookies'; // 쿠키
+
 // import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 
 import styled from "styled-components"; // styled in js
@@ -31,6 +33,28 @@ function Write() {
   let data; // 글 내용
   let [board, setBoard] = useState('plant_info_share');
 
+  function date(){ //날짜를 구해주는 함수
+    var today = new Date();
+
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+
+    var dateString = year + '.' + month  + '.' + day;
+    return dateString
+}
+
+  function time(){ //시간을 구해주는 함수
+      var today = new Date();   
+
+      var hours = ('0' + today.getHours()).slice(-2); 
+      var minutes = ('0' + today.getMinutes()).slice(-2);
+      var seconds = ('0' + today.getSeconds()).slice(-2); 
+      
+      var timeString = hours + ':' + minutes  + ':' + seconds;
+      return timeString
+  }
+
   const onChangeBoard = (e) => { // 글 저장 게시판을 변경할 때마다
     setBoard(e.target.value);
   }
@@ -39,12 +63,17 @@ function Write() {
     setTitle(e.target.value);
   }
 
+
   function write_process(){
     if (content_title && data){
       const contents_send_val = {
         title: content_title,
         content: data,
-        board: board
+        board: board,
+        writer: cookies.load('nickname'),
+        date: date(),
+        time: time(),
+        clickcount: 0
       }
       axios.post('http://localhost:5000/contents/plant_info_share', { // 서버로 post 요청
         contents_send_val

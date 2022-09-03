@@ -30,6 +30,7 @@ router.use(express.json());
 router.post('/process', function(req, res){ // 클라이언트에서 요청한 값
   u_id = req.body.id;
   u_pw = req.body.pw;
+  u_nickname = req.body.nickname;
 
   // const encryptedId = bcrypt.hashSync(u_id, 10); // 암호화된 아이디
   const encryptedPw = bcrypt.hashSync(u_pw, 10); // 암호화된 비밀번호: 솔트를 10번 돌림, Sync가 붙어서 동기 방식
@@ -37,8 +38,8 @@ router.post('/process', function(req, res){ // 클라이언트에서 요청한 �
   // res.json(); 
   // res.json의 인자: obj -> obj는 문자열로 변환되서 body라는 변수에 저장 -> 마지막으로 res.send(body)를 실행하면서 그 결과를 반환
 
-  var insertValArr = [u_id, encryptedPw]; // mysql에 넣을 배열값 : [암호화되지 않은 아이디, 암호화된 비밀번호]
-  sql = "INSERT INTO users (user_id, user_pw) VALUES (?, ?)";
+  var insertValArr = [u_id, encryptedPw, u_nickname]; // mysql에 넣을 배열값 : [암호화되지 않은 아이디, 암호화된 비밀번호]
+  sql = "INSERT INTO users (user_id, user_pw, nickname) VALUES (?, ?, ?)";
 
   /* db에 암호화해서 아이디와 비밀번호 저장하는 작업 : mysql 사용 */
   connection.query(sql, insertValArr, function(error, rows){
