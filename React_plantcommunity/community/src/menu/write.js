@@ -75,7 +75,7 @@ function Write() {
         time: time(),
         clickcount: 0
       }
-      axios.post('http://localhost:5000/contents/plant_info_share', { // 서버로 post 요청
+      axios.post('http://localhost:5000/write/plant_info_share', { // 서버로 post 요청
         contents_send_val
       })
       .then(function (response) { // 서버에서 응답이 왔을 때

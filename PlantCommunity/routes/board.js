@@ -82,6 +82,38 @@ router.get('/:board/contents/:num', function(req, res){
   });
 })
 
+/* 총 댓글 출력 */
+router.get('/:board/contents/:num/total_commtents', function(req, res){ 
+  sql = "SELECT * FROM contents WHERE board = ? and num = ?";
+
+  var insertValArr = [req.params.board, req.params.num];
+
+  connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+    if (error) throw error;
+    res.send(rows);
+  });
+})
+
+/* 댓글 작성 */
+router.post('/:board/contents/:num/comment', function(req, res){ 
+  let board = req.params.board;
+  let content_num = req.params.num;
+  let comment = req.body.comments_send_val.comment;
+  let writer = req.body.comments_send_val.writer;
+  let date = req.body.comments_send_val.date;
+  let time = req.body.comments_send_val.time;
+
+  sql = "INSERT INTO comments (board, content_num, comment, writer, date, time) VALUES (?, ?, ?, ?, ?, ?)";
+
+  var insertValArr = [board, content_num, comment, writer, date, time];
+
+  connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+    if (error) throw error;
+    res.send(rows);
+  });
+})
+
+
 
 
 
