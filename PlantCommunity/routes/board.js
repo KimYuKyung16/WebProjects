@@ -95,23 +95,38 @@ router.get('/:board/contents/:num/total_commtents', function(req, res){
 })
 
 /* 댓글 작성 */
-router.post('/:board/contents/:num/comment', function(req, res){ 
-  let board = req.params.board;
-  let content_num = req.params.num;
-  let comment = req.body.comments_send_val.comment;
-  let writer = req.body.comments_send_val.writer;
-  let date = req.body.comments_send_val.date;
-  let time = req.body.comments_send_val.time;
+router.route('/:board/contents/:num/comment')
+  .get((req, res) => {
+    let board = req.params.board;
+    let content_num = req.params.num;
 
-  sql = "INSERT INTO comments (board, content_num, comment, writer, date, time) VALUES (?, ?, ?, ?, ?, ?)";
+    sql = "SELECT * FROM comments WHERE board= ? and content_num = ?";
 
-  var insertValArr = [board, content_num, comment, writer, date, time];
+    var insertValArr = [board, content_num];
+    
+    connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+      if (error) throw error;
+      res.send(rows);
+    });
+  })
+  .post((req, res) => { 
+    let board = req.params.board;
+    let content_num = req.params.num;
+    let comment = req.body.comments_send_val.comment;
+    let writer = req.body.comments_send_val.writer;
+    let date = req.body.comments_send_val.date;
+    let time = req.body.comments_send_val.time;
 
-  connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
-    if (error) throw error;
-    res.send(rows);
-  });
-})
+    sql = "INSERT INTO comments (board, content_num, comment, writer, date, time) VALUES (?, ?, ?, ?, ?, ?)";
+
+    var insertValArr = [board, content_num, comment, writer, date, time];
+
+    connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+      if (error) throw error;
+      res.send(rows);
+    });
+  })
+
 
 
 

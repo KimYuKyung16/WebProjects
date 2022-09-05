@@ -8,6 +8,21 @@ import { colorConfig } from "../config/color"; // 홈페이지 색감 정보
 
 import cookies from 'react-cookies'; // 쿠키
 
+import styled from "styled-components"; // styled in js
+
+
+
+const Reply_div = styled.div`
+display: ${(props) => props.display_val || 'test'};
+border: 1px solid rgb(107, 164, 255);
+border-radius: 3px;
+margin: 10px 0 10px 100px;
+`;
+
+
+
+
+
 
 function Read() {
 
@@ -17,8 +32,12 @@ function Read() {
   let board_num = params.num;
 
   let [content, setContent] = useState([]);
-  let [comments, setComments] = useState([]);
+  let [comments, setComments] = useState([]); // 댓글 목록
   // content_request();
+
+  let [div_display, setDisplay] = useState('none');
+
+  console.log(div_display)
 
   
   function date(){ //날짜를 구해주는 함수
@@ -71,7 +90,7 @@ function Read() {
     html_content.innerHTML = strHtml;
   }
 
-  let [comment, setComment] = useState(); // 글 제목
+  let [comment, setComment] = useState(); // 댓글 내용
 
   const onChangeComment = (e) => { // 글 저장 게시판을 변경할 때마다
     setComment(e.target.value);
@@ -101,8 +120,35 @@ function Read() {
     });
 
   }
+
+  function reply_click(index) {
+    setDisplay('block');
+    console.log(index)
+  }
+
+  function what_index(index) {
+    
+  }
+
+
+
+
+  function comment_print() {
+    axios.get(`http://localhost:5000/board/${board}/contents/${board_num}/comment`) // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response.data);
+      const data = [...response.data];
+      setComments(data);
+
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
  
-  useEffect(() => { content_request(); }, [])
+  useEffect(() => { content_request(); comment_print(); }, [])
   useEffect(() => { test(); }, [content])
 
 
@@ -125,40 +171,66 @@ function Read() {
         <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
         <div id="test">
           <div id="board_title">
-            <h2>게시판</h2>
+            <h2>＞게시판</h2>
           </div>
 
           <ul id="write_list">
             <li id="title-li1">
-              <p>제목</p>
-              <input name="title" id="title" type="text" value={content.title}/>
+              <h2 id="title">{content.title}</h2>
             </li>
             <li id="board-li2">
               <ul id="user_info_list">
                 <li>작성자:{content.writer}</li>
                 <li>날짜/시간:{content.date + ' ' + content.time}</li>
                 <li>조회수:{content.clickcount}</li>
-                <li>
-                  <div id="action_div">
-                    <li><input id="revise_btn" type="button" value="수정" /></li>
-                    <li><input id="delete_btn" type="button" value="삭제" /></li>
-                  </div>
-                </li> 
               </ul>
+              <div id="action_div">
+                <input id="revise_btn" type="button" value="수정" />
+                <input id="delete_btn" type="button" value="삭제" />
+              </div>
             </li>
             <li id="content-li3">
-              <div id="content" contenteditable="true"></div>
+              <div id="content"></div>
             </li>
           </ul>
         </div>
 
-        <div> {/* 댓글 */}
-          <div>
-            <input onChange={onChangeComment} type="text" />
-            <input onClick={comment_request} type="button" value="입력"/>
-          </div>
-          <div>
+        <div id="line_div">
+          <hr></hr>
+        </div>
+        
 
+        <div id="total_comment_div"> {/* 댓글 */}
+          <h3>댓글</h3>
+          <div className='input_div'>
+            <p>닉네임: {cookies.load('nickname')}</p>
+            <input className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
+            <input className="comment_input_btn" onClick={comment_request} type="button" value="등록"/>
+          </div>
+          <div class="comment_div"> {/* 댓글 목록 div */}
+            {
+
+              comments.map((x, index) => (
+                <div id="total_div">
+                  <div id="writer_date_div">
+                    <p>{x.writer}</p>
+                    <p>{x.date + ' ' + x.time}</p>
+                    <p onClick={() => what_index(index)}>답글쓰기</p>
+                  </div>
+                  <div id="comment_div">
+                    <div>{x.comment}</div>
+                  </div>
+
+                  <Reply_div display_val={div_display}>
+                    <div className='input_div2'>
+                      <p>닉네임: {cookies.load('nickname')}</p>
+                      <input className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
+                      <input className="comment_input_btn" onClick={comment_request} type="button" value="등록"/>
+                    </div>
+                  </Reply_div>
+                </div>
+              ))
+            }
           </div>
 
         </div>

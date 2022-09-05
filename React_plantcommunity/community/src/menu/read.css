@@ -1,15 +1,38 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
 #test {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   height: 100%;
+  padding: 0 20%;
+  margin-top: 30px;
 }
 
 
+#write_list {
+  width: 100%;
+}
+
+#board_title {
+  color: rgb(107, 164, 255);
+  font-size: 0.7rem;
+  width: 100%;
+  margin: 0 20%;
+}
+
 #title-li1 {
   display: flex;
-
+  margin-top: 10px;
 }
 
 #user_info_list {
@@ -21,6 +44,140 @@
 }
 
 #content {
-  border: 1px solid rgb(15, 15, 15);
-  height: 300px;
+  border: 1px solid rgb(217, 217, 217);
+  border-radius: 3px;
+  height: 100%;
+  padding: 15px;
+  padding-bottom: 50px;
 } 
+
+#writer_date_ul {
+  display: flex;
+  flex-direction: row;
+}
+
+#action_div {
+  width: 15%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#revise_btn, #delete_btn {
+  height: 60%;
+  width: 45%;
+  /* padding: 0px 12px; */
+  background-color: rgb(107, 164, 255);
+  color:rgb(255, 255, 255);
+  font-size: 0.8em;
+  box-shadow: none;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+}
+
+#board-li2 {
+  display: flex;
+  justify-content: space-between;
+}
+
+#user_info_list {
+  display: flex;
+  padding: 5px 10px 10px 0px;
+  font-size: 0.8rem;
+}
+
+#user_info_list > li{
+  padding-right: 15px;
+  color:rgb(181, 181, 181);
+}
+
+#total_comment_div {
+  padding: 0 20%;
+  margin-top: 20px;
+}
+
+#total_comment_div > h3 {
+  color: rgb(107, 164, 255);
+}
+
+.comment_div {
+
+}
+
+#total_div {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+#writer_date_div > p:nth-child(1) {
+  font-weight: bold;
+}
+
+#writer_date_div > p:nth-child(2) {
+  color:rgb(181, 181, 181);
+  font-size: 0.7rem;
+}
+
+
+
+#comment_div {
+  width: 100%;
+  border: 1px solid rgb(217, 217, 217);
+  border-radius: 3px;
+  padding: 20px 0;
+}
+
+#comment_div >textarea {
+  width: 100%;
+}
+
+#writer_date_ul {
+  outline: none;
+  
+}
+
+#writer_date_div {
+  display: flex;
+  flex-direction: row;
+}
+
+.comment_input {
+  width: 100%;
+  height: 50px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+.input_div {
+  border: 1px solid rgb(107, 164, 255);
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+#line_div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+hr {
+  width: 100%;
+  margin: 20px 20%;
+  background-color: rgb(0, 0, 0);
+  height:1px;
+  border:0;
+}
+
+/* #reply_div {
+  display: none;
+  border: 1px solid rgb(107, 164, 255);
+  border-radius: 3px;
+  margin: 10px 0 10px 100px;
+} */
+
