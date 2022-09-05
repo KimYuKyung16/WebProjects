@@ -13,7 +13,7 @@ import styled from "styled-components"; // styled in js
 
 
 const Reply_div = styled.div`
-display: ${(props) => props.display_val || 'test'};
+display: ${(props) => props.display_val || 'none'};
 border: 1px solid rgb(107, 164, 255);
 border-radius: 3px;
 margin: 10px 0 10px 100px;
@@ -37,7 +37,10 @@ function Read() {
 
   let [div_display, setDisplay] = useState('none');
 
+  let [comment_display, setCommentDisplay] = useState(Array(comments.length).fill('none')) // none인지 block인지 확인하는 배열
+
   console.log(div_display)
+
 
   
   function date(){ //날짜를 구해주는 함수
@@ -127,7 +130,13 @@ function Read() {
   }
 
   function what_index(index) {
-    
+    let comment_display_copy = [...comment_display];
+    if (comment_display_copy[index] == 'block') {
+      comment_display_copy[index] = 'none';
+    } else {
+      comment_display_copy[index] = 'block';
+    }
+    setCommentDisplay(comment_display_copy);
   }
 
 
@@ -221,7 +230,7 @@ function Read() {
                     <div>{x.comment}</div>
                   </div>
 
-                  <Reply_div display_val={div_display}>
+                  <Reply_div display_val={[...comment_display][index]}>
                     <div className='input_div2'>
                       <p>닉네임: {cookies.load('nickname')}</p>
                       <input className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
