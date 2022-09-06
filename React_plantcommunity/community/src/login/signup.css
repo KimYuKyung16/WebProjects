@@ -1,4 +1,4 @@
-hr {
+.line {
   width: 10%;
   margin: 20px;
 }
@@ -45,7 +45,7 @@ hr {
   height: 50px;
   margin-top: 20px;
   margin-bottom: 30px;
-  background-color: rgb(186, 218, 199);
+  background-color: rgb(107, 164, 255);
   color: rgb(255, 255, 255);
   font-size: 17px;
   border: none;
@@ -53,7 +53,7 @@ hr {
 }
 
 #signup_confirm_btn:hover {
-  background-color: rgb(153, 186, 166);
+  background-color: rgb(76, 145, 255);
   cursor: pointer;
 }
 

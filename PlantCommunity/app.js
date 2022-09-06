@@ -20,16 +20,17 @@ const options = require('./config/session_db.js'); // session_db 모듈 불러�
 var sessionStore = new MySQLStore(options);
 
 /* 세션 관련 미들웨어 */
-// app.use( 
-//   session({
-//     key: "user_cookie",
-//     secret: "session_cookie_secret", //쿠키를 임의로 변조하는 것을 방지하기 위한 값
-//     store: sessionStore,
-//     resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
-//     saveUninitialized: false,
-//     cookie: { maxAge: 24000 * 60 * 1},
-//   })
-// );
+app.use( 
+  session({
+    key: "user_cookie",
+    secret: "session_cookie_secret", //쿠키를 임의로 변조하는 것을 방지하기 위한 값
+    store: sessionStore,
+    resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
+    saveUninitialized: false,
+    cookie: { maxAge: 24000 * 60 * 1},
+  })
+);
+
 
 /* 라우터 설정 */
 const login = require('./routes/login.js'); // 로그인 메뉴
@@ -37,7 +38,7 @@ const logout = require('./routes/logout.js'); // 로그아웃 메뉴
 const signup = require('./routes/signup.js'); // 회원가입 메뉴
 const user_info = require('./routes/user_info.js'); // 내 정보
 
-// const plant_info_share = require('./routes/plant_info_share.js'); // 식물 정보 공유 메뉴
+const test = require('./routes/plant_info_share.js'); // 식물 정보 공유 메뉴
 const board = require('./routes/board.js'); // 게시판 메뉴
 const write = require('./routes/write.js'); // 글쓰기 페이지
 
@@ -60,7 +61,7 @@ app.use(express.static('public'));
 app.use(express.static('views'));
 
 // use() 메서드를 이용하여 미들 웨어를 추가했다.
-// app.use('/plant_info_share', plant_info_share);
+app.use('/test', test);
 // app.use('/login', login);
 // app.use('/logout', logout);
 // app.use('/signup', signup);
@@ -75,6 +76,7 @@ app.use('/write', write);
 
 var request = require('request');
 const parser = require('xml2json');
+const router = require('./routes/signup.js');
 // const cookieParser = require('cookie-parser');
 
 var url = 'http://openapi.nature.go.kr/openapi/service/rest/PlantService/plntIlstrSearch';

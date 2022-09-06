@@ -8,9 +8,13 @@ router.get('/', function(req, res){
   //   res.writeHead(200, {'Content-Type': 'text/html' });
   //   res.end(ejs.render(data));
   // })
+
+  console.log(req.session.authenticator);
+  console.log(req.session.u_id);
+
   delete req.session.authenticator;
   delete req.session.u_id;
-  res.send();
+  // res.send();
   // delete req.session.authenticator;
 })
 

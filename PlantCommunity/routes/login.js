@@ -15,12 +15,14 @@ var sessionStore = new MySQLStore(options);
 
 const bcrypt = require('bcrypt');
 const { cookie } = require('request');
+const { response } = require('express');
+
 
 /* 세션 관련 미들웨어 */
 router.use( 
   session({
     key: "user_cookie",
-    secret: "session_cookie_secret", //쿠키를 임의로 변조하는 것을 방지하기 위한 값
+    secret: "secret_string", //쿠키를 임의로 변조하는 것을 방지하기 위한 값
     store: sessionStore,
     resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
     saveUninitialized: false,
@@ -28,14 +30,10 @@ router.use(
   })
 );
 
-router.get('/', function(req, res){
-  // fs.readFile('./views/login.ejs', "utf-8", function(error, data){
-  //   res.writeHead(200, {'Content-Type': 'text/html' });
-  //   res.end(ejs.render(data));
-  // })
-
+router.get('/', function(req, res) {
   if (req.session.authenticator) { // 세션이 있을 경우
     // res.redirect('/user_info') //로 이동
+    console.log(req.session.authenticator);
     res.send({'session': 'yes'});
   } else { // 세션이 없을 경우
     // fs.readFile('./views/login.ejs', "utf-8", function(error, data){
@@ -49,13 +47,13 @@ router.get('/', function(req, res){
 
 router.use(express.json()); 
 
-router.post('/process', function(req, res){ // 클라이언트에서 요청한 값
+router.post('/process', function(req, res) { // 클라이언트에서 요청한 값
   input_id = req.body.id;
   input_pw = req.body.pw;
 
   sql = "SELECT * FROM users WHERE user_id = ?";
 
-  connection.query(sql, input_id, function(error, rows){
+  connection.query(sql, input_id, function(error, rows) {
     if (error) throw error;
 
     if (rows.length == 0) { // 아이디가 없을 때
@@ -66,11 +64,32 @@ router.post('/process', function(req, res){ // 클라이언트에서 요청한 �
       if (same == true) { // 입력받은 패스워드와 db에 저장된 패스워드가 일치할 때
         console.log("회원입니다. 로그인에 성공하셨습니다");
         req.session.cookie.maxAge = 1000 * 60 * 60; // 세션 만료 시간을 1시간으로 설정 (단위: ms, 1000은 1초)
-        req.session.user_cookie = req.sessionID; // 세션id 저장
-        req.session.u_id = input_id; // 세션을 위해 추가
-        req.session.authenticator = 'yes'; // 세션을 위해 추가
+        req.session.cookie.sameSite = 'none';
+        req.session.user_cookie = req.sessionID; // 세션id 발급
+        // req.session.u_id = input_id; // 세션을 위해 추가
+        // req.session.authenticator = 'yes'; // 세션을 위해 추가
 
-        res.send({'login_status' : 'success', 'cookie': req.session.user_cookie, 'nickname': rows[0].nickname});
+
+        // res.writeHead(200, {
+        //   'Set-Cookie':['test=testing', 'kyk=hahaha'] 
+        // });
+
+        // res.end();
+
+        res.end();
+
+        // const cookieConfig = {
+        //   httpOnly: true, 
+        //   maxAge: 1000000,
+        // };
+
+        // res.cookie('cookie', 'delicious', cookieConfig);
+        // res.send('set cookie');
+
+        // req.session.save(() => {
+        //   res.send({'login_status' : 'success', 'cookie': req.session.user_cookie, 'nickname': rows[0].nickname});
+        // });
+
       } else {
         console.log("패스워드가 틀렸습니다");
         res.send({'login_status' : 'fail'});
@@ -80,13 +99,6 @@ router.post('/process', function(req, res){ // 클라이언트에서 요청한 �
   });
 
 })
-
-// req.session.cookie.maxAge = 1000 * 60 * 60;
-    
-
-//     res.send({'cookie': req.sessionID});
-
-
 
 
 

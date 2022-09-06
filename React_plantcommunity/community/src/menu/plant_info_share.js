@@ -38,6 +38,8 @@ function Plant_info_share() {
   //   document.title = `you clicked 3 times`;
   // });
 
+  axios.defaults.headers.common['test'] = encodeURIComponent(cookies.load('user_login')); // for all requests
+
 
   let [total_contents, setTotalcontents] = useState(); // 게시글의 총 개수
   let one_page_contents = 20; // 한 페이지 당 게시글의 개수
@@ -104,16 +106,31 @@ function Plant_info_share() {
   }
 
 
+  
+  // let test = {
+  //   headers: {
+  //     test_cookie: encodeURIComponent(cookies.load('user_login'))
+  //   }
+  // }
+
 
   function login_confirm() {
-    var login_cookie = cookies.load('user_login'); // user_login이라는 이름의 쿠키 불러오기
+    // var login_cookie = cookies.load('user_login'); // user_login이라는 이름의 쿠키 불러오기
 
-    if (login_cookie !== undefined) { // 로그인이 되어있을 때
-      navigate('/write'); // 글쓰기 페이지로 이동
-    } else { // 로그인이 되어있지 않을 때
-      alert("글을 쓸 권한이 없습니다. 로그인을 먼저 해주세요.");
-      navigate('/login'); // 로그인 페이지로 이동
-    }  
+    axios.get('http://localhost:5000/test/authentication') // 서버로 post 요청
+      .then(function (response) { // 서버에서 응답이 왔을 때
+       console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    // if (login_cookie !== undefined) { // 로그인이 되어있을 때
+    //   navigate('/write'); // 글쓰기 페이지로 이동
+    // } else { // 로그인이 되어있지 않을 때
+    //   alert("글을 쓸 권한이 없습니다. 로그인을 먼저 해주세요.");
+    //   navigate('/login'); // 로그인 페이지로 이동
+    // }  
   }
 
   // Effect가 수행되는 시점에 이미 DOM이 업데이트 되어있음을 보장함.

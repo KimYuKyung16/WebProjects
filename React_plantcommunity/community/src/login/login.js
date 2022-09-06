@@ -56,6 +56,7 @@ function Login(location) {
   let onChangePw = (e) => { setPw(e.target.value) }; // 변경된 패스워드 저장
 
   var login_cookie = cookies.load('user_login');
+
    
   function login_response(){
     axios.post('http://localhost:5000/login/process', { // 서버로 post 요청
@@ -63,28 +64,29 @@ function Login(location) {
       pw: pw
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response);
       if (response.data.login_status === 'success') { // 로그인에 성공했다면
-        if (login_cookie == undefined) { // 로그인 쿠키가 없다면 쿠키 생성
-          const expires = new Date();
-          expires.setFullYear(expires.getFullYear() + 10);
-          cookies.save('user_login', response.data.cookie, //쿠키 생성하기
-            {
-              path: '/', // 모든 페이지에서 쿠키 사용 가능
-              expires, 
-              secure: true
-            }   
-          )
-          cookies.save('nickname', response.data.nickname, //쿠키 생성하기
-          {
-            path: '/', // 모든 페이지에서 쿠키 사용 가능
-            expires, 
-            secure: true
-          }   
-        )
-        } else { // 로그인 쿠키가 있다면 쿠키 생성X
-          console.log("쿠키 존재");
-        }
-        navigate('/'); // 메인페이지로 이동
+        // if (login_cookie == undefined) { // 로그인 쿠키가 없다면 쿠키 생성
+        //   const expires = new Date();
+        //   expires.setFullYear(expires.getFullYear() + 10);
+        //   cookies.save('user_login', response.data.cookie, //쿠키 생성하기
+        //     {
+        //       path: '/', // 모든 페이지에서 쿠키 사용 가능
+        //       expires, 
+        //       secure: true
+        //     }   
+        //   )
+        //   cookies.save('nickname', response.data.nickname, //쿠키 생성하기
+        //   {
+        //     path: '/', // 모든 페이지에서 쿠키 사용 가능
+        //     expires, 
+        //     secure: true
+        //   }   
+        // )
+        // } else { // 로그인 쿠키가 있다면 쿠키 생성X
+        //   console.log("쿠키 존재");
+        // }
+        // navigate('/'); // 메인페이지로 이동
       } else {
         alert("로그인에 실패하셨습니다.");
       }  
@@ -113,7 +115,7 @@ function Login(location) {
       <div>  
         <div className="login_list-Div">
           <h2>로그인</h2>
-          <hr noshade color="#BDBDBD" />
+          <hr class="line" noshade color="#BDBDBD" />
           <div className="login-2">
             <label for="id" className="form_label">아이디</label> 
             <input onChange={onChangeId} value={id} id="id" className="form_control" name="id" type="text" placeholder="아이디" /> 

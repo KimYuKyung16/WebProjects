@@ -3,7 +3,10 @@ import axios from "axios";
 import './signup.css';
 import { useNavigate } from "react-router-dom";
 
-function Signup(location) {
+import Header from '../layout/header';
+import { colorConfig } from "../config/color"; // 홈페이지 색감 정보
+
+function Signup() {
 
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
@@ -51,11 +54,24 @@ function Signup(location) {
     }
   }
 
+   /* 홈페이지 메인 타이틀 세팅값 */
+   const title_setting = {
+    title_backcolor: colorConfig.main_color,
+    title_textcolor: colorConfig.sub_color
+  }
+
+  /* 네비게이션바 세팅값 */
+  const navbar_setting = {
+    navbar_backcolor: colorConfig.main_color,
+    navbar_textcolor: colorConfig.sub_color
+  }
+
   return (
-      <div>  
+      <>  
+        <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
         <div className="signup_list_div">
           <h2>회원가입</h2>
-          <hr noshade color="#BDBDBD" />
+          <hr class="line" noshade color="#BDBDBD" />
           <div className="mb_3">
             <label for="nickname" className="form_label">닉네임</label>
             <input onChange={onChangeNickname} id="nickname" className="form_control" type="text" placeholder="닉네임" />
@@ -79,7 +95,7 @@ function Signup(location) {
           </div>
 
         </div>
-      </div>
+      </>
   );
 
 }

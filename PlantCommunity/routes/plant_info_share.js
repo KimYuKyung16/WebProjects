@@ -7,22 +7,37 @@ const mysql = require('mysql'); // mysql 모듈
 const dbconfig = require('../config/plant_db.js'); // db 모듈 불러오기
 const connection = mysql.createConnection(dbconfig); // db 연결
 
-router.get('/', function(req, res){
-  fs.readFile('./views/plant_info_share.ejs', "utf-8", function(error, data){
-    res.writeHead(200, {'Content-Type': 'text/html' });
-    res.end(ejs.render(data));
+const session = require("express-session"); //세션
+const MySQLStore = require('express-mysql-session')(session); //mysql 세션
+
+const options = require('../config/session_db.js'); // session_db 모듈 불러오기
+var sessionStore = new MySQLStore(options);
+
+
+/* 세션 관련 미들웨어 */
+router.use( 
+  session({
+    key: "user_cookie",
+    secret: "secret_string", //쿠키를 임의로 변조하는 것을 방지하기 위한 값
+    store: sessionStore,
+    resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
+    saveUninitialized: false,
+    // cookie: {MaxAge: 24000 * 60 * 1}
   })
-})
+);
 
 /* 글쓰기를 할 때 로그인된 회원이 맞는지 확인 */
 router.get('/authentication', function(req, res){ 
-  if (req.session.authenticator) { // 인증된 사용자라면(세션O)
-    console.log("인증된 사용자입니다")
-    res.send('true');
-  } else { // 인증된 사용자가 아니라면(세션X)
-    console.log("로그인이 되어있지 않습니다");
-    res.send('false');
-  }
+  // console.log(req.session.authenticator);
+  // if (req.session.authenticator) { // 인증된 사용자라면(세션O)
+  //   console.log("인증된 사용자입니다")
+  //   console.log(req.session.authenticator)
+  //   res.send('true');
+  // } else { // 인증된 사용자가 아니라면(세션X)
+  //   console.log("로그인이 되어있지 않습니다");
+  //   res.send('false');
+  // }
+  res.send(req.cookies);
 })
 
 router.use(express.json()); 

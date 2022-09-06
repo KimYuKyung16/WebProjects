@@ -9,6 +9,15 @@ function User_info() {
   // const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
   function logout() { // 서버 세션도 없애기 위해 서버에 요청하기
+    axios.post('http://localhost:5000/logout')
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      // alert("회원가입에 성공하셨습니다."); 
+      // navigate('/login'); // 메인페이지로 이동
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
     try {
       cookies.remove('user_login');
       // navigate('/', {replace: true}); // 메인페이지로 이동 : replace를 true로 하면 뒤로가기를 할 때 '/'로 돌아온다.
