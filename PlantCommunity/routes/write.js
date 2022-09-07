@@ -8,6 +8,9 @@ const mysql = require('mysql'); // mysql 모듈
 const dbconfig = require('../config/plant_db.js'); // db 모듈 불러오기
 const connection = mysql.createConnection(dbconfig); // db 연결
 
+const options = require('../config/session_db.js'); // session_db 모듈 불러오기
+const session_connection = mysql.createConnection(options);
+
 router.get('/', function(req, res){
   fs.readFile('./views/plant_info_share.ejs', "utf-8", function(error, data){
     res.writeHead(200, {'Content-Type': 'text/html' });
@@ -29,24 +32,45 @@ router.route('/:board')
 
   })
   .post((req, res) => { /* 게시판에서 글쓰고 저장할 때 */
+
+    sql = "SELECT * FROM sessions WHERE session_id = ?";
+
+    session_connection.query(sql, req.headers.cookies, function(error, rows) {
+      if (error) throw error;
+
+      if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
+        console.log("해당 세션이 없습니다.")
+      } else { // sessionstore에 해당 session값이 있을 때
+        let session_obj = JSON.parse(rows[0].data);
+        
+        let title = req.body.contents_send_val.title;
+        let content = req.body.contents_send_val.content;
+        let board = req.body.contents_send_val.board;
+        let writer = session_obj.nickname;
+        let date = req.body.contents_send_val.date;
+        let time = req.body.contents_send_val.time;
+        let clickcount = req.body.contents_send_val.clickcount;
+
+        var insertValArr = [title, content, board, writer, date, time, clickcount]; // mysql에 넣을 배열값 : [제목, 내용]
+        sql = "INSERT INTO contents (title, content, board, writer, date, time, clickcount) VALUES (?, ?, ?, ?, ?, ?, ?)";
+      
+        connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+          if (error) throw error;
+          res.send();
+        });
+      }
+    });
+   
+
+
     // let title = req.body.title;
     // let content = req.body.content;
     // let board = req.body.board;
-    let title = req.body.contents_send_val.title;
-    let content = req.body.contents_send_val.content;
-    let board = req.body.contents_send_val.board;
-    let writer = req.body.contents_send_val.writer;
-    let date = req.body.contents_send_val.date;
-    let time = req.body.contents_send_val.time;
-    let clickcount = req.body.contents_send_val.clickcount;
 
-    var insertValArr = [title, content, board, writer, date, time, clickcount]; // mysql에 넣을 배열값 : [제목, 내용]
-    sql = "INSERT INTO contents (title, content, board, writer, date, time, clickcount) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  
-    connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
-      if (error) throw error;
-      res.send();
-    });
+    // let writer = req.body.contents_send_val.writer;
+
+
+
   });
 
 

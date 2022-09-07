@@ -38,7 +38,7 @@ function Plant_info_share() {
   //   document.title = `you clicked 3 times`;
   // });
 
-  axios.defaults.headers.common['test'] = encodeURIComponent(cookies.load('user_login')); // for all requests
+  axios.defaults.headers.common['cookies'] = encodeURIComponent(cookies.load('login_cookie')); // for all requests
 
 
   let [total_contents, setTotalcontents] = useState(); // 게시글의 총 개수
@@ -116,14 +116,32 @@ function Plant_info_share() {
 
   function login_confirm() {
     // var login_cookie = cookies.load('user_login'); // user_login이라는 이름의 쿠키 불러오기
+    // console.log(cookies.load('login_cookie'));
 
-    axios.get('http://localhost:5000/test/authentication') // 서버로 post 요청
+    let authentication;
+
+    axios.get('http://localhost:5000/login/authentication') // 서버로 post 요청
       .then(function (response) { // 서버에서 응답이 왔을 때
-       console.log(response);
+       if (response.data.authenticator === true) {
+        console.log("인증되어있는 회원이 맞습니다.")
+        authentication = true;
+        // navigate('/write'); // 글쓰기 페이지로 이동
+       } else {
+        alert("글을 쓸 권한이 없습니다. 로그인을 먼저 해주세요.");
+        authentication = false;
+        navigate('/login'); // 로그인 페이지로 이동
+       }
       })
       .catch(function (error) {
         console.log(error);
       });
+
+      if (authentication) { navigate('/write'); }
+      else { navigate('/login'); }
+
+    
+
+    navigate('/write'); // 글쓰기 페이지로 이동
 
     // if (login_cookie !== undefined) { // 로그인이 되어있을 때
     //   navigate('/write'); // 글쓰기 페이지로 이동

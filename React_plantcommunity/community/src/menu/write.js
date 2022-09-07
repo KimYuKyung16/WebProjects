@@ -25,6 +25,8 @@ const navbar_setting = {
   navbar_textcolor: "rgb(255, 255, 255)",
 }
 
+axios.defaults.headers.common['cookies'] = encodeURIComponent(cookies.load('login_cookie')); // for all requests
+
 
 function Write() {
   // const navigate = useNavigate(); // 페이지 이동을 위해 필요
@@ -70,7 +72,6 @@ function Write() {
         title: content_title,
         content: data,
         board: board,
-        writer: cookies.load('nickname'),
         date: date(),
         time: time(),
         clickcount: 0
