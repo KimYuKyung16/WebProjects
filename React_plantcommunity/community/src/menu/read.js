@@ -21,7 +21,7 @@ margin: 10px 0 10px 100px;
 
 
 
-
+axios.defaults.headers.common['cookies'] = encodeURIComponent(cookies.load('login_cookie')); // for all requests
 
 
 function Read() {
@@ -102,7 +102,7 @@ function Read() {
   function comment_request() {
     const comments_send_val = {
       comment: comment,
-      writer: cookies.load('nickname'),
+      // writer: cookies.load('nickname'),
       date: date(),
       time: time(),
     }
