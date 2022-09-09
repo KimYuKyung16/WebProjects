@@ -47,8 +47,29 @@ function Plant_info_share() {
   let [total_pages, setTotalpages] = useState(1); // 총 페이지 개수
   let [remain_contents, setRemaincontents] = useState(); // 나머지 게시글 개수
 
+  let [search_value, setSearchvalue] = useState();
+
+  let search_change = (e) => {
+    setSearchvalue(e.target.value);
+    console.log(search_value);
+  }
+
+  /* 검색어에 해당하는 게시글 출력 */
+  function search_conents() {
+    axios.get('http://localhost:5000/board/plant_info_share/search', { // 서버로 post 요청
+      params: {
+        search_val : search_value
+      }
+    })
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      const data = [...response.data];
+      setContents(data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
   
-  // let [current_page, setCurrentpage] = useState(1);
 
   function each_page_contents(current_page) {
     axios.get('http://localhost:5000/board/plant_info_share', { // 서버로 post 요청
@@ -88,10 +109,6 @@ function Plant_info_share() {
     axios.get('http://localhost:5000/board/plant_info_share/total_contents') // 서버로 post 요청
       .then(function (response) { // 서버에서 응답이 왔을 때
         setTotalcontents(response.data[0].count);
-        // function test()  {
-        //   setTotalcontents(total_contents => response.data[0].count);
-        // }
-
    
         setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
         setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
@@ -152,15 +169,17 @@ function Plant_info_share() {
   }
 
   // Effect가 수행되는 시점에 이미 DOM이 업데이트 되어있음을 보장함.
+  useEffect(() => { search_conents(); }, [search_value]) // 검색어가 달라질 때마다
   useEffect(() => { each_page_contents(1) }, []) // 처음에 무조건 한 번 실행
   useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
+ 
 
   return (
     <>
       <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
       <Search>
         <p>글 검색</p>
-        <input type="search"/>
+        <input onChange={search_change} type="search" value={search_value}/>
         <FontAwesomeIcon icon={faMagnifyingGlass} />
       </Search>
       <table>

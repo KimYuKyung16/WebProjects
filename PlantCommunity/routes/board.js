@@ -144,6 +144,24 @@ router.route('/:board/contents/:num/comment')
 
 
 
+router.get('/:board/search', function(req, res){ 
+  const board = req.params.board; // 쿼리스트링으로 들어온 board 변수의 값
+  const search_val = `%${req.query.search_val}%`;
+
+
+  console.log(board, search_val);
+
+  sql = "SELECT * FROM contents WHERE board = ? and title LIKE ? ORDER BY num DESC";
+  var insertValArr = [board, search_val];
+  connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+    if (error) throw error;
+    res.send(rows);
+  });
+})
+
+
+
+
 
 
 /* css적용을 위해 추가 : public 폴더에서 파일 찾기 */
