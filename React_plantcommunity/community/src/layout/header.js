@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 import './header.css';
 import { useNavigate, Link } from "react-router-dom"; // 라우팅
 
@@ -65,14 +66,35 @@ function Header(props) {
 
   /* 로그인이 되어있는지 확인 */
   function login_confirm() {
-    var login_cookie = cookies.load('user_login');
+    let authentication;
 
-        if (login_cookie !== undefined) { // 로그인이 되어있을 때
-          navigate('/user_info'); // 내 정보 페이지로 이동
-        } else { // 로그인이 되어있지 않을 때
-          navigate('/login'); // 로그인 페이지로 이동
-        }  
+    axios.get('http://localhost:5000/login/authentication') // 서버로 post 요청
+      .then(function (response) { // 서버에서 응답이 왔을 때
+       if (response.data.authenticator === true) { // 로그인이 되어있을 떄
+        authentication = true;
+        navigate('/user_info'); // 내 정보 페이지로 이동
+       } else { // 로그인이 안되어있을 때
+        // authentication = false;
+        navigate('/login'); // 로그인 페이지로 이동
+       }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+      // if (authentication) { navigate('/write'); }
+      // else { navigate('/login'); }
+
   }
+  // function login_confirm() {
+  //   var login_cookie = cookies.load('user_login');
+
+  //       if (login_cookie !== undefined) { // 로그인이 되어있을 때
+  //         navigate('/user_info'); // 내 정보 페이지로 이동
+  //       } else { // 로그인이 되어있지 않을 때
+  //         navigate('/login'); // 로그인 페이지로 이동
+  //       }  
+  // }
 
   return (
     <>
