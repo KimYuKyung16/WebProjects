@@ -77,6 +77,33 @@ router.post('/profile', upload.single('uploadImage'), function(req, res){
 })
 
 
+/* 저장되어있는 프로필 불러오기 */
+router.post('/profile_print', function(req, res){
+  sql = "SELECT * FROM sessions WHERE session_id = ?";
+
+  session_connection.query(sql, req.headers.cookies, function(error, rows) {
+    if (error) throw error;
+
+    if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
+      console.log("해당 세션이 없습니다.")
+    } else { // sessionstore에 해당 session값이 있을 때
+      let session_obj = JSON.parse(rows[0].data);
+      let nickname = session_obj.nickname;
+
+      var insertValArr = [nickname];
+      sql = "SELECT * FROM users WHERE nickname = ?"; 
+  
+      connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+        if (error) throw error;
+        res.send(rows[0].profile);
+      });
+    } 
+  });
+
+})
+
+
+
 
 
 /* css적용을 위해 추가 : public 폴더에서 파일 찾기 */

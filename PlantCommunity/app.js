@@ -58,6 +58,7 @@ app.get('/', function(req, res){
 
 /* css적용을 위해 추가 : public, views 폴더에서 파일을 찾는다. */
 app.use(express.static('public'));
+app.use('/uploads',express.static(__dirname + '/uploads'));
 app.use(express.static('views'));
 
 // use() 메서드를 이용하여 미들 웨어를 추가했다.

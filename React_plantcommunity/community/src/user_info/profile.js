@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import './profile.css';
@@ -14,7 +14,22 @@ function Profile() {
   let [profile_src, setProfileSrc] = useState('/image/sky.JPG');
   let [file, setFile] = useState();
 
+  let [profile, setProfile] = useState(); // 등록되어있는 내 프로필 사진
+
   const fileInput = useRef();
+
+  function profile_print() {
+    axios.post(`http://localhost:5000/user_info/profile_print`, {
+
+    })
+    .then(function (response) { 
+      console.log(response.data)
+      setProfile('http://localhost:5000/' + response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
 
 
   async function profile_upload(e) {
@@ -43,9 +58,14 @@ function Profile() {
     });
   }
 
+  useEffect(() => { profile_print(); }, [setProfile])
+
+
+
   return(
     <>
         <img action="http://localhost:5000/user_info/profile" encType="multipart/form-data" id="profile" className="profile_image" alt="profile" src={profile_src}/>
+        <img src={profile} />
         <input type="file" className="inputfile" accept=".jpg, .jpeg, .png" onChange={profile_upload} />
         <input onClick={profile_save} type="button" value="저장" />
       {/* <input onClick={profile_save} type="button" className="inputfile" value="저장"/> */}
