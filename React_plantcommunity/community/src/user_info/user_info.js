@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import './user_info.css';
 
+import styled from "styled-components"; // styled in js
+
 import cookies from 'react-cookies'; // 쿠키 저장
+
+
+const Profile = styled.img`
+  width: 200px;
+  height: 200px;
+`;
+
+
 
 function User_info() {
   // const navigate = useNavigate(); // 페이지 이동을 위해 필요
+
+  let [profile, setProfile] = useState(); // 등록되어있는 내 프로필 사진
 
   function logout() { // 서버 세션도 없애기 위해 서버에 요청하기
     axios.post('http://localhost:5000/logout')
@@ -32,6 +44,23 @@ function User_info() {
     }
   }
 
+  function profile_print() {
+    axios.post(`http://localhost:5000/user_info/profile_print`)
+    .then(function (response) { 
+      console.log(response.data)
+      setProfile('http://localhost:5000/' + response.data); // 서버에 있는 이미지 링크주소
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+
+
+
+
+  useEffect(() => { profile_print(); }, [setProfile])
+
   return(
     <>
       <div id="total_div">
@@ -41,7 +70,7 @@ function User_info() {
           <tr>
             <td>
               <p id="user_profile">유저의 프로필 사진</p>
-              {/* <image id="profile"> */}
+              <Profile src={profile}></Profile>
             </td>
           </tr>
           <tr>

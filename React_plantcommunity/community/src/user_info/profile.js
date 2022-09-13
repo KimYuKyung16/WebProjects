@@ -19,12 +19,10 @@ function Profile() {
   const fileInput = useRef();
 
   function profile_print() {
-    axios.post(`http://localhost:5000/user_info/profile_print`, {
-
-    })
+    axios.post(`http://localhost:5000/user_info/profile_print`)
     .then(function (response) { 
       console.log(response.data)
-      setProfile('http://localhost:5000/' + response.data);
+      setProfile('http://localhost:5000/' + response.data); // 서버에 있는 이미지 링크주소
     })
     .catch(function (error) {
       console.log(error);
