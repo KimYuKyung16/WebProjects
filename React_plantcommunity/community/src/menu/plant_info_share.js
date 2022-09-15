@@ -56,23 +56,23 @@ function Plant_info_share() {
 
   let [search_value, setSearchvalue] = useState();
 
-  let [profile, setProfile] = useState(); // 등록되어있는 내 프로필 사진
+  // let [profile, setProfile] = useState(); // 등록되어있는 내 프로필 사진
 
   let search_change = (e) => {
     setSearchvalue(e.target.value);
     console.log(search_value);
   }
 
-  function profile_print() {
-    axios.post(`http://localhost:5000/user_info/profile_print`)
-    .then(function (response) { 
-      console.log(response.data)
-      setProfile('http://localhost:5000/' + response.data); // 서버에 있는 이미지 링크주소
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
+  // function profile_print() {
+  //   axios.post(`http://localhost:5000/user_info/profile_print`)
+  //   .then(function (response) { 
+  //     console.log(response.data)
+  //     setProfile('http://localhost:5000/' + response.data); // 서버에 있는 이미지 링크주소
+  //   })
+  //   .catch(function (error) {
+  //     console.log(error);
+  //   });
+  // }
 
 
   /* 검색어에 해당하는 게시글 출력 */
@@ -119,7 +119,7 @@ function Plant_info_share() {
   function page_button_create() { // 페이지 버튼 생성
     let button_array = [];
     for (var i=1; i<total_pages+1; i++) {
-      button_array.push(<input type="button" value={i} onClick={page_middle_process(i)} />)
+      button_array.push(<input key={i} type="button" value={i} onClick={page_middle_process(i)} />)
     }
     return button_array;
   }
@@ -135,7 +135,7 @@ function Plant_info_share() {
         setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
        
         if (remain_contents) { // 현재 페이지가 1페이지가 아니고 나머지 페이지가 있다면
-          setTotalpages(totalpages => total_pages+1) // 총 페이지에 +1
+          setTotalpages(total_pages => total_pages+1) // 총 페이지에 +1
         } 
       })
       .catch(function (error) {
@@ -190,25 +190,25 @@ function Plant_info_share() {
   }
 
 
-  async function board_profile_print(writer) {
-    // console.log(writer);
-    const board_profile = await axios.get('http://localhost:5000/user_info/board_profile_print', {
-      params: {
-        writer: writer
-      }  
-    }) // 서버로 post 요청
+  // async function board_profile_print(writer) {
+  //   // console.log(writer);
+  //   const board_profile = await axios.get('http://localhost:5000/user_info/board_profile_print', {
+  //     params: {
+  //       writer: writer
+  //     }  
+  //   }) // 서버로 post 요청
     
 
-    return board_profile.data;
-  }
+  //   return board_profile.data;
+  // }
 
 
 
-  let [test1, setTest1] = useState();
+  // let [test1, setTest1] = useState();
 
   // Effect가 수행되는 시점에 이미 DOM이 업데이트 되어있음을 보장함.
   useEffect(() => { search_conents(); }, [search_value]) // 검색어가 달라질 때마다
-  useEffect(() => { each_page_contents(1); profile_print(); }, []) // 처음에 무조건 한 번 실행
+  useEffect(() => { each_page_contents(1); }, []) // 처음에 무조건 한 번 실행
   useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
  
 
@@ -233,11 +233,11 @@ function Plant_info_share() {
         <tbody>
           {contents.map((x) => {
             let link = `/plant_info_share/contents/${x.num}`;
-            let personal_profile = board_profile_print(x.writer);
+            // let personal_profile = board_profile_print(x.writer);
 
-            personal_profile.then((val) => {
-              setTest1(val);
-            })
+            // personal_profile.then((val) => {
+            //   setTest1(val);
+            // })
 
            
             // let test3 = test1;
@@ -247,7 +247,7 @@ function Plant_info_share() {
               <tr>
                 <td className="num">{x.num}</td>
                 <td className="content_title"><Link to = {link}>{x.title}</Link></td>
-                <td className="writer" id="writer1"><Profile src={'http://localhost:5000/' + test3}/>{x.writer}</td>
+                <td className="writer" id="writer1">{x.writer}</td>
                 <td className="date">{x.date}</td>
                 <td className="click_count">{x.clickcount}</td>
               </tr>   
@@ -257,7 +257,7 @@ function Plant_info_share() {
       </table>
 
       <div>
-        {page_button_create()}
+        {page_button_create() /* 페이지 출력*/ } 
       </div>
      
       <div className="button_div">

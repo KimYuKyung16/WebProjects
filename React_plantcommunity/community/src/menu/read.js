@@ -94,10 +94,16 @@ function Read() {
   }
 
   let [comment, setComment] = useState(); // 댓글 내용
+  let [comment2, setComment2] = useState(); // 댓글의 답글 내용
 
-  const onChangeComment = (e) => { // 글 저장 게시판을 변경할 때마다
+  const onChangeComment = (e) => { // 댓글을 바꿀 때마다
     setComment(e.target.value);
   }
+
+  const onChangeComment2 = (e) => { // 댓글의 답글을 바꿀 때마다
+    setComment2(e.target.value);
+  }
+
 
   function comment_request() {
     const comments_send_val = {
@@ -116,6 +122,30 @@ function Read() {
 
       // setComments(data);
 
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  let [comment_num, setCommentnum] = useState();
+
+  function comment_reply_request() {
+    const comments_send_val2 = {
+      comment: comment2,
+      // writer: cookies.load('nickname'),E
+      date: date(),
+      time: time(),
+    }
+    // 댓글 내용 입력됐는지 안됐는지 확인하는 작업 넣기
+    axios.post(`http://localhost:5000/board/${board}/contents/${board_num}/comment/reply/${comment_num}`, {
+      comments_send_val2
+    }) // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response.data);
+      // const data = [...response.data];
+
+      // setComments(data);
 
     })
     .catch(function (error) {
@@ -123,6 +153,7 @@ function Read() {
     });
 
   }
+
 
   function reply_click(index) {
     setDisplay('block');
@@ -137,6 +168,7 @@ function Read() {
       comment_display_copy[index] = 'block';
     }
     setCommentDisplay(comment_display_copy);
+    setCommentnum(index); // 현재 선택된 댓글의 번호 설정
   }
 
 
@@ -233,8 +265,8 @@ function Read() {
                   <Reply_div display_val={[...comment_display][index]}>
                     <div className='input_div2'>
                       <p>닉네임: {cookies.load('nickname')}</p>
-                      <input className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
-                      <input className="comment_input_btn" onClick={comment_request} type="button" value="등록"/>
+                      <input className="comment_input" onChange={onChangeComment2} type="text" placeholder='댓글 내용을 입력하세요'/>
+                      <input className="comment_input_btn" onClick={comment_reply_request} type="button" value="등록"/>
                     </div>
                   </Reply_div>
                 </div>

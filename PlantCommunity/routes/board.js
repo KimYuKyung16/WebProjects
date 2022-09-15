@@ -46,7 +46,8 @@ router.get('/:board', function(req, res){
   let output_num; // 출력 개수
 
   if (current_page == total_pages) { // 현재 페이지가 마지막 페이지라면
-    output_num = remain_contents; // 출력 개수는 나머지 게시글의 개수
+    if (current_page == 1) output_num = one_page_contents
+    else output_num = remain_contents; // 출력 개수는 나머지 게시글의 개수
   } else { // 현재 페이지가 마지막 페이지가 아니라면 
     output_num = one_page_contents; // 출력 개수는 한 페이지당 게시글의 개수
   }
@@ -140,6 +141,51 @@ router.route('/:board/contents/:num/comment')
       } 
     });
   });
+
+
+
+  /* 댓글의 답글 작성 */
+router.route('/:board/contents/:num/comment/reply/:comment_num')
+// .get((req, res) => {
+//   let board = req.params.board;
+//   let content_num = req.params.num;
+
+//   sql = "SELECT * FROM comments WHERE board= ? and content_num = ?";
+
+//   var insertValArr = [board, content_num];
+
+//   connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+//     if (error) throw error;
+//     res.send(rows);
+//   });
+// })
+.post((req, res) => { 
+  sql = "SELECT * FROM sessions WHERE session_id = ?";
+
+  session_connection.query(sql, req.headers.cookies, function(error, rows) {
+    if (error) throw error;
+
+    if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
+      console.log("해당 세션이 없습니다.")
+    } else { // sessionstore에 해당 session값이 있을 때
+      let session_obj = JSON.parse(rows[0].data);
+      let board = req.params.board;
+      let comment_num = req.params.comment_num;
+      let comment = req.body.comments_send_val2.comment;
+      let writer = session_obj.nickname;
+      let date = req.body.comments_send_val2.date;
+      let time = req.body.comments_send_val2.time;
+
+      var insertValArr = [board, comment_num, comment, writer, date, time];
+      sql = "INSERT INTO comments_reply (board, comment_num, comment, writer, date, time) VALUES (?, ?, ?, ?, ?, ?)";
+  
+      connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+        if (error) throw error;
+        res.send(rows);
+      });
+    } 
+  });
+});
 
 
 
