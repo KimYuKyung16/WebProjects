@@ -33,6 +33,7 @@ function Read() {
 
   let [content, setContent] = useState([]);
   let [comments, setComments] = useState([]); // 댓글 목록
+  let [reply, setReply] = useState([]); // 댓글 목록
   // content_request();
 
   let [div_display, setDisplay] = useState('none');
@@ -40,6 +41,10 @@ function Read() {
   let [comment_display, setCommentDisplay] = useState(Array(comments.length).fill('none')) // none인지 block인지 확인하는 배열
 
   console.log(div_display)
+
+
+
+  let [comment_count, setCount] = useState(0); 
 
 
   
@@ -122,6 +127,9 @@ function Read() {
 
       // setComments(data);
 
+      // 댓글을 저장하면 count + 1해서 댓글 개수가 바뀐 것을 알려줌.
+      setCount((comment_count) => comment_count+1);
+
     })
     .catch(function (error) {
       console.log(error);
@@ -133,7 +141,6 @@ function Read() {
   function comment_reply_request() {
     const comments_send_val2 = {
       comment: comment2,
-      // writer: cookies.load('nickname'),E
       date: date(),
       time: time(),
     }
@@ -168,16 +175,23 @@ function Read() {
       comment_display_copy[index] = 'block';
     }
     setCommentDisplay(comment_display_copy);
-    setCommentnum(index); // 현재 선택된 댓글의 번호 설정
+    // setCommentnum(index); // 현재 선택된 댓글의 번호 설정
   }
 
 
+  /* comment의 개수 구하는 함수 생성
+  comment의 개수가 바뀌면 comment_print 실행
+  comment_print 내에서 comment의 개수 구하는 함수 실행
+  */
 
+  
 
   function comment_print() {
     axios.get(`http://localhost:5000/board/${board}/contents/${board_num}/comment`) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response.data);
+      console.log(response.data[0]);  
+
       const data = [...response.data];
       setComments(data);
 
@@ -188,8 +202,25 @@ function Read() {
     });
   }
 
+  function comment_reply_print(req_comment_num) {
+    console.log("실행됨");
+    axios.get(`http://localhost:5000/board/${board}/contents/${board_num}/comment/reply/${req_comment_num}`)
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response.data); 
+
+      const data = [...response.data];
+      setReply(data);
+
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
  
   useEffect(() => { content_request(); comment_print(); }, [])
+  useEffect(() => { comment_print(); }, [comment_count])
   useEffect(() => { test(); }, [content])
 
 
@@ -251,26 +282,50 @@ function Read() {
           <div class="comment_div"> {/* 댓글 목록 div */}
             {
 
-              comments.map((x, index) => (
-                <div id="total_div">
-                  <div id="writer_date_div">
-                    <p>{x.writer}</p>
-                    <p>{x.date + ' ' + x.time}</p>
-                    <p onClick={() => what_index(index)}>답글쓰기</p>
-                  </div>
-                  <div id="comment_div">
-                    <div>{x.comment}</div>
-                  </div>
-
-                  <Reply_div display_val={[...comment_display][index]}>
-                    <div className='input_div2'>
-                      <p>닉네임: {cookies.load('nickname')}</p>
-                      <input className="comment_input" onChange={onChangeComment2} type="text" placeholder='댓글 내용을 입력하세요'/>
-                      <input className="comment_input_btn" onClick={comment_reply_request} type="button" value="등록"/>
+              comments.map((x, index) => {
+                return(
+                  <div id="total_div">
+                    <div id="writer_date_div">
+                      <p>{x.writer}</p>
+                      <p>{x.date + ' ' + x.time}</p>
+                      <p onClick={() => { what_index(index); setCommentnum(x.num) }}>답글쓰기</p>
                     </div>
-                  </Reply_div>
-                </div>
-              ))
+                    <div id="comment_div">
+                      <div>{x.comment}</div>
+                    </div>
+
+                    <Reply_div display_val={[...comment_display][index]}>
+                      <div className='input_div2'>
+                        <p>닉네임: {cookies.load('nickname')}</p>
+                        <input className="comment_input" onChange={onChangeComment2} type="text" placeholder='댓글 내용을 입력하세요'/>
+                        <input className="comment_input_btn" onClick={comment_reply_request} type="button" value="등록"/>
+                      </div>
+                    </Reply_div>
+{/* 
+                    <>
+                      {comment_reply_print(x.num)}
+                      {
+                        reply.map((y) => {
+                          console.log(y);
+                          return(
+                            <>
+                              <div>
+                                <p>{y.writer}</p>
+                                <p>{y.date + ' ' + y.time}</p>
+                              </div>
+                              <div>
+                                <div>{y.comment}</div>
+                              </div>
+                            </>
+                          ) 
+                        })
+                      }               
+                    </> */}
+
+                  </div>
+                )
+                
+              })
             }
           </div>
 

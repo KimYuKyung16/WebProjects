@@ -110,8 +110,19 @@ router.route('/:board/contents/:num/comment')
 
     connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
       if (error) throw error;
+
+      // rows.forEach((row) => {
+      //   sql = "SELECT * FROM comments_reply WHERE board= ? and comment_num = ?";
+      //   var insertValArr = [board, row.num];
+      //   connection.query(sql, insertValArr, function(error, rows){
+      //     if (error) throw error;
+      //     console.log(rows);
+      //   })
+      // });
+
       res.send(rows);
     });
+
   })
   .post((req, res) => { 
 
@@ -146,19 +157,28 @@ router.route('/:board/contents/:num/comment')
 
   /* 댓글의 답글 작성 */
 router.route('/:board/contents/:num/comment/reply/:comment_num')
-// .get((req, res) => {
-//   let board = req.params.board;
-//   let content_num = req.params.num;
+.get((req, res) => {
+  let board = req.params.board;
+  let content_num = req.params.num;
+  let comment_num = req.params.comment_num;
 
-//   sql = "SELECT * FROM comments WHERE board= ? and content_num = ?";
+  sql = `SELECT b.num
+  , b.board
+  , b.comment_num
+  , b.comment
+  , b.writer
+  , b.date
+  , b.time
+  FROM comments AS a
+  INNER JOIN comments_reply AS b
+  ON a.num = b.comment_num`;
 
-//   var insertValArr = [board, content_num];
 
-//   connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
-//     if (error) throw error;
-//     res.send(rows);
-//   });
-// })
+  connection.query(sql, function(error, rows){ // db에 글 저장
+    if (error) throw error;
+    res.send(rows);
+  });
+})
 .post((req, res) => { 
   sql = "SELECT * FROM sessions WHERE session_id = ?";
 
@@ -185,6 +205,8 @@ router.route('/:board/contents/:num/comment/reply/:comment_num')
       });
     } 
   });
+
+  
 });
 
 
