@@ -202,15 +202,17 @@ function Read() {
     });
   }
 
+
   function comment_reply_print(req_comment_num) {
     console.log("실행됨");
     axios.get(`http://localhost:5000/board/${board}/contents/${board_num}/comment/reply/${req_comment_num}`)
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response.data); 
 
+
       const data = [...response.data];
       setReply(data);
-
+      test2();
 
     })
     .catch(function (error) {
@@ -218,8 +220,23 @@ function Read() {
     });
   }
 
+  let what_num;
+
+  function test2(num) {
+    what_num = num;
+    let filtered = reply.filter(reply_division);
+    console.log(filtered);
+    return filtered;
+  }
+
+
+  function reply_division(value) {
+    console.log(value);
+    return value.comment_num == what_num;
+  }
+
  
-  useEffect(() => { content_request(); comment_print(); }, [])
+  useEffect(() => { content_request(); comment_print(); comment_reply_print(); }, [])
   useEffect(() => { comment_print(); }, [comment_count])
   useEffect(() => { test(); }, [content])
 
@@ -301,26 +318,25 @@ function Read() {
                         <input className="comment_input_btn" onClick={comment_reply_request} type="button" value="등록"/>
                       </div>
                     </Reply_div>
-{/* 
+
+                    {/* {test2(x.num)} */}
                     <>
-                      {comment_reply_print(x.num)}
                       {
-                        reply.map((y) => {
-                          console.log(y);
+                        test2(x.num).map((y) => {
                           return(
                             <>
-                              <div>
-                                <p>{y.writer}</p>
-                                <p>{y.date + ' ' + y.time}</p>
-                              </div>
-                              <div>
+                              <p>{y.writer}</p>
+                              <p>{y.date + ' ' + y.time}</p>
+                              <div id="comment_div">
                                 <div>{y.comment}</div>
                               </div>
                             </>
-                          ) 
+                          )
                         })
-                      }               
-                    </> */}
+                      }
+                      
+                      
+                    </>
 
                   </div>
                 )

@@ -162,19 +162,21 @@ router.route('/:board/contents/:num/comment/reply/:comment_num')
   let content_num = req.params.num;
   let comment_num = req.params.comment_num;
 
-  sql = `SELECT b.num
-  , b.board
-  , b.comment_num
-  , b.comment
-  , b.writer
-  , b.date
-  , b.time
-  FROM comments AS a
-  INNER JOIN comments_reply AS b
-  ON a.num = b.comment_num`;
+  // sql = `SELECT b.num
+  // , b.board
+  // , b.comment_num
+  // , b.comment
+  // , b.writer
+  // , b.date
+  // , b.time
+  // FROM comments AS a
+  // INNER JOIN comments_reply AS b
+  // ON a.num = b.comment_num and a.board = b.board`;
+
+  sql = "SELECT * from comments_reply WHERE content_num = ?";
 
 
-  connection.query(sql, function(error, rows){ // db에 글 저장
+  connection.query(sql,content_num, function(error, rows){ // db에 글 저장
     if (error) throw error;
     res.send(rows);
   });
@@ -195,9 +197,10 @@ router.route('/:board/contents/:num/comment/reply/:comment_num')
       let writer = session_obj.nickname;
       let date = req.body.comments_send_val2.date;
       let time = req.body.comments_send_val2.time;
+      let content_num = req.params.num;
 
-      var insertValArr = [board, comment_num, comment, writer, date, time];
-      sql = "INSERT INTO comments_reply (board, comment_num, comment, writer, date, time) VALUES (?, ?, ?, ?, ?, ?)";
+      var insertValArr = [board, comment_num, comment, writer, date, time, content_num];
+      sql = "INSERT INTO comments_reply (board, comment_num, comment, writer, date, time, content_num) VALUES (?, ?, ?, ?, ?, ?, ?)";
   
       connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
         if (error) throw error;
