@@ -121,14 +121,14 @@ router.post('/process', function(req, res) { // 클라이언트에서 요청한 
 /* 글쓰기를 할 때 로그인된 회원이 맞는지 확인 */
 router.get('/authentication', function(req, res){ 
 
-  // console.log(req.headers.cookies);
-  // console.log(req.session); // 새로고침을 하면 이 값이 바뀜.
+  console.log(req.headers.cookies)
 
   sql = "SELECT * FROM sessions WHERE session_id = ?";
 
   session_connection.query(sql, req.headers.cookies, function(error, rows) {
     if (error) throw error;
 
+    console.log(getAttribute('nickname'));
     if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
       res.send({'authenticator': false});
     } else { // sessionstore에 해당 session값이 있을 때

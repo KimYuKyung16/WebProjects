@@ -109,17 +109,17 @@ function Plant_info_share() {
   }
 
 
-  function page_middle_process(current_page) {
-    return function() {
-      each_page_contents(current_page);
-    }
-  }
+  // function page_middle_process(current_page) {
+  //   return function() {
+  //     each_page_contents(current_page);
+  //   }
+  // }
 
     // 클로저를 이용해서 가장 마지막 값만 출력되는 오류를 해결
   function page_button_create() { // 페이지 버튼 생성
     let button_array = [];
-    for (var i=1; i<total_pages+1; i++) {
-      button_array.push(<input key={i} type="button" value={i} onClick={page_middle_process(i)} />)
+    for (let i=1; i<total_pages+1; i++) {
+      button_array.push(<input key={i} type="button" value={i} onClick={ () => {each_page_contents(i)} } />)
     }
     return button_array;
   }

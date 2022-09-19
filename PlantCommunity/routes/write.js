@@ -56,7 +56,7 @@ router.route('/:board')
       
         connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
           if (error) throw error;
-          res.send();
+          res.send({'status' : 'success'});
         });
       }
     });

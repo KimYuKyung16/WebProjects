@@ -29,7 +29,7 @@ axios.defaults.headers.common['cookies'] = encodeURIComponent(cookies.load('logi
 
 
 function Write() {
-  // const navigate = useNavigate(); // 페이지 이동을 위해 필요
+  const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
   let [content_title, setTitle] = useState(); // 글 제목
   let data; // 글 내용
@@ -81,11 +81,12 @@ function Write() {
       })
       .then(function (response) { // 서버에서 응답이 왔을 때
         console.log('저장완료')
-        // if (response.data.login_status === 'success') {
-        //   // navigate('/'); // 메인페이지로 이동
-        // } else {
-        //   alert("로그인에 실패하셨습니다.");
-        // }  
+        console.log(response.data.status);
+        if (response.data.status === 'success') {
+          navigate('/plant_info_share'); // 메인페이지로 이동
+        } else {
+          alert("저장에 실패했습니다.");
+        }  
       })
       .catch(function (error) {
         console.log(error);

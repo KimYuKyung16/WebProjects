@@ -44,7 +44,8 @@ function Read() {
 
 
 
-  let [comment_count, setCount] = useState(0); 
+  let [comment_count, setCommentCount] = useState(0); 
+  let [reply_count, setReplyCount] = useState(0); 
 
 
   
@@ -101,6 +102,9 @@ function Read() {
   let [comment, setComment] = useState(); // 댓글 내용
   let [comment2, setComment2] = useState(); // 댓글의 답글 내용
 
+  let comment_input = document.getElementById("comment_input"); // 댓글 작성칸 value값을 구하기 위해 추가
+  let reply_input = document.getElementById("reply_input"); // 답글 작성칸 value값을 구하기 위해 추가
+
   const onChangeComment = (e) => { // 댓글을 바꿀 때마다
     setComment(e.target.value);
   }
@@ -123,12 +127,18 @@ function Read() {
     }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response.data);
+
+      // 제대로 저장이 됐으면 댓글 쓰는 칸에 있는 값 초기화
+      setComment('');
+      comment_input.value = '';
+
+
       // const data = [...response.data];
 
       // setComments(data);
 
       // 댓글을 저장하면 count + 1해서 댓글 개수가 바뀐 것을 알려줌.
-      setCount((comment_count) => comment_count+1);
+      setCommentCount((comment_count) => comment_count+1);
 
     })
     .catch(function (error) {
@@ -150,9 +160,15 @@ function Read() {
     }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response.data);
+
+      setComment2('');
+      reply_input.value = '';
+
       // const data = [...response.data];
 
       // setComments(data);
+
+      setReplyCount((reply_count) => reply_count+1);
 
     })
     .catch(function (error) {
@@ -235,12 +251,24 @@ function Read() {
     return value.comment_num == what_num;
   }
 
+  function nickname_print() {
+    axios.get('http://localhost:5000/login/authentication') // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+     console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
  
-  useEffect(() => { content_request(); comment_print(); comment_reply_print(); }, [])
+  useEffect(() => { content_request(); comment_print(); comment_reply_print(); nickname_print(); }, [])
   useEffect(() => { comment_print(); }, [comment_count])
+  useEffect(() => { comment_reply_print(); }, [reply_count])
+
   useEffect(() => { test(); }, [content])
 
-
+let nickname;
 
 
   /* 홈페이지 메인 타이틀 세팅값 */
@@ -292,8 +320,8 @@ function Read() {
         <div id="total_comment_div"> {/* 댓글 */}
           <h3>댓글</h3>
           <div className='input_div'>
-            <p>닉네임: {cookies.load('nickname')}</p>
-            <input className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
+            <p>닉네임: { nickname }</p>
+            <input id="comment_input" className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
             <input className="comment_input_btn" onClick={comment_request} type="button" value="등록"/>
           </div>
           <div class="comment_div"> {/* 댓글 목록 div */}
@@ -314,21 +342,24 @@ function Read() {
                     <Reply_div display_val={[...comment_display][index]}>
                       <div className='input_div2'>
                         <p>닉네임: {cookies.load('nickname')}</p>
-                        <input className="comment_input" onChange={onChangeComment2} type="text" placeholder='댓글 내용을 입력하세요'/>
+                        <input id="reply_input" className="comment_input" onChange={onChangeComment2} type="text" placeholder='댓글 내용을 입력하세요'/>
                         <input className="comment_input_btn" onClick={comment_reply_request} type="button" value="등록"/>
                       </div>
                     </Reply_div>
 
-                    {/* {test2(x.num)} */}
-                    <>
+                    <div class="reply">
                       {
                         test2(x.num).map((y) => {
                           return(
                             <>
-                              <p>{y.writer}</p>
-                              <p>{y.date + ' ' + y.time}</p>
-                              <div id="comment_div">
-                                <div>{y.comment}</div>
+                              <div class="reply_div">
+                                <div class="reply_writer_div">
+                                  <p>{y.writer}</p>
+                                  <p>{y.date + ' ' + y.time}</p>
+                                </div>
+                                <div class="reply_content">
+                                  <div>{y.comment}</div>
+                                </div>
                               </div>
                             </>
                           )
@@ -336,7 +367,7 @@ function Read() {
                       }
                       
                       
-                    </>
+                    </div>
 
                   </div>
                 )
