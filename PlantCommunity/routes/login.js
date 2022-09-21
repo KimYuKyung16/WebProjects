@@ -20,20 +20,20 @@ const { response } = require('express');
 
 
 /* 세션 관련 미들웨어 */
-router.use( 
-  session({
-    key: "user_cookie",
-    secret: "secret_string", //쿠키를 임의로 변조하는 것을 방지하기 위한 값
-    store: sessionStore,
-    resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
-    saveUninitialized: false,
-    cookie: {
-      // MaxAge: 24000 * 60 * 1
-      httpOnly: true,
-      secure: true
-    }
-  })
-);
+// router.use( 
+//   session({
+//     key: "user_cookie",
+//     secret: "secret_string", //쿠키를 임의로 변조하는 것을 방지하기 위한 값
+//     store: sessionStore,
+//     resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
+//     saveUninitialized: false,
+//     cookie: {
+//       // MaxAge: 24000 * 60 * 1
+//       httpOnly: true,
+//       secure: true
+//     }
+//   })
+// );
 
 router.get('/', function(req, res) {
   if (req.session.authenticator) { // 세션이 있을 경우
@@ -123,12 +123,15 @@ router.get('/authentication', function(req, res){
 
   console.log(req.headers.cookies)
 
+  console.log(req.session.nickname);
+
+
   sql = "SELECT * FROM sessions WHERE session_id = ?";
 
   session_connection.query(sql, req.headers.cookies, function(error, rows) {
     if (error) throw error;
 
-    console.log(getAttribute('nickname'));
+    // console.log(getAttribute('nickname'));
     if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
       res.send({'authenticator': false});
     } else { // sessionstore에 해당 session값이 있을 때

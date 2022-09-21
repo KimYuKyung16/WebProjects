@@ -27,9 +27,10 @@ app.use(
     store: sessionStore,
     resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
     saveUninitialized: false,
-    cookie: { maxAge: 24000 * 60 * 1},
+    // cookie: { maxAge: 24000 * 60 * 1},
   })
 );
+
 
 
 /* 라우터 설정 */
