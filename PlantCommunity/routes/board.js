@@ -86,6 +86,19 @@ router.get('/:board/contents/:num', function(req, res){
   });
 })
 
+/* 조회수 */
+router.post('/:board/contents/:num', function(req, res){ 
+  // sql = "UPDATE contents SET clickcount =  board = ? and num = ?";
+
+  console.log('hg', req.body.clickcount)
+  // var insertValArr = [req.params.board, req.params.num];
+
+  // connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+  //   if (error) throw error;
+  //   res.send(rows);
+  // });
+})
+
 /* 총 댓글 출력 */
 router.get('/:board/contents/:num/total_commtents', function(req, res){ 
   sql = "SELECT * FROM contents WHERE board = ? and num = ?";

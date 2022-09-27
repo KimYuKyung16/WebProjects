@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, resolvePath } from "react-router-dom";
 
+import './plant_info_share.css';
+
 import Header from "../layout/header";
 import { colorConfig } from '../config/color';
 
@@ -25,8 +27,40 @@ const navbar_setting = {
   navbar_textcolor: colorConfig.sub_color
 }
 
-const Search = styled.div`
+const Total_Div = styled.div`
+position: relative;
+`;
 
+const Search = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  margin: 10px 0px;
+
+  * {
+
+    & {
+      padding: 5px;
+    }
+
+    // &:nth-child(1) {
+    //   color: rgb(107, 164, 255);
+    //   font-weight: bold;
+    //   font-size: 1.2rem;
+    // }
+
+    &:nth-child(1) {
+      width: 90%;
+      outline: none;
+    }
+
+    &:nth-child(2) {
+      font-size: 1.2rem;
+      color: rgb(186, 218, 199);
+    }
+
+  }
 `;
 
 const Profile = styled.img`
@@ -119,7 +153,7 @@ function Plant_info_share() {
   function page_button_create() { // 페이지 버튼 생성
     let button_array = [];
     for (let i=1; i<total_pages+1; i++) {
-      button_array.push(<input key={i} type="button" value={i} onClick={ () => {each_page_contents(i)} } />)
+      button_array.push(<input class="page_btn" key={i} type="button" value={i} onClick={ () => {each_page_contents(i)} } />)
     }
     return button_array;
   }
@@ -216,8 +250,7 @@ function Plant_info_share() {
     <>
       <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
       <Search>
-        <p>글 검색</p>
-        <input onChange={search_change} type="search" value={search_value}/>
+        <input placeholder="글 제목 검색" onChange={search_change} type="search" value={search_value}/>
         <FontAwesomeIcon icon={faMagnifyingGlass} />
       </Search>
       <table>
@@ -256,14 +289,13 @@ function Plant_info_share() {
         </tbody>
       </table>
 
-      <div>
+      <div className='page_button_div'>
         {page_button_create() /* 페이지 출력*/ } 
       </div>
      
       <div className="button_div">
         <input onClick={login_confirm} id="write_button" type="button" value="글쓰기" />
       </div>
-
     </>
   );
 }

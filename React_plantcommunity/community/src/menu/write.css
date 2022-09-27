@@ -1,10 +1,54 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
   min-height: 700px;
   margin-bottom: 20px;
 }
 
+.setting {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 5px 0px;
+}
+
+.setting > input {
+  width: 75%;
+  padding: 5px;
+  outline: none;
+}
+
+.setting > select {
+  width: 20%;
+  outline: none;
+}
+
+.btn_div {
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+#save_btn {
+  padding: 7px 15px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  background-color: rgb(186, 218, 199);
+  color: rgb(255, 255, 255);
+  font-size: 0.8rem;
+  border: none;
+  box-shadow: none;
+  text-align: center;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+
 .App {
-  margin: 0px 20%;
+  margin: 0px 5px;
 }
 
 /* .content_title {

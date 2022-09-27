@@ -1,0 +1,166 @@
+* {
+    margin: 0;
+}
+
+/* main {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(236, 236, 236);
+}
+
+.title {
+    margin: 10px;
+}
+
+.content_list {
+    background-color: rgb(255, 255, 255);
+    width: 1000px;
+}
+
+.content_list_div, .button_div{
+    display: flex;
+    flex-direction: column;
+    align-items:flex-end;
+    padding-right: 6%;
+
+}
+
+.test{
+    width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#content_list {
+    background-color: rgb(199, 199, 199);
+    width: 100%;
+    height: 50%;
+    margin-bottom: 20px;
+}
+
+.num, .click_count {
+    width: 5%;
+}
+
+.content_title{
+    width: 60%;
+    padding: 10px;
+}
+
+.num, .click_count, .date{
+    text-align: center;
+}
+
+#contents_profile{
+    width: 30px;
+    height: 30px;
+}
+
+#writer {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+}
+
+#writer > img {
+    margin-right: 5px;
+}
+
+@media screen and (max-width: 830px){
+    main {
+        width: 100%;
+        margin: 0;
+    }
+
+    .content_list_div, .test {
+        margin: 0;
+        width: 100%;
+    }
+
+    #content_list {
+        width: 100%;
+    }
+
+} */
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table > thead > tr> th {
+    font-weight: bold;
+    color:rgb(255, 255, 255);
+}
+
+.content_title > a {
+    color:rgb(186, 218, 199);
+}
+
+.num, .click_count {
+    width: 7%;
+}
+
+.content_title{
+    width: 58%;
+    padding: 10px;
+}
+
+.num, .click_count, .date{
+    text-align: center;
+}
+
+.writer {
+    padding-left: 5px;
+}
+
+.page_button_div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.button_div {
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+
+#write_button {
+    width: 10%;
+    padding: 5px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    background-color: rgb(186, 218, 199);
+    color: rgb(255, 255, 255);
+    font-size: 0.8rem;
+    border: none;
+    box-shadow: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+.page_btn {
+    padding: 4px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    background-color: rgb(186, 218, 199);
+    color: rgb(255, 255, 255);
+    font-size: 0.8rem;
+    border: none;
+    box-shadow: none;
+    text-align: center;
+    cursor: pointer;
+    margin-right: 2px;
+}
+
+thead {
+    background-color: rgb(176, 209, 189);
+}
+
+

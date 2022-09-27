@@ -16,7 +16,7 @@ const Reply_div = styled.div`
 display: ${(props) => props.display_val || 'none'};
 border: 1px solid rgb(107, 164, 255);
 border-radius: 3px;
-margin: 10px 0 10px 100px;
+margin: 10px 0 10px 60px;
 `;
 
 
@@ -71,6 +71,7 @@ function Read() {
       return timeString
   }
 
+  let [clickcount, setClickcount] = useState();
 
   function content_request() { // 해당 번호에 해당하는 게시글
     axios.get(`http://localhost:5000/board/${board}/contents/${board_num}`, { // 서버로 post 요청
@@ -80,8 +81,34 @@ function Read() {
       }  
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
-      // console.log(response.data)
       setContent(response.data[0]);
+
+      //조회수
+      setClickcount(response.data[0].clickcount);
+      setClickcount((clickcount)=>clickcount + 1);
+      console.log(clickcount)
+      console.log(response.data[0].clickcount)
+
+      // const comments_send_val = {
+      //   comment: comment,
+      //   // writer: cookies.load('nickname'),
+      //   date: date(),
+      //   time: time(),
+      // }
+      
+      axios.post(`http://localhost:5000/board/${board}/contents/${board_num}`, {
+        params: {
+          clickcount: clickcount
+        }
+      }) // 서버로 post 요청
+      .then(function (response) { // 서버에서 응답이 왔을 때
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+
     })
     .catch(function (error) {
       console.log(error);
@@ -251,24 +278,26 @@ function Read() {
     return value.comment_num == what_num;
   }
 
-  function nickname_print() {
-    axios.get('http://localhost:5000/login/authentication') // 서버로 post 요청
-    .then(function (response) { // 서버에서 응답이 왔을 때
-     console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
+  let [nickname, setNickname] = useState();
+
+  // function nickname_print() {
+  //   axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
+  //   .then(function (response) { // 서버에서 응답이 왔을 때
+  //     setNickname (response.data.nickname);
+  //   })
+  //   .catch(function (error) {
+  //     console.log(error);
+  //   });
+  // }
 
  
-  useEffect(() => { content_request(); comment_print(); comment_reply_print(); nickname_print(); }, [])
+  useEffect(() => { content_request(); comment_print(); comment_reply_print(); }, [])
   useEffect(() => { comment_print(); }, [comment_count])
   useEffect(() => { comment_reply_print(); }, [reply_count])
 
   useEffect(() => { test(); }, [content])
 
-let nickname;
+
 
 
   /* 홈페이지 메인 타이틀 세팅값 */
@@ -284,99 +313,101 @@ let nickname;
   }
 
   return (
-      <>  
+      <>
         <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
-        <div id="test">
-          <div id="board_title">
-            <h2>＞게시판</h2>
+        <div id="total">
+          <div id="test">
+            <div id="board_title">
+              <h2>＞게시판</h2>
+            </div>
+
+            <ul id="write_list">
+              <li id="title-li1">
+                <h2 id="title">{content.title}</h2>
+              </li>
+              <li id="board-li2">
+                <ul id="user_info_list">
+                  <li>작성자:{content.writer}</li>
+                  <li>날짜/시간:{content.date + ' ' + content.time}</li>
+                  <li>조회수:{content.clickcount}</li>
+                </ul>
+                <div id="action_div">
+                  <input id="revise_btn" type="button" value="수정" />
+                  <input id="delete_btn" type="button" value="삭제" />
+                </div>
+              </li>
+              <li id="content-li3">
+                <div id="content"></div>
+              </li>
+            </ul>
           </div>
 
-          <ul id="write_list">
-            <li id="title-li1">
-              <h2 id="title">{content.title}</h2>
-            </li>
-            <li id="board-li2">
-              <ul id="user_info_list">
-                <li>작성자:{content.writer}</li>
-                <li>날짜/시간:{content.date + ' ' + content.time}</li>
-                <li>조회수:{content.clickcount}</li>
-              </ul>
-              <div id="action_div">
-                <input id="revise_btn" type="button" value="수정" />
-                <input id="delete_btn" type="button" value="삭제" />
-              </div>
-            </li>
-            <li id="content-li3">
-              <div id="content"></div>
-            </li>
-          </ul>
-        </div>
-
-        <div id="line_div">
-          <hr></hr>
-        </div>
-        
-
-        <div id="total_comment_div"> {/* 댓글 */}
-          <h3>댓글</h3>
-          <div className='input_div'>
-            <p>닉네임: { nickname }</p>
-            <input id="comment_input" className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
-            <input className="comment_input_btn" onClick={comment_request} type="button" value="등록"/>
+          <div id="line_div">
+            <hr></hr>
           </div>
-          <div class="comment_div"> {/* 댓글 목록 div */}
-            {
+          
 
-              comments.map((x, index) => {
-                return(
-                  <div id="total_div">
-                    <div id="writer_date_div">
-                      <p>{x.writer}</p>
-                      <p>{x.date + ' ' + x.time}</p>
-                      <p onClick={() => { what_index(index); setCommentnum(x.num) }}>답글쓰기</p>
-                    </div>
-                    <div id="comment_div">
-                      <div>{x.comment}</div>
-                    </div>
+          <div id="total_comment_div"> {/* 댓글 */}
+            <h3>댓글</h3>
+            <div className='input_div'>
+              <p>{ nickname }</p>
+              <input id="comment_input" className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
+              <input className="comment_input_btn" onClick={comment_request} type="button" value="등록"/>
+            </div>
+            <div class="comment_div"> {/* 댓글 목록 div */}
+              {
 
-                    <Reply_div display_val={[...comment_display][index]}>
-                      <div className='input_div2'>
-                        <p>닉네임: {cookies.load('nickname')}</p>
-                        <input id="reply_input" className="comment_input" onChange={onChangeComment2} type="text" placeholder='댓글 내용을 입력하세요'/>
-                        <input className="comment_input_btn" onClick={comment_reply_request} type="button" value="등록"/>
+                comments.map((x, index) => {
+                  return(
+                    <div id="total_div">
+                      <div id="writer_date_div">
+                        <p>{x.writer}</p>
+                        <p>{x.date + ' ' + x.time}</p>
+                        <p onClick={() => { what_index(index); setCommentnum(x.num) }}>답글쓰기</p>
                       </div>
-                    </Reply_div>
+                      <div id="comment_div">
+                        <div>{x.comment}</div>
+                      </div>
 
-                    <div class="reply">
-                      {
-                        test2(x.num).map((y) => {
-                          return(
-                            <>
-                              <div class="reply_div">
-                                <div class="reply_writer_div">
-                                  <p>{y.writer}</p>
-                                  <p>{y.date + ' ' + y.time}</p>
+                      <Reply_div display_val={[...comment_display][index]}>
+                        <div className='input_div2'>
+                          <p>{nickname}</p>
+                          <input id="reply_input" className="comment_input" onChange={onChangeComment2} type="text" placeholder='댓글 내용을 입력하세요'/>
+                          <input className="comment_input_btn" onClick={comment_reply_request} type="button" value="등록"/>
+                        </div>
+                      </Reply_div>
+
+                      <div class="reply">
+                        {
+                          test2(x.num).map((y) => {
+                            return(
+                              <>
+                                <div class="reply_div">
+                                  <div class="reply_writer_div">
+                                    <p>{y.writer}</p>
+                                    <p>{y.date + ' ' + y.time}</p>
+                                  </div>
+                                  <div class="reply_content">
+                                    <div>{y.comment}</div>
+                                  </div>
                                 </div>
-                                <div class="reply_content">
-                                  <div>{y.comment}</div>
-                                </div>
-                              </div>
-                            </>
-                          )
-                        })
-                      }
-                      
-                      
+                              </>
+                            )
+                          })
+                        }
+                        
+                        
+                      </div>
+
                     </div>
+                  )
+                  
+                })
+              }
+            </div>
 
-                  </div>
-                )
-                
-              })
-            }
           </div>
-
-        </div>
+        </div> 
       </>
   );
 

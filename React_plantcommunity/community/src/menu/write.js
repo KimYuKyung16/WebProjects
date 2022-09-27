@@ -11,18 +11,20 @@ import cookies from 'react-cookies'; // 쿠키
 
 // import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 
+import { colorConfig } from "../config/color"; // 홈페이지 색감 정보
+
 import styled from "styled-components"; // styled in js
 
 /* 홈페이지 메인 타이틀 세팅값 */
 const title_setting = {
-  title_backcolor: "rgb(107, 164, 255)",
-  title_textcolor: "rgb(255, 255, 255)",
+  title_backcolor: colorConfig.main_color,
+  title_textcolor: colorConfig.sub_color
 }
 
 /* 네비게이션바 세팅값 */
 const navbar_setting = {
-  navbar_backcolor: "rgb(107, 164, 255)",
-  navbar_textcolor: "rgb(255, 255, 255)",
+  navbar_backcolor: colorConfig.main_color,
+  navbar_textcolor: colorConfig.sub_color
 }
 
 axios.defaults.headers.common['cookies'] = encodeURIComponent(cookies.load('login_cookie')); // for all requests
@@ -101,7 +103,7 @@ function Write() {
     <>
       <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
       <div className="App">
-        <div>
+        <div className="setting">
           <input onChange={onChangeTitle} id="content_title" type="text" placeholder='제목을 입력해주세요'></input>
           <select onChange={onChangeBoard} value={board}>
             <option value='plant_info_share'>식물 정보 공유</option>
@@ -128,7 +130,9 @@ function Write() {
             } }
         />
       </div>
-      <input onClick={write_process} type="button" value="저장"/>
+      <div className='btn_div'>
+        <input id="save_btn" onClick={write_process} type="button" value="저장"/>
+      </div>
     </>
   );
 }

@@ -16,32 +16,33 @@ const Profile = styled.img`
 
 
 function User_info() {
-  // const navigate = useNavigate(); // 페이지 이동을 위해 필요
+  const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
   let [profile, setProfile] = useState(); // 등록되어있는 내 프로필 사진
 
   function logout() { // 서버 세션도 없애기 위해 서버에 요청하기
-    axios.post('http://localhost:5000/logout')
+    axios.delete('http://localhost:5000/logout')
     .then(function (response) { // 서버에서 응답이 왔을 때
-      // alert("회원가입에 성공하셨습니다."); 
-      // navigate('/login'); // 메인페이지로 이동
+      alert("로그아웃 되었습니다."); 
+      cookies.remove('login_cookie', { path: '/' })
+      navigate('/login'); // 메인페이지로 이동
     })
     .catch(function (error) {
       console.log(error);
     });
 
-    try {
-      cookies.remove('user_login');
-      // navigate('/', {replace: true}); // 메인페이지로 이동 : replace를 true로 하면 뒤로가기를 할 때 '/'로 돌아온다.
-      window.location.replace("/"); // 뒤로가기 불가능 + 새로고침
-      // navigation.reset({
-      //   routes: [{
-      //       name: 'Main'
-      //     }]
-      // })
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   cookies.remove('user_login');
+    //   // navigate('/', {replace: true}); // 메인페이지로 이동 : replace를 true로 하면 뒤로가기를 할 때 '/'로 돌아온다.
+    //   // window.location.replace("/"); // 뒤로가기 불가능 + 새로고침
+    //   // navigation.reset({
+    //   //   routes: [{
+    //   //       name: 'Main'
+    //   //     }]
+    //   // })
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   function profile_print() {
@@ -77,7 +78,7 @@ function User_info() {
             <td id="user_nickname">유저의 닉네임: 유경</td> 
           </tr>
           <tr>
-            <td><input id="info_revise_btn" type="button" value="내 정보 수정하기" /></td>
+            <td><input id="info_revise_btn" type="button" value="내 정보 수정하기" onClick={() => {navigate('/user_info/profile');}}/></td>
           </tr>
           <tr>
             <td><input onClick={logout} id="logout_btn" type="button" value="로그아웃" /></td> 

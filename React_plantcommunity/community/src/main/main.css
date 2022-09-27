@@ -48,7 +48,7 @@ li {
   justify-content: space-between;
   height: 100%;
   margin: 0px 10vw;
-  margin-bottom: 50px;
+  /* margin-bottom: 50px; */
   background-color: white;
 }
 
@@ -63,7 +63,7 @@ li {
   width: 40%;
   height: 3px;
   border: none;
-  background-color: rgb(74, 142, 252);
+  background-color: rgb(186, 218, 199);
   /* border-top: 1px solid rgb(74, 142, 252); */
 }
 

@@ -9,7 +9,8 @@ import { faBars } from '@fortawesome/free-solid-svg-icons'; // 햄버거바 아�
 
 import cookies from 'react-cookies'; // 쿠키
 
-import styled from "styled-components"; // styled in js
+import styled, { keyframes } from "styled-components"; // styled in js
+
 
 /* 홈페이지 메인 타이틀 배경 */
 const Title_background = styled.header`
@@ -17,6 +18,11 @@ background-color: ${(props) => props.title_setting.title_backcolor};
 display: flex;
 justify-content: center;
 padding: 40px 0px;
+
+@media screen and (max-width: 1300px) { 
+  padding: 10px 0px;
+  width: 100%;
+}
 `;
 
 /* 홈페이지 메인 타이틀 */
@@ -24,7 +30,21 @@ const Main_title = styled.h1`
 color: ${(props) => props.title_setting.title_textcolor};
 font-family: 'Cairo';
 font-size: 2.5rem;
+
+@media screen and (max-width: 1300px) { 
+  font-size: 1.5rem;
+  padding: 0px;
+}
 `;
+
+// const appear = keyframes`
+// 0% {
+//   transform: translateY(-100%);
+// }
+// 100% {
+//   transform: translateY(0%);
+// }
+// `
 
 /* 네비게이션바  */
 const Navbar = styled.nav`
@@ -34,6 +54,42 @@ top: 0;
 justify-content: space-between;
 background-color: ${(props) => props.navbar_setting.navbar_backcolor};
 padding: 10px 0px;
+
+
+@media screen and (max-width: 1300px) { 
+  display: ${(props) => props.active || 'flex'};
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 14px;
+}
+`;
+
+/* 네비게이션바 메뉴들  */
+const Navbar_menu = styled.ul`
+display: flex;
+justify-content: center;
+list-style: none;
+padding-left: 0;
+width: 100%;
+margin-left: 12vw;
+
+@media screen and (max-width: 1300px) { 
+  display: ${(props) => props.active || 'flex'};
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  margin: 0;
+}
+`;
+
+/* 네비게이션바 메뉴들  */
+const Menu = styled.li`
+padding: 8px 12px;
+
+@media screen and (max-width: 1300px) { 
+  width: 100%;
+  text-align: center;
+}
 `;
 
 /* 네비게이션바 메뉴들  */
@@ -58,11 +114,33 @@ font-size: 1.5rem;
 color: ${(props) => props.navbar_setting.navbar_textcolor};
 margin-right: 10vw;
 padding-left: 0;
+
+@media screen and (max-width: 1300px) { 
+  display: ${(props) => props.active};
+  justify-content: center;
+  width: 100%;
+}
+`;
+
+/* 네비게이션바 햄버거바 */
+const Navbar_togglebBtn = styled.div`
+display: none;
+position: absolute;
+right: 15px;
+font-size: 24px;
+color: ${(props) => props.navbar_setting.navbar_textcolor};
+
+@media screen and (max-width: 1300px) { 
+  display: block;
+}
 `;
 
 function Header(props) {
 
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
+
+  let [click_count, setClickCount] = useState(1);
+  let [active_status, setActiveStatus] = useState('none');
 
   /* 로그인이 되어있는지 확인 */
   function login_confirm() {
@@ -96,25 +174,45 @@ function Header(props) {
   //       }  
   // }
 
+  function active() {
+    console.log('실행');
+    setClickCount(click_count + 1);
+
+    if (click_count % 2 == 1) {
+      console.log('보임');
+      setActiveStatus('flex');
+      console.log(active_status)
+    } else {
+      console.log('안보임');
+      setActiveStatus('none');
+      console.log(active_status)
+    }
+    
+  }
+
+  function home() {
+    navigate('/');
+  }
+
   return (
     <>
       <Title_background {...props}>
-        <Main_title {...props} >Plant Community</Main_title>
-        <div className="navbar_togglebBtn">
+        <Main_title {...props} onClick={home}>Plant Community</Main_title>
+        <Navbar_togglebBtn {...props} onClick={active}>
           <FontAwesomeIcon icon={faBars}/>
-        </div>
+        </Navbar_togglebBtn>
       </Title_background>
-      
-      <Navbar {...props}> 
-        <ul className="navbar_menu">
-          <li><StyledLink {...props} to="/plant_info_share">식물 기본 정보</StyledLink></li>
-          <li><StyledLink {...props} to="/plant_info_share">식물 정보 공유</StyledLink></li> 
-          <li><StyledLink {...props} to="/plant_info_share">내 식물 자랑</StyledLink></li>
-        </ul>
-        <NavbarIcon {...props}>
+      <Navbar {...props} active={active_status}> 
+        <Navbar_menu active={active_status}>
+          <Menu><StyledLink {...props} to="/plant_info_share">식물 기본 정보</StyledLink></Menu>
+          <Menu><StyledLink {...props} to="/plant_info_share">식물 정보 공유</StyledLink></Menu> 
+          <Menu><StyledLink {...props} to="/plant_info_share">내 식물 자랑</StyledLink></Menu>
+        </Navbar_menu>
+        <NavbarIcon {...props} active={active_status}>
           <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={login_confirm}/></li>
         </NavbarIcon>
       </Navbar>
+      
     </>
   );
 }

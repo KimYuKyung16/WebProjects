@@ -1,5 +1,6 @@
 * {
   margin: 0;
+  padding: 0;
 }
 
 html {
@@ -28,7 +29,7 @@ html {
   padding: 10px 0px;
 } */
 
-.navbar_menu {
+/* .navbar_menu {
   display: flex;
   justify-content: center;
   list-style: none;
@@ -39,7 +40,7 @@ html {
 
 .navbar_menu li {
   padding: 8px 12px;
-}
+} */
 
 /* .navbar_menu a {
   padding: 5px 20px;
@@ -63,7 +64,7 @@ html {
   padding-left: 0;
 } */
 
-.navbar_togglebBtn {
+/* .navbar_togglebBtn {
   display: none;
   position: absolute;
   right: 15px;
@@ -122,4 +123,4 @@ html {
 
 
 
-}
+} */

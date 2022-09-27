@@ -142,6 +142,28 @@ router.get('/authentication', function(req, res){
   
 })
 
+/* 닉네임 출력 */
+router.get('/authentication/nickname', function(req, res){ 
+
+  sql = "SELECT * FROM sessions WHERE session_id = ?";
+
+  session_connection.query(sql, req.headers.cookies, function(error, rows) {
+    if (error) throw error;
+
+    // // console.log(getAttribute('nickname'));
+    // if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
+    //   res.send({'authenticator': false});
+    // } else { // sessionstore에 해당 session값이 있을 때
+    //   // let session_obj = JSON.parse(rows[0].data);
+    //   res.send({'authenticator': true});
+    // }
+    let session_obj = JSON.parse(rows[0].data);
+    res.send({'nickname':session_obj.nickname});
+  });
+  
+})
+
+
 
 
 /* css적용을 위해 추가 : public 폴더에서 파일 찾기 */

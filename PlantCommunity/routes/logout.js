@@ -3,18 +3,18 @@ const router = express.Router();
 var fs = require('fs');
 const ejs = require("ejs");
 
-router.get('/', function(req, res){
+router.delete('/', function(req, res){
   // fs.readFile('./views/plant_info_share.ejs', "utf-8", function(error, data){
   //   res.writeHead(200, {'Content-Type': 'text/html' });
   //   res.end(ejs.render(data));
   // })
 
-  console.log(req.session.authenticator);
-  console.log(req.session.u_id);
+  // console.log(req.session.authenticator);
+  console.log(req.session.nickname);
 
-  delete req.session.authenticator;
-  delete req.session.u_id;
-  // res.send();
+  // delete req.session.authenticator;
+  delete req.session.nickname;
+  res.send();
   // delete req.session.authenticator;
 })
 
