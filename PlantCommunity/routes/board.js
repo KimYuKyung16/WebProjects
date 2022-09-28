@@ -88,15 +88,15 @@ router.get('/:board/contents/:num', function(req, res){
 
 /* 조회수 */
 router.post('/:board/contents/:num', function(req, res){ 
-  // sql = "UPDATE contents SET clickcount =  board = ? and num = ?";
+  sql = "UPDATE contents SET clickcount = ? WHERE board = ? and num = ?";
 
-  console.log('hg', req.body.clickcount)
-  // var insertValArr = [req.params.board, req.params.num];
+  let clickcount = req.body.params.clickcount;
+  var insertValArr = [clickcount, req.params.board, req.params.num];
 
-  // connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
-  //   if (error) throw error;
-  //   res.send(rows);
-  // });
+  connection.query(sql, insertValArr, function(error, rows){ // db에 조회수 저장
+    if (error) throw error;
+    res.send(rows);
+  });
 })
 
 /* 총 댓글 출력 */

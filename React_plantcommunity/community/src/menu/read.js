@@ -71,7 +71,7 @@ function Read() {
       return timeString
   }
 
-  let [clickcount, setClickcount] = useState();
+
 
   function content_request() { // 해당 번호에 해당하는 게시글
     axios.get(`http://localhost:5000/board/${board}/contents/${board_num}`, { // 서버로 post 요청
@@ -84,18 +84,10 @@ function Read() {
       setContent(response.data[0]);
 
       //조회수
-      setClickcount(response.data[0].clickcount);
-      setClickcount((clickcount)=>clickcount + 1);
+      let clickcount = response.data[0].clickcount;
+      clickcount = clickcount + 1;
       console.log(clickcount)
-      console.log(response.data[0].clickcount)
 
-      // const comments_send_val = {
-      //   comment: comment,
-      //   // writer: cookies.load('nickname'),
-      //   date: date(),
-      //   time: time(),
-      // }
-      
       axios.post(`http://localhost:5000/board/${board}/contents/${board_num}`, {
         params: {
           clickcount: clickcount
