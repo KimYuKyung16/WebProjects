@@ -12,6 +12,10 @@ import Plant_info_share from "./menu/plant_info_share";
 import Write from "./menu/write";
 import Read from "./menu/read";
 
+import Chat from "./chat/chat";
+
+import Test from "./test/test";
+
 function App() {
 
   return (
@@ -26,6 +30,10 @@ function App() {
         <Route path="/:board" element={<Plant_info_share />}></Route>
         <Route path="/:board/contents/:num" element={<Read />}></Route>
         <Route path="/write" element={<Write />}></Route>
+
+        <Route path="/chat" element={<Chat />}></Route>
+
+        <Route path="/test" element={<Test />}></Route>
         
       </Routes>
     </>
