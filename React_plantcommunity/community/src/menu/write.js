@@ -6,6 +6,7 @@ import './write.css';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import cookies from 'react-cookies'; // 쿠키
 
@@ -14,6 +15,8 @@ import cookies from 'react-cookies'; // 쿠키
 import { colorConfig } from "../config/color"; // 홈페이지 색감 정보
 
 import styled from "styled-components"; // styled in js
+
+
 
 /* 홈페이지 메인 타이틀 세팅값 */
 const title_setting = {
@@ -34,7 +37,7 @@ function Write() {
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
   let [content_title, setTitle] = useState(); // 글 제목
-  let data; // 글 내용
+  let [content, setContent] = useState(); // 글 내용
   let [board, setBoard] = useState('plant_info_share');
 
   function date(){ //날짜를 구해주는 함수
@@ -69,10 +72,10 @@ function Write() {
 
 
   function write_process(){
-    if (content_title && data){
+    if (content_title && content){
       const contents_send_val = {
         title: content_title,
-        content: data,
+        content: content,
         board: board,
         date: date(),
         time: time(),
@@ -99,6 +102,59 @@ function Write() {
     
   }
 
+  class MyUploadAdapter {
+    constructor(loader) {
+      this.loader = loader;
+    }
+    upload() {
+      return this.loader.file.then( file => new Promise(((resolve, reject) => {
+          this._initRequest();
+          this._initListeners( resolve, reject, file );
+          this._sendRequest( file );
+      })))
+    }
+
+    _initRequest() {
+      const xhr = this.xhr = new XMLHttpRequest();
+      xhr.open('POST', 'http://localhost:5000/user_info/picture', true);
+      xhr.responseType = 'json';
+    }
+
+    _initListeners(resolve, reject, file) {
+        const xhr = this.xhr;
+        const loader = this.loader;
+        const genericErrorText = '파일을 업로드 할 수 없습니다.'
+
+        xhr.addEventListener('error', () => {reject(genericErrorText)})
+        xhr.addEventListener('abort', () => reject())
+        xhr.addEventListener('load', () => {
+            const response = xhr.response
+            console.log(response.url)
+            if(!response || response.error) {
+                return reject( response && response.error ? response.error.message : genericErrorText );
+            }
+
+            resolve( {
+              '500': response.url
+            } );
+        })
+    }
+
+    _sendRequest(file) {
+        const data = new FormData()
+        data.append('uploadImage',file)
+        this.xhr.send(data)
+    }
+  }
+
+  function MyCustomUploadAdapterPlugin( editor ) {
+    editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+        // Configure the URL to the upload script in your back-end here!
+        return new MyUploadAdapter( loader );
+    };
+  }
+
+
   return (
     <>
       <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
@@ -110,7 +166,7 @@ function Write() {
             <option value='plant_introduce'>내 식물 자랑</option>
           </select>
         </div>
-        <CKEditor
+        {/* <CKEditor
             editor={ ClassicEditor }
             // data="<p>Hello from CKEditor 5!</p>"
             onReady={ editor => {
@@ -128,7 +184,70 @@ function Write() {
             onFocus={ ( event, editor ) => {
                 console.log( 'Focus.', editor );
             } }
-        />
+        /> */}
+        <>
+        <CKEditor
+
+          editor={ClassicEditor}
+          config={
+            {
+              extraPlugins:[MyCustomUploadAdapterPlugin],
+              toolbar: {
+                items: [
+                  "heading",
+                  "|",
+                  "fontFamily",
+                  "fontSize",
+                  "fontColor",
+                  "alignment",
+                  "|",
+                  "bold",
+                  "italic",
+                  "strikethrough",
+                  "underline",
+                  "specialCharacters",
+                  "horizontalLine",
+                  "|",
+                  "bulletedList",
+                  "numberedList",
+                  "|",
+                  "indent",
+                  "outdent",
+                  "|",
+                  "link",
+                  "blockQuote",
+                  "CKFinder",
+                  "imageUpload",
+                  "insertTable",
+                  "mediaEmbed",
+                  "|",
+                  "undo",
+                  "redo",
+                ],              
+              },    
+            }
+          }
+          
+          
+          onReady={(editor) => {
+            console.log("Editor is ready to use!", editor);
+          }}
+          
+          onChange={(event, editor) => {
+            const data = editor.getData();
+            setContent(data);
+            console.log({ event, editor, data });
+          }}
+          
+          onBlur={(event, editor) => {
+            console.log("Blur.", editor);
+          }}
+          
+          onFocus={(event, editor) => {
+            console.log("Focus.", editor);
+          }}
+        ></CKEditor>
+        </>
       </div>
       <div className='btn_div'>
         <input id="save_btn" onClick={write_process} type="button" value="저장"/>

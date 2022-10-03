@@ -14,8 +14,6 @@ import Read from "./menu/read";
 
 import Chat from "./chat/chat";
 
-import Test from "./test/test";
-
 function App() {
 
   return (
@@ -33,7 +31,6 @@ function App() {
 
         <Route path="/chat" element={<Chat />}></Route>
 
-        <Route path="/test" element={<Test />}></Route>
         
       </Routes>
     </>

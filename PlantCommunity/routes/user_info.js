@@ -77,6 +77,18 @@ router.post('/profile', upload.single('uploadImage'), function(req, res){
 })
 
 
+/* 게시글에 있는 사진 저장 테스트 */
+router.post('/picture', upload.single('uploadImage'), function(req, res){
+  console.log(req.file);
+  // console.log(req.body);
+  console.log(req.file.path);
+  console.log('헤더값', req.headers.cookies);
+
+  res.send({url: 'http://localhost:5000/' + req.file.path});
+
+})
+
+
 /* 저장되어있는 프로필 불러오기 */
 router.post('/profile_print', function(req, res){
   sql = "SELECT * FROM sessions WHERE session_id = ?";
