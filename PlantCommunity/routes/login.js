@@ -74,6 +74,7 @@ router.post('/process', function(req, res) { // 클라이언트에서 요청한 
         expires.setFullYear(expires.getFullYear() + 10);
 
         req.session.nickname = rows[0].nickname; // 세션에 닉네임 저장
+        req.session.user_id = rows[0].user_id; // 세션에 아이디 저장
         req.session.cookie.expires = expires;
         
         // req.session.u_id = input_id; // 세션을 위해 추가

@@ -4,6 +4,8 @@ const app = express();
 const cors = require('cors');
 const ejs = require("ejs");
 
+
+
 const cookieParser = require('cookie-parser');
 
 app.use(cookieParser());
@@ -19,6 +21,9 @@ const MySQLStore = require('express-mysql-session')(session); //mysql 세션
 const options = require('./config/session_db.js'); // session_db 모듈 불러오기
 var sessionStore = new MySQLStore(options);
 
+const mysql = require('mysql'); // mysql 모듈
+const session_connection = mysql.createConnection(options);
+
 /* 세션 관련 미들웨어 */
 app.use( 
   session({
@@ -33,6 +38,9 @@ app.use(
 
 
 
+
+
+
 const http = require('http').createServer(app);
 // const io = require('socket.io')(http)
 const io = require('socket.io')(http, {
@@ -42,21 +50,46 @@ const io = require('socket.io')(http, {
   }
 });
 
-io.on('connection', socket => {
-  socket.on('message', ({name, message}) => {
-    io.emit('message', {name, message})
-  })
-})
+// io.on('connection', socket => {
+//   socket.on('message', ({name, message}) => {
+//     io.emit('message', {name, message})
+//   })
+// })
 
 //////////////////////
 
-const userNamespace = io.of("/users");
+/* 채팅 기능 구현 */
+app.get('/chat_namespace', function(req, res){
+  if (req.headers.cookies) { // 쿠키가 있다면 : 로그인 상태라면
+    console.log(req.headers.cookies)
 
-userNamespace.on("connection", (socket) => {
-  socket.on("message", ({name, message}) => {
-    userNamespace.emit('message', {name, message})
-  });
-});
+    sql = "SELECT * FROM sessions WHERE session_id = ?";
+
+    session_connection.query(sql, req.headers.cookies, function(error, rows) {
+      if (error) throw error;
+      let session_obj = JSON.parse(rows[0].data);
+      let user_id = session_obj.user_id; // 현재 로그인되어있는 회원의 아이디 추출
+
+      if (user_id) {
+        const userNamespace = io.of("/" + user_id);
+  
+        userNamespace.on("connection", (socket) => {
+          socket.on("message", ({name, message}) => {
+            userNamespace.emit('message', {name, message})
+          });
+        });
+
+        res.send({namespace: user_id});
+      }
+    })
+    
+  } else { // 인증된 사용자가 아니라면(세션X)
+    console.log('로그인이 되어있지 않습니다.')
+    res.send('false');
+  }
+})
+
+
 
 // const userNamespace = io.of("/users");
 

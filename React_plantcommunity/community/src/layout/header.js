@@ -207,6 +207,7 @@ function Header(props) {
           <Menu><StyledLink {...props} to="/plant_info_share">식물 기본 정보</StyledLink></Menu>
           <Menu><StyledLink {...props} to="/plant_info_share">식물 정보 공유</StyledLink></Menu> 
           <Menu><StyledLink {...props} to="/plant_info_share">내 식물 자랑</StyledLink></Menu>
+          <Menu><StyledLink {...props} to="/plant_market">식물 마켓</StyledLink></Menu>
         </Navbar_menu>
         <NavbarIcon {...props} active={active_status}>
           <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={login_confirm}/></li>

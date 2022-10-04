@@ -40,6 +40,10 @@ function Write() {
   let [content, setContent] = useState(); // 글 내용
   let [board, setBoard] = useState('plant_info_share');
 
+
+  let [pic_src, setSrc] = useState('');
+
+
   function date(){ //날짜를 구해주는 함수
     var today = new Date();
 
@@ -79,7 +83,8 @@ function Write() {
         board: board,
         date: date(),
         time: time(),
-        clickcount: 0
+        clickcount: 0,
+        thumbnail_src: pic_src
       }
       axios.post('http://localhost:5000/write/plant_info_share', { // 서버로 post 요청
         contents_send_val
@@ -130,6 +135,9 @@ function Write() {
         xhr.addEventListener('load', () => {
             const response = xhr.response
             console.log(response.url)
+
+            setSrc(response.url); // 썸네일 사진 설정
+
             if(!response || response.error) {
                 return reject( response && response.error ? response.error.message : genericErrorText );
             }
@@ -164,6 +172,7 @@ function Write() {
           <select onChange={onChangeBoard} value={board}>
             <option value='plant_info_share'>식물 정보 공유</option>
             <option value='plant_introduce'>내 식물 자랑</option>
+            <option value='plant_market'>식물 마켓</option>
           </select>
         </div>
         {/* <CKEditor
@@ -237,6 +246,7 @@ function Write() {
             const data = editor.getData();
             setContent(data);
             console.log({ event, editor, data });
+            console.log(pic_src);
           }}
           
           onBlur={(event, editor) => {

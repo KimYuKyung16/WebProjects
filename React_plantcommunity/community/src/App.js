@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import './App.css';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 
 import Main from "./main/main";
@@ -12,7 +11,9 @@ import Plant_info_share from "./menu/plant_info_share";
 import Write from "./menu/write";
 import Read from "./menu/read";
 
-import Chat from "./chat/chat";
+import Market from "./market/market_list";
+import MarketRead from "./market/market_read";
+import Chat from "./chat/chat1";
 
 function App() {
 
@@ -24,6 +25,9 @@ function App() {
         <Route path="/signup" element={<Signup />}></Route>
         <Route path="/user_info" element={<User_info />}></Route>
         <Route path="/user_info/profile" element={<Profile />}></Route>
+
+        <Route path="/plant_market" element={<Market />}></Route>
+        <Route path="/plant_market/contents/:num" element={<MarketRead />}></Route>
 
         <Route path="/:board" element={<Plant_info_share />}></Route>
         <Route path="/:board/contents/:num" element={<Read />}></Route>

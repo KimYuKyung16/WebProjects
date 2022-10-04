@@ -50,9 +50,10 @@ router.route('/:board')
         let date = req.body.contents_send_val.date;
         let time = req.body.contents_send_val.time;
         let clickcount = req.body.contents_send_val.clickcount;
+        let thumbnail = req.body.contents_send_val.thumbnail_src;
 
-        var insertValArr = [title, content, board, writer, date, time, clickcount]; // mysql에 넣을 배열값 : [제목, 내용]
-        sql = "INSERT INTO contents (title, content, board, writer, date, time, clickcount) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        var insertValArr = [title, content, board, writer, date, time, clickcount, thumbnail]; // mysql에 넣을 배열값 : [제목, 내용]
+        sql = "INSERT INTO contents (title, content, board, writer, date, time, clickcount, thumbnail) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
       
         connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
           if (error) throw error;

@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from 'react';
+import axios from "axios";
 import io from 'socket.io-client'
 
-const socket = io.connect('http://localhost:5000',{
-  cors: { origin: '*' }
-});
 
-const userSocket = io("http://localhost:5000/users", {
-  cors: { origin: '*' }
-});
+
 
 
 function Chat() {
+  let [namespace, setNamespace] = useState();
+
   const [state, setState] = useState({message: '', name: ''})
   const [chat, setChat] = useState([]);
 
   const [state2, setState2] = useState({message: '', name: ''})
   const [chat2, setChat2] = useState([]);
+
+  const socket = io.connect('http://localhost:5000',{
+    cors: { origin: '*' }
+  });
+
+  console.log(namespace);
+
+  const userSocket = io("http://localhost:5000/" + namespace, {
+    cors: { origin: '*' }
+  });
+
 
   useEffect(() => {
     socket.on('message', ({name, message}) => {
@@ -72,6 +81,20 @@ function Chat() {
     userSocket.emit('message', {name, message})
     setState2({message: '', name })
   }
+
+
+  function test() {
+    axios.get(`http://localhost:5000/chat_namespace`) // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      setNamespace(response.data.namespace);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  useEffect(() => { test(); }, []) 
+
 
 
   return (
