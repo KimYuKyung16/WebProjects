@@ -272,18 +272,18 @@ function Read() {
 
   let [nickname, setNickname] = useState();
 
-  // function nickname_print() {
-  //   axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
-  //   .then(function (response) { // 서버에서 응답이 왔을 때
-  //     setNickname (response.data.nickname);
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   });
-  // }
+  function nickname_print() {
+    axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      setNickname (response.data.nickname);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
 
  
-  useEffect(() => { content_request(); comment_print(); comment_reply_print(); }, [])
+  useEffect(() => { content_request(); comment_print(); comment_reply_print(); nickname_print()}, [])
   useEffect(() => { comment_print(); }, [comment_count])
   useEffect(() => { comment_reply_print(); }, [reply_count])
 

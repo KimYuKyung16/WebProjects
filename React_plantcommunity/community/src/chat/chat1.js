@@ -15,6 +15,8 @@ function Chat() {
   const [state2, setState2] = useState({message: '', name: ''})
   const [chat2, setChat2] = useState([]);
 
+  let nickname = '김유경';
+
   const socket = io.connect('http://localhost:5000',{
     cors: { origin: '*' }
   });
@@ -37,6 +39,7 @@ function Chat() {
       setChat2([...chat2, {name, message}])
     })
   })
+
 
 
   const renderChat = () => {

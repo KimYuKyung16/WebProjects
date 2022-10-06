@@ -93,7 +93,7 @@ function Main() {
 
   
   return (
-    <>
+    <div class="table_div">
       <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
       {/* <div class="top_div">
         <div class="banner_div">
@@ -202,7 +202,7 @@ function Main() {
         <hr class="middle_line" />
       </div>
 
-      <div>
+      <div class="main_table">
         <table>
           <thead>
             <tr>
@@ -242,7 +242,7 @@ function Main() {
           {page_button_create() /* 페이지 출력*/ } 
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

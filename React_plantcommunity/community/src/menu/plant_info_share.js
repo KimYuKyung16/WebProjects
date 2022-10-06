@@ -50,12 +50,12 @@ const Search = styled.div`
     //   font-size: 1.2rem;
     // }
 
-    &:nth-child(1) {
-      width: 90%;
+    &:nth-child(2) {
+      width: 70%;
       outline: none;
     }
 
-    &:nth-child(2) {
+    &:nth-child(3) {
       font-size: 1.2rem;
       color: rgb(186, 218, 199);
     }
@@ -247,47 +247,53 @@ function Plant_info_share() {
  
 
   return (
-    <>
+    <div class="total_div">
       <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
-      <Search>
-        <input placeholder="글 제목 검색" onChange={search_change} type="search" value={search_value}/>
-        <FontAwesomeIcon icon={faMagnifyingGlass} />
-      </Search>
-      <table>
-        <thead>
-          <tr>
-            <th className="num">번호</th>
-            <th className="content_title">제목</th>
-            <th className="writer">작성자</th>
-            <th className="date">날짜</th>
-            <th className="click_count">조회수</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contents.map((x) => {
-            let link = `/plant_info_share/contents/${x.num}`;
-            // let personal_profile = board_profile_print(x.writer);
+      <div class="content_div">
+        <div class="search">
+          
+          <Search>
+            <h2 class="">식물 정보 공유</h2>
+            <input class="search_input" placeholder="글 제목 검색" onChange={search_change} type="search" value={search_value}/>
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </Search>
+        </div>  
+        <table>
+          <thead>
+            <tr>
+              <th className="num">번호</th>
+              <th className="content_title">제목</th>
+              <th className="writer">작성자</th>
+              <th className="date">날짜</th>
+              <th className="click_count">조회수</th>
+            </tr>
+          </thead>
+          <tbody>
+            {contents.map((x) => {
+              let link = `/plant_info_share/contents/${x.num}`;
+              // let personal_profile = board_profile_print(x.writer);
 
-            // personal_profile.then((val) => {
-            //   setTest1(val);
-            // })
+              // personal_profile.then((val) => {
+              //   setTest1(val);
+              // })
 
-           
-            // let test3 = test1;
-            // console.log(test3);
+            
+              // let test3 = test1;
+              // console.log(test3);
 
-            return (
-              <tr>
-                <td className="num">{x.num}</td>
-                <td className="content_title"><Link to = {link}>{x.title}</Link></td>
-                <td className="writer" id="writer1">{x.writer}</td>
-                <td className="date">{x.date}</td>
-                <td className="click_count">{x.clickcount}</td>
-              </tr>   
-            )        
-          })}
-        </tbody>
-      </table>
+              return (
+                <tr>
+                  <td className="num">{x.num}</td>
+                  <td className="content_title"><Link to = {link}>{x.title}</Link></td>
+                  <td className="writer" id="writer1">{x.writer}</td>
+                  <td className="date">{x.date}</td>
+                  <td className="click_count">{x.clickcount}</td>
+                </tr>   
+              )        
+            })}
+          </tbody>
+        </table>
+      </div>
 
       <div className='page_button_div'>
         {page_button_create() /* 페이지 출력*/ } 
@@ -296,7 +302,7 @@ function Plant_info_share() {
       <div className="button_div">
         <input onClick={login_confirm} id="write_button" type="button" value="글쓰기" />
       </div>
-    </>
+    </div>
   );
 }
 

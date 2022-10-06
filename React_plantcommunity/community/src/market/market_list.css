@@ -1,4 +1,4 @@
-.market_list {
+/* .market_list {
   border: 1px solid #444444;
   border-collapse: collapse;
 
@@ -8,9 +8,6 @@
 }
 
 td {
-  /* display: flex; */
-  /* justify-content: center;
-  align-items: center; */
 
   text-align : center;
 
@@ -28,4 +25,4 @@ h4, img {
 img {
   width: 150px;
   height: 150px;
-}
+} */

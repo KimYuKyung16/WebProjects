@@ -67,6 +67,19 @@ li {
   /* border-top: 1px solid rgb(74, 142, 252); */
 }
 
+.table_div {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+.main_table {
+  box-sizing: border-box;
+  padding: 0 15%;
+  width: 100%;
+}
+
+
 
 .main_login {
   display: flex;
