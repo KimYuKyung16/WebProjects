@@ -8,9 +8,10 @@ body {
 }
 
 
-#total_div {
+#test12 {
     display: flex;
     padding: 50px 15vw;
+    background-color: aqua;
 }
 
 #user_div {
@@ -124,7 +125,7 @@ body {
 }
 
 #content_list {
-    background-color: rgb(199, 199, 199);
+    /* background-color: rgb(199, 199, 199); */
     width: 100%;
     height: 50%;
     margin-bottom: 20px;

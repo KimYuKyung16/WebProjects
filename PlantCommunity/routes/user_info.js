@@ -6,8 +6,12 @@ const ejs = require("ejs");
 var bodyParser = require('body-parser') //router.use(bodyParser.urlencoded({extended:true}));
 
 const mysql = require('mysql'); // mysql 모듈
-const dbconfig = require('../config/db.js'); // db 모듈 불러오기
-const connection = mysql.createConnection(dbconfig); // db 연결
+const users_dbconfig = require('../config/db.js'); // db 모듈 불러오기
+const users_connection = mysql.createConnection(users_dbconfig); // db 연결
+
+const plant_dbconfig = require('../config/plant_db.js'); // db 모듈 불러오기
+const plant_connection = mysql.createConnection(plant_dbconfig); // db 연결
+
 
 const options = require('../config/session_db.js'); // session_db 모듈 불러오기
 const session_connection = mysql.createConnection(options);
@@ -67,7 +71,7 @@ router.post('/profile', upload.single('uploadImage'), function(req, res){
       var insertValArr = [profile_file, nickname];
       sql = "UPDATE users SET profile = ? WHERE nickname = ?"; 
   
-      connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+      users_connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
         if (error) throw error;
         res.send(rows);
       });
@@ -105,7 +109,7 @@ router.post('/profile_print', function(req, res){
       var insertValArr = [nickname];
       sql = "SELECT * FROM users WHERE nickname = ?"; 
   
-      connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+      users_connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
         if (error) throw error;
         res.send(rows[0].profile);
       });
@@ -121,7 +125,7 @@ router.get('/board_profile_print', function(req, res){
   var insertValArr = [nickname];
   sql = "SELECT * FROM users WHERE nickname = ?"; 
 
-  connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+  users_connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
     if (error) throw error;
     res.send(rows[0].profile);
   });
@@ -147,6 +151,79 @@ router.get('/board_profile_print', function(req, res){
   //   } 
   // });
 
+})
+
+let total_contents; // 총 게시글의 개수
+let user_id;
+
+/* 내가 쓴 글의 총 개수 */
+router.get('/total_contents', function(req, res){
+  sql = "SELECT * FROM sessions WHERE session_id = ?";
+
+  session_connection.query(sql, req.headers.cookies, function(error, rows) {
+    if (error) throw error;
+
+    // console.log(getAttribute('nickname'));
+    if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
+      res.send({'status': false});
+    } else { // sessionstore에 해당 session값이 있을 때
+      let session_obj = JSON.parse(rows[0].data);
+      user_id = session_obj.user_id; // 유저의 아이디
+
+      sql = "SELECT count(*) as count FROM contents WHERE user_id = ?";
+
+      plant_connection.query(sql, session_obj.user_id, function(error, rows){ // db에 글 저장
+        if (error) throw error;
+        total_contents = rows[0].count;
+        res.send(rows);
+      });
+    }
+  });
+
+/* 내가 쓴 글의 목록 출력 */
+router.get('/contents', function(req, res){ 
+  let one_page_contents = parseInt(req.query.one_page_contents); // 한 페이지당 게시글 개수
+
+  let total_pages = parseInt(total_contents / one_page_contents); // 총 페이지 개수
+  let remain_contents = total_contents % one_page_contents; // 나머지 게시글 개수 
+  
+  remain_contents ? total_pages += 1 : total_pages; // 나머지 게시글이 있으면 페이지 개수 추가
+
+  let current_page = req.query.current_page; // 현재 페이지
+  let start_value = (current_page-1) * one_page_contents; // 시작값
+  let output_num; // 출력 개수
+
+  if (current_page == total_pages) { // 현재 페이지가 마지막 페이지라면
+    if (current_page == 1) output_num = one_page_contents
+    else output_num = remain_contents; // 출력 개수는 나머지 게시글의 개수
+  } else { // 현재 페이지가 마지막 페이지가 아니라면 
+    output_num = one_page_contents; // 출력 개수는 한 페이지당 게시글의 개수
+  }
+
+  const board = req.params.board; // 쿼리스트링으로 들어온 board 변수의 값
+  console.log(req.params.board,start_value, output_num);
+
+  sql = "SELECT * FROM contents WHERE user_id = ? ORDER BY num DESC limit ?, ?";
+  var insertValArr = [user_id, start_value, output_num];
+  plant_connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+    if (error) throw error;
+    res.send(rows);
+  });
+})
+
+  
+
+
+
+
+
+  // sql = "SELECT count(*) as count FROM contents WHERE board = 'plant_info_share'";
+
+  // plant_connection.query(sql, function(error, rows){ // db에 글 저장
+  //   if (error) throw error;
+  //   total_contents = rows[0].count;
+  //   res.send(rows);
+  // });
 })
 
 

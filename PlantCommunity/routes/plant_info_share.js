@@ -111,7 +111,7 @@ router.get('/contents', function(req, res){
 
   sql = "SELECT * FROM contents WHERE board = 'plant_info_share' ORDER BY num DESC limit ?, ?";
   var insertValArr = [start_value, output_num];
-  connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+  connection.query(sql, insertValArr, function(error, rows){ // db에 있는 글 조회
     if (error) throw error;
     res.send(rows);
   });
