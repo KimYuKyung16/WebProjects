@@ -19,6 +19,41 @@ border-radius: 3px;
 margin: 10px 0 10px 60px;
 `;
 
+const Logined_user = styled.div`
+display: none;
+`;
+
+const Other = styled.div`
+display: block;
+width: 20px;
+height: 20px;
+background: #ea2027;
+transform: rotate(45deg);
+
+&:before,
+&:after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  border-radius: 50%;
+  background: #ea2027;
+}
+
+&:before {
+  left: -50%;
+}
+
+&:after {
+  top: -50%;
+}
+
+`;
+
+const Heart = styled.img`
+width: 30px;
+height: 30px;
+`;
 
 
 axios.defaults.headers.common['cookies'] = encodeURIComponent(cookies.load('login_cookie')); // for all requests
@@ -323,10 +358,11 @@ function Read() {
                   <li>날짜/시간:{content.date + ' ' + content.time}</li>
                   <li>조회수:{content.clickcount}</li>
                 </ul>
-                <div id="action_div">
+                <Logined_user>
                   <input id="revise_btn" type="button" value="수정" />
                   <input id="delete_btn" type="button" value="삭제" />
-                </div>
+                </Logined_user>
+                <Heart src="/image/empty_heart.png" />
               </li>
               <li id="content-li3">
                 <div id="content"></div>
