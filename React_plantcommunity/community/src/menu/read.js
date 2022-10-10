@@ -83,6 +83,31 @@ function Read() {
   let [reply_count, setReplyCount] = useState(0); 
 
 
+  let [like, setLike] = useState(); // 좋아요 표시
+  let [like_state, setLikeState] = useState();
+
+  function like_request() {
+    setLike(like + 1);
+
+    // if (like_state == true) 
+    // axios.get(`http://localhost:5000/board/${board}/contents/${board_num}`, { // 서버로 post 요청
+    //   params: {
+    //     // current_page: current_page, 
+    //     // one_page_contents: one_page_contents
+    //   }  
+    // })
+    // .then(function (response) { // 서버에서 응답이 왔을 때
+
+
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    // });
+  }
+
+
+
+
   
   function date(){ //날짜를 구해주는 함수
     var today = new Date();
@@ -117,6 +142,8 @@ function Read() {
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
       setContent(response.data[0]);
+      setLike(response.data[0].likecount); // 좋아요 수 반영
+
 
       //조회수
       let clickcount = response.data[0].clickcount;
@@ -362,7 +389,11 @@ function Read() {
                   <input id="revise_btn" type="button" value="수정" />
                   <input id="delete_btn" type="button" value="삭제" />
                 </Logined_user>
-                <Heart src="/image/empty_heart.png" />
+                <div>
+                  <Heart src="/image/empty_heart.png" onClick={like_request} />
+                  <p>{like}</p>
+                </div>
+
               </li>
               <li id="content-li3">
                 <div id="content"></div>
