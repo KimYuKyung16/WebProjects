@@ -86,8 +86,17 @@ function Read() {
   let [like, setLike] = useState(); // 좋아요 표시
   let [like_state, setLikeState] = useState();
 
+  // 좋아요 표시를 눌렀을 때 : 현재 user_id 값을 db의 like_people 배열에 저장, likecount +1
   function like_request() {
     setLike(like + 1);
+
+    axios.post(`http://localhost:5000/board/${board}/contents/${board_num}/like`)
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
     // if (like_state == true) 
     // axios.get(`http://localhost:5000/board/${board}/contents/${board_num}`, { // 서버로 post 요청

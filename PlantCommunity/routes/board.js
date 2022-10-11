@@ -86,6 +86,74 @@ router.get('/:board/contents/:num', function(req, res){
   });
 })
 
+
+
+/* 좋아요 기능*/
+router.post('/:board/contents/:num/like', function(req, res){ 
+  let user_id;
+
+  sql = "SELECT * FROM sessions WHERE session_id = ?";
+  session_connection.query(sql, req.headers.cookies, function(error, rows) {
+    if (error) throw error;
+
+    if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
+      console.log("로그인이 되어있지 않습니다.")
+    } else {
+      let session_obj = JSON.parse(rows[0].data);
+      user_id = session_obj.user_id;
+      console.log(user_id);
+
+      let like_state;
+
+      var insertValArr = [req.params.board, req.params.num];
+      sql = "SELECT * FROM contents WHERE board = ? and num = ?";
+  
+      connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+        if (error) throw error;
+        let likestate = rows[0].likestate;
+
+        if (likestate == '0') { 
+          console.log('값이 없습니다.');
+          like_state = {
+            likecount: 0,
+            likeUsers: []
+          }
+          console.log(like_state)
+
+          let db_likecount = like_state.likecount // db의 좋아요수
+          let db_likeUsers = like_state.likeUsers // db의 좋아요를 누른 사람들 목록
+
+          db_likeUsers.push(user_id);
+          console.log(db_likeUsers);
+
+        } else {
+          console.log("값이 있습니다.");
+          let likestate_obj = JSON.parse(likestate);
+          like_state = {
+            likecount: likestate_obj.likecount,
+            likeUsers: likestate_obj.likeUsers
+          }
+          console.log(like_state)
+        }
+      });
+
+      // let db_likecount = like_state.likecount // db의 좋아요수
+      // let db_likeUsers = like_state.likeUsers // db의 좋아요를 누른 사람들 목록
+
+      // console.log(typeof(db_likeUsers));
+      
+
+
+
+
+
+      res.send(rows);
+    }
+  })
+
+})
+
+
 /* 조회수 */
 router.post('/:board/contents/:num', function(req, res){ 
   sql = "UPDATE contents SET clickcount = ? WHERE board = ? and num = ?";
