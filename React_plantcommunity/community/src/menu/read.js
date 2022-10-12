@@ -23,6 +23,11 @@ const Logined_user = styled.div`
 display: none;
 `;
 
+const Like = styled.div`
+display: flex;
+flex-direction: row;
+`;
+
 const Other = styled.div`
 display: block;
 width: 20px;
@@ -83,35 +88,61 @@ function Read() {
   let [reply_count, setReplyCount] = useState(0); 
 
 
-  let [like, setLike] = useState(); // 좋아요 표시
-  let [like_state, setLikeState] = useState();
+  // let [like, setLike] = useState(); // 좋아요 표시
+  let [likecount, setLikecount] = useState(); // 좋아요 개수
+  let [like_state, setLikeState] = useState(); // 현재 좋아요 상태
+  let [heart_src, setHeartSrc] = useState("/image/empty_heart.png"); // 하트 이미지 경로
+
+  let [user_id, setUserID] = useState(); // 현재 로그인된 사용자의 아이디
 
   // 좋아요 표시를 눌렀을 때 : 현재 user_id 값을 db의 like_people 배열에 저장, likecount +1
   function like_request() {
-    setLike(like + 1);
-
-    axios.post(`http://localhost:5000/board/${board}/contents/${board_num}/like`)
+    axios.post(`http://localhost:5000/board/${board}/contents/${board_num}/like`, {
+      user_id: user_id,
+      like_state: like_state
+    })
     .then(function (response) { // 서버에서 응답이 왔을 때
-      
+      console.log(response);
+      like_state_request();
     })
     .catch(function (error) {
       console.log(error);
     });
 
-    // if (like_state == true) 
-    // axios.get(`http://localhost:5000/board/${board}/contents/${board_num}`, { // 서버로 post 요청
-    //   params: {
-    //     // current_page: current_page, 
-    //     // one_page_contents: one_page_contents
-    //   }  
-    // })
-    // .then(function (response) { // 서버에서 응답이 왔을 때
+  }
+
+  // 좋아요 표시의 상태 : 
+  function like_state_request() {
+    axios.get(`http://localhost:5000/board/${board}/contents/${board_num}/like`)
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response.data[0].likestate);
+      let likestate_object = JSON.parse(response.data[0].likestate);
+      setLikecount(likestate_object.likecount);
+
+      let likeUsers = likestate_object.likeUsers;
+
+      if (response.data[0].likestate === '0') { // db의 likestate값이 없을 경우
+        setHeartSrc("/image/empty_heart.png");
+        setLikeState(false)
+      } 
 
 
-    // })
-    // .catch(function (error) {
-    //   console.log(error);
-    // });
+      if (likeUsers.includes(user_id)) { // 좋아요를 표시한 사람들 중에 해당 아이디가 존재할 경우
+        console.log("해당 아이디가 존재")
+        setHeartSrc("/image/full_heart.png");
+        setLikeState(true)
+      } else {
+        console.log("해당 아이디가 존재하지않음")
+        setHeartSrc("/image/empty_heart.png");
+        setLikeState(false)
+      }
+
+     
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
 
@@ -151,7 +182,7 @@ function Read() {
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
       setContent(response.data[0]);
-      setLike(response.data[0].likecount); // 좋아요 수 반영
+      // setLike(response.data[0].likecount); // 좋아요 수 반영
 
 
       //조회수
@@ -346,7 +377,8 @@ function Read() {
   function nickname_print() {
     axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
-      setNickname (response.data.nickname);
+      setNickname(response.data.nickname);
+      setUserID(response.data.user_id);
     })
     .catch(function (error) {
       console.log(error);
@@ -354,11 +386,12 @@ function Read() {
   }
 
  
-  useEffect(() => { content_request(); comment_print(); comment_reply_print(); nickname_print()}, [])
+  useEffect(() => { content_request(); comment_print(); comment_reply_print(); nickname_print();}, [])
   useEffect(() => { comment_print(); }, [comment_count])
   useEffect(() => { comment_reply_print(); }, [reply_count])
 
   useEffect(() => { test(); }, [content])
+  useEffect(() => { like_state_request(); }, [user_id])
 
 
 
@@ -398,10 +431,10 @@ function Read() {
                   <input id="revise_btn" type="button" value="수정" />
                   <input id="delete_btn" type="button" value="삭제" />
                 </Logined_user>
-                <div>
-                  <Heart src="/image/empty_heart.png" onClick={like_request} />
-                  <p>{like}</p>
-                </div>
+                <Like>
+                  <Heart src={heart_src} onClick={like_request} />
+                  <p>{likecount}</p>
+                </Like>
 
               </li>
               <li id="content-li3">

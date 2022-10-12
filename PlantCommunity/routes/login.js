@@ -143,7 +143,7 @@ router.get('/authentication', function(req, res){
   
 })
 
-/* 닉네임 출력 */
+/* 닉네임 출력을 위해 user_id 제공 */
 router.get('/authentication/nickname', function(req, res){ 
 
   sql = "SELECT * FROM sessions WHERE session_id = ?";
@@ -159,7 +159,7 @@ router.get('/authentication/nickname', function(req, res){
     //   res.send({'authenticator': true});
     // }
     let session_obj = JSON.parse(rows[0].data);
-    res.send({'nickname':session_obj.nickname});
+    res.send({'nickname':session_obj.nickname, 'user_id':session_obj.user_id});
   });
   
 })

@@ -90,68 +90,105 @@ router.get('/:board/contents/:num', function(req, res){
 
 /* 좋아요 기능*/
 router.post('/:board/contents/:num/like', function(req, res){ 
-  let user_id;
+  let user_id = req.body.user_id; // 현재 로그인된 유저 아이디
+  let like_state = req.body.like_state; // 현재 좋아요 상태
 
-  sql = "SELECT * FROM sessions WHERE session_id = ?";
-  session_connection.query(sql, req.headers.cookies, function(error, rows) {
-    if (error) throw error;
+  user_id = user_id || false; // 아이디가 없으면 false
 
-    if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
-      console.log("로그인이 되어있지 않습니다.")
-    } else {
-      let session_obj = JSON.parse(rows[0].data);
-      user_id = session_obj.user_id;
-      console.log(user_id);
+  function update_sql(likecount, likeUsers) {
+    let modified_like_state = {
+      likecount: likecount,
+      likeUsers: likeUsers
+    }        
+    
+    let s_modified_like_state = JSON.stringify(modified_like_state);
 
-      let like_state;
-
-      var insertValArr = [req.params.board, req.params.num];
-      sql = "SELECT * FROM contents WHERE board = ? and num = ?";
-  
-      connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
-        if (error) throw error;
-        let likestate = rows[0].likestate;
-
-        if (likestate == '0') { 
-          console.log('값이 없습니다.');
-          like_state = {
-            likecount: 0,
-            likeUsers: []
-          }
-          console.log(like_state)
-
-          let db_likecount = like_state.likecount // db의 좋아요수
-          let db_likeUsers = like_state.likeUsers // db의 좋아요를 누른 사람들 목록
-
-          db_likeUsers.push(user_id);
-          console.log(db_likeUsers);
-
-        } else {
-          console.log("값이 있습니다.");
-          let likestate_obj = JSON.parse(likestate);
-          like_state = {
-            likecount: likestate_obj.likecount,
-            likeUsers: likestate_obj.likeUsers
-          }
-          console.log(like_state)
-        }
-      });
-
-      // let db_likecount = like_state.likecount // db의 좋아요수
-      // let db_likeUsers = like_state.likeUsers // db의 좋아요를 누른 사람들 목록
-
-      // console.log(typeof(db_likeUsers));
-      
-
-
-
-
-
+    var insertValArr = [s_modified_like_state, req.params.board, req.params.num];
+    sql = "UPDATE contents SET likestate = ? WHERE board = ? and num = ?";
+    connection.query(sql, insertValArr, function(error, rows){ // db에 likestate 변경 후 저장
+      if (error) throw error;
       res.send(rows);
-    }
-  })
+    });
+  }
+
+  if (user_id && like_state === false) { // 로그인된 아이디가 있고 좋아요가 안눌러져있을 경우
+    var insertValArr = [req.params.board, req.params.num];
+    sql = "SELECT * FROM contents WHERE board = ? and num = ?";
+
+    connection.query(sql, insertValArr, function(error, rows){ // db에 likestate 컬럼 변경 후 저장
+      if (error) throw error;
+      let db_likestate = rows[0].likestate; // db의 likestate 값
+
+      if (db_likestate == '0') { // db의 likestate에 값이 없을 경우
+        console.log('db에 likestate 값이 없습니다.');
+
+        let likecount = 0 // 좋아요수
+        let likeUsers = [] // 좋아요를 누른 사람들 목록
+
+        likecount += 1; // 좋아요수 +1
+        likeUsers.push(user_id); // 좋아요를 누른 사람들 목록에 현재 로그인된 아이디 추가
+
+        update_sql(likecount, likeUsers);
+
+      } else { // db의 likestate에 값이 있을 경우
+        console.log("db에 likestate 값이 있습니다.");
+
+        let likestate_obj = JSON.parse(db_likestate); // db의 likestate값을 뽑아내기 위해서 obj형태로 바꾸기
+
+        let likecount = likestate_obj.likecount; // 좋아요수
+        let likeUsers = likestate_obj.likeUsers; // 좋아요를 누른 사람들 목록
+
+        likecount += 1; // 좋아요수 +1
+        likeUsers.push(user_id); // 좋아요를 누른 사람들 목록에 현재 로그인된 아이디 추가
+
+        update_sql(likecount, likeUsers);
+      }
+    });
+
+  } else if (user_id && like_state === true) { // 로그인된 아이디가 있고 좋아요가 눌러져있을 경우 : 좋아요수 -, 좋아요목록 - 
+    var insertValArr = [req.params.board, req.params.num];
+    sql = "SELECT * FROM contents WHERE board = ? and num = ?";
+
+    connection.query(sql, insertValArr, function(error, rows){ // db에 likestate 컬럼 변경 후 저장
+      if (error) throw error;
+      let db_likestate = rows[0].likestate; // db의 likestate 값
+
+      let likestate_obj = JSON.parse(db_likestate); // db의 likestate값을 뽑아내기 위해서 obj형태로 바꾸기
+
+      let likecount = likestate_obj.likecount; // 좋아요수
+      let likeUsers = likestate_obj.likeUsers; // 좋아요를 누른 사람들 목록
+
+      likecount -= 1; // 좋아요수 -1
+      let id_index = likeUsers.indexOf(user_id); // 좋아요목록에서 현재 로그인된 아이디의 인덱스 구하기
+      likeUsers.splice(id_index, 1); // 인덱스에 해당하는 값을 좋아요목록에서 삭제
+      console.log(likeUsers);
+
+      update_sql(likecount, likeUsers);
+    });
+  } else { // 로그인이 되어있지 않을 경우
+    console.log("로그인이 되어있지 않습니다.");
+    res.send({state: false});
+  }
 
 })
+
+
+
+// 현재 좋아요 상태가 어떤지 표시
+router.get('/:board/contents/:num/like', function(req, res){ 
+  sql = "SELECT * FROM contents WHERE board = ? and num = ?";
+  var insertValArr = [req.params.board, req.params.num];
+
+  connection.query(sql, insertValArr, function(error, rows){ // db에 조회수 저장
+    if (error) throw error;
+    res.send(rows);
+  });
+})
+
+
+
+
+
 
 
 /* 조회수 */
