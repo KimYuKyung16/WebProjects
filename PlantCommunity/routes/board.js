@@ -7,7 +7,11 @@ const mysql = require('mysql'); // mysql 모듈
 const dbconfig = require('../config/plant_db.js'); // db 모듈 불러오기
 const connection = mysql.createConnection(dbconfig); // db 연결
 
+const user_dbconfig = require('../config/db.js'); // user_db 모듈 불러오기
+const user_connection = mysql.createConnection(user_dbconfig); // user_db 연결
+
 const options = require('../config/session_db.js'); // session_db 모듈 불러오기
+const db = require('../config/db.js');
 const session_connection = mysql.createConnection(options);
 
 router.get('/', function(req, res){
@@ -184,6 +188,37 @@ router.get('/:board/contents/:num/like', function(req, res){
     res.send(rows);
   });
 })
+
+
+
+// 좋아요 누른 사람들 목록 출력
+router.get('/:board/contents/:num/like_list', function(req, res){ 
+  sql = "SELECT * FROM contents WHERE board = ? and num = ?";
+  var insertValArr = [req.params.board, req.params.num];
+
+  connection.query(sql, insertValArr, function(error, rows){ // db에 조회수 저장
+    if (error) throw error;
+
+    let db_likestate = rows[0].likestate; // db의 likestate 값
+
+    let likestate_obj = JSON.parse(db_likestate); // db의 likestate값을 뽑아내기 위해서 obj형태로 바꾸기
+    let likeUsers = likestate_obj.likeUsers; // 좋아요를 누른 사람들 목록
+
+    console.log(likeUsers);
+
+    var insertValArr = [likeUsers];
+    sql = "SELECT * FROM users WHERE user_id IN ( ? )";
+
+    user_connection.query(sql, insertValArr, function(error, rows){
+      console.log(rows);
+      res.send(rows);
+    });
+
+    
+    // console.log(likeUsers);
+  });
+})
+
 
 
 

@@ -262,3 +262,33 @@ hr {
 
 
 } 
+
+
+#board-li2 {
+  position: relative
+}
+
+
+#people {
+  display: flex;
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background-color: rgb(171, 171, 171);
+  width: 300px;
+  height: 500px;
+  z-index: 1;
+}
+
+.profile_list {
+  width: 40px;
+  height: 40px;
+}
+
+tr {
+  border-bottom : solid 1px rgb(171, 171, 171);
+  padding: 10px;
+  display: flex; 
+  align-items: center;
+  justify-content: space-between;
+}

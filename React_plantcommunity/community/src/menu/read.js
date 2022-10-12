@@ -10,6 +10,18 @@ import cookies from 'react-cookies'; // 쿠키
 
 import styled from "styled-components"; // styled in js
 
+const People = styled.div`
+display: ${(props) => props.active || 'flex'};
+position: absolute;
+top: 30px;
+right: 0;
+background-color: rgb(227, 227, 227);
+width: 40%;
+z-index: 1;
+padding: 20px;
+border: 1px solid rgb(171, 171, 171);
+border-radius: 5px;
+`;
 
 
 const Reply_div = styled.div`
@@ -92,6 +104,11 @@ function Read() {
   let [likecount, setLikecount] = useState(); // 좋아요 개수
   let [like_state, setLikeState] = useState(); // 현재 좋아요 상태
   let [heart_src, setHeartSrc] = useState("/image/empty_heart.png"); // 하트 이미지 경로
+  let [like_list, setLikelist] = useState([]);
+
+  let [like_display, setLikeDisplay] = useState('none');
+  let [click_count, setClickCount] = useState(1);
+
 
   let [user_id, setUserID] = useState(); // 현재 로그인된 사용자의 아이디
 
@@ -104,6 +121,7 @@ function Read() {
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response);
       like_state_request();
+      like_list_request();
     })
     .catch(function (error) {
       console.log(error);
@@ -146,6 +164,30 @@ function Read() {
   }
 
 
+  function like_list_request() {
+    axios.get(`http://localhost:5000/board/${board}/contents/${board_num}/like_list`)
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response);
+      const data = [...response.data];
+      console.log(data);
+      setLikelist(data)
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  function like_div_display() {
+    setClickCount(click_count + 1);
+
+    if (click_count % 2 == 1) {
+      console.log('보임');
+      setLikeDisplay('flex');
+    } else {
+      console.log('안보임');
+      setLikeDisplay('none');
+    }
+  }
 
 
   
@@ -158,7 +200,7 @@ function Read() {
 
     var dateString = year + '.' + month  + '.' + day;
     return dateString
-}
+  }
 
   function time(){ //시간을 구해주는 함수
       var today = new Date();   
@@ -386,7 +428,7 @@ function Read() {
   }
 
  
-  useEffect(() => { content_request(); comment_print(); comment_reply_print(); nickname_print();}, [])
+  useEffect(() => { content_request(); comment_print(); comment_reply_print(); nickname_print(); like_list_request();}, [])
   useEffect(() => { comment_print(); }, [comment_count])
   useEffect(() => { comment_reply_print(); }, [reply_count])
 
@@ -411,6 +453,7 @@ function Read() {
   return (
       <>
         <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
+
         <div id="total">
           <div id="test">
             <div id="board_title">
@@ -427,13 +470,33 @@ function Read() {
                   <li>날짜/시간:{content.date + ' ' + content.time}</li>
                   <li>조회수:{content.clickcount}</li>
                 </ul>
+
+
+                <People active={like_display}>
+                  <table>
+                    {
+                      like_list.map((x, index) => {
+                        return(
+                          <>
+                            <tr>
+                              <td class="tr"><img class="profile_list" src={'http://localhost:5000/' + x.profile} /></td>
+                              <td>{x.nickname}</td>
+                            </tr>
+                          </>
+                        )
+                      })
+                    }
+                  </table>
+                </People>
+
+
                 <Logined_user>
                   <input id="revise_btn" type="button" value="수정" />
                   <input id="delete_btn" type="button" value="삭제" />
                 </Logined_user>
                 <Like>
                   <Heart src={heart_src} onClick={like_request} />
-                  <p>{likecount}</p>
+                  <p onClick={like_div_display}>{likecount}</p>
                 </Like>
 
               </li>
