@@ -170,7 +170,13 @@ function Read() {
       console.log(response);
       const data = [...response.data];
       console.log(data);
-      setLikelist(data)
+
+      if (data.length === 0) { // 리스트에 아무도 없을 경우    
+        setLikelist(['좋아요를 누른 사람이 없습니다.'])
+      } else {
+        setLikelist(data)
+      }
+      
     })
     .catch(function (error) {
       console.log(error);
@@ -435,26 +441,7 @@ function Read() {
   useEffect(() => { test(); }, [content])
   useEffect(() => { like_state_request(); }, [user_id])
 
-  function test10() {
-    if (like_list.length === 0) {
-      <>
-        <tr>
-          <td><p>좋아요를 누른 사람이 없습니다.</p></td>
-        </tr>
-      </>                    
-    } else {
-      like_list.map((x, index) => {
-        return(
-          <>
-            <tr>
-              <td class="tr"><img class="profile_list" src={'http://localhost:5000/' + x.profile} /></td>
-              <td>{x.nickname}</td>
-            </tr>
-          </>
-        )
-      })
-    }
-  }
+
 
 
   /* 홈페이지 메인 타이틀 세팅값 */
@@ -493,8 +480,28 @@ function Read() {
 
                 <People active={like_display}>
                   <table>
-                    {            
-                       test10()
+                    {              
+                      like_list.map((x, index) => {
+                        if (typeof(x) == 'string') {
+                          console.log(like_list.length)
+                          return(
+                            <tr>
+                              <p>좋아요를 누른 사람이 없습니다.</p>
+                            </tr>
+                          )
+                        } else {
+                          console.log(like_list.length)
+                          return(
+                            <>
+                              <tr>
+                                <td class="tr"><img class="profile_list" src={'http://localhost:5000/' + x.profile} /></td>
+                                <td>{x.nickname}</td>
+                              </tr>
+                            </>
+                          )
+                        }
+                        
+                      })
                     }
                   </table>
                 </People>
