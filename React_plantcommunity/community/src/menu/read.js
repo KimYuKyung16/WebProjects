@@ -435,7 +435,26 @@ function Read() {
   useEffect(() => { test(); }, [content])
   useEffect(() => { like_state_request(); }, [user_id])
 
-
+  function test10() {
+    if (like_list.length === 0) {
+      <>
+        <tr>
+          <td><p>좋아요를 누른 사람이 없습니다.</p></td>
+        </tr>
+      </>                    
+    } else {
+      like_list.map((x, index) => {
+        return(
+          <>
+            <tr>
+              <td class="tr"><img class="profile_list" src={'http://localhost:5000/' + x.profile} /></td>
+              <td>{x.nickname}</td>
+            </tr>
+          </>
+        )
+      })
+    }
+  }
 
 
   /* 홈페이지 메인 타이틀 세팅값 */
@@ -474,17 +493,8 @@ function Read() {
 
                 <People active={like_display}>
                   <table>
-                    {
-                      like_list.map((x, index) => {
-                        return(
-                          <>
-                            <tr>
-                              <td class="tr"><img class="profile_list" src={'http://localhost:5000/' + x.profile} /></td>
-                              <td>{x.nickname}</td>
-                            </tr>
-                          </>
-                        )
-                      })
+                    {            
+                       test10()
                     }
                   </table>
                 </People>
