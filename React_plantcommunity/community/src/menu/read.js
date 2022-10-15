@@ -543,7 +543,11 @@ function Read() {
 
 
                 <Logined_user div_state={div_state}>
-                  <input id="revise_btn" type="button" value="수정" />
+                  <input id="revise_btn" type="button" value="수정" onClick={
+                    () => {
+                      navigate(`/${board}/contents/${board_num}/revise`)
+                    }
+                  }/>
                   <input id="delete_btn" type="button" value="삭제" onClick={
                     () => {
                       if (window.confirm("정말 게시글을 삭제하겠습니까?")) {                

@@ -74,7 +74,33 @@ router.route('/:board')
 
 
 
-  });
+  })
+  .put((req, res) => { /* 어떤 게시판에서 글쓰기를 선택했는지 */
+    sql = "SELECT * FROM sessions WHERE session_id = ?";
+
+    session_connection.query(sql, req.headers.cookies, function(error, rows) {
+      if (error) throw error;
+
+      if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
+        console.log("해당 세션이 없습니다.")
+      } else { // sessionstore에 해당 session값이 있을 때     
+
+        let board_num = req.body.contents_send_val.board_num;
+        let title = req.body.contents_send_val.title;
+        let content = req.body.contents_send_val.content;
+        let board = req.params.board;
+        let thumbnail = req.body.contents_send_val.thumbnail_src;
+
+        var insertValArr = [title, content, board, thumbnail, board_num]; 
+        sql = "UPDATE contents SET title=?, content=?, board=?, thumbnail=? WHERE num=? ";
+      
+        connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+          if (error) throw error;
+          res.send({'status' : 'success'});
+        });
+      }
+    });
+  })
 
 
 
