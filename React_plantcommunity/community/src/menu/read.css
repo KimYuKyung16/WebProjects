@@ -285,7 +285,7 @@ hr {
   height: 40px;
 }
 
-tr {
+.like_list_row {
   border-bottom : solid 1px rgb(171, 171, 171);
   padding: 10px;
   display: flex; 

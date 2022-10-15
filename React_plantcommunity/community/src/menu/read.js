@@ -32,11 +32,11 @@ margin: 10px 0 10px 60px;
 `;
 
 const Logined_user = styled.div`
-display: none;
+display: ${(props) => props.div_state.logined_user_div || 'none'};
 `;
 
 const Like = styled.div`
-display: flex;
+display: ${(props) => props.div_state.like_div || 'flex'};
 flex-direction: row;
 `;
 
@@ -78,7 +78,7 @@ axios.defaults.headers.common['cookies'] = encodeURIComponent(cookies.load('logi
 
 function Read() {
 
-  // const navigate = useNavigate(); // 페이지 이동을 위해 필요
+  const navigate = useNavigate(); // 페이지 이동을 위해 필요
   let params = useParams();
   let board = params.board;
   let board_num = params.num;
@@ -108,6 +108,8 @@ function Read() {
 
   let [like_display, setLikeDisplay] = useState('none');
   let [click_count, setClickCount] = useState(1);
+
+  let [div_state, setDivState] = useState({logined_user_div: 'none', like_div: 'none'});
 
 
   let [user_id, setUserID] = useState(); // 현재 로그인된 사용자의 아이디
@@ -422,6 +424,7 @@ function Read() {
 
   let [nickname, setNickname] = useState();
 
+  // 이 함수에서 현재 로그인된 유저의 아이디 값과 닉네임값을 가져올 수 있다.
   function nickname_print() {
     axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
@@ -433,13 +436,45 @@ function Read() {
     });
   }
 
+
+  
+  function div_change() {
+    // 현재 로그인된 아이디와 이 글 작성자의 아이디가 같다면
+    if (user_id === content.user_id) {
+      setDivState({logined_user_div: 'flex', like_div: 'none'});
+    } else {
+      setDivState({logined_user_div: 'none', like_div: 'flex'});
+    }
+
+    console.log(div_state);
+  }
+
+  function delete_content() {
+    axios.delete(`http://localhost:5000/board/${board}/contents/${board_num}`)
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response.data);
+      if (response.data.status === 'success') {
+        console.log("게시글이 성공적으로 삭제되었습니다.")
+        alert("게시글이 성공적으로 삭제되었습니다.")
+        navigate('/plant_info_share')
+      } else {
+        console.log("게시글 삭제에 실패했습니다.")
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  
+
  
-  useEffect(() => { content_request(); comment_print(); comment_reply_print(); nickname_print(); like_list_request();}, [])
+  useEffect(() => { content_request(); comment_print(); comment_reply_print(); nickname_print(); like_list_request(); }, [])
   useEffect(() => { comment_print(); }, [comment_count])
   useEffect(() => { comment_reply_print(); }, [reply_count])
 
   useEffect(() => { test(); }, [content])
-  useEffect(() => { like_state_request(); }, [user_id])
+  useEffect(() => { like_state_request(); div_change();}, [user_id])
 
 
 
@@ -493,7 +528,7 @@ function Read() {
                           console.log(like_list.length)
                           return(
                             <>
-                              <tr>
+                              <tr className='like_list_row'>
                                 <td class="tr"><img class="profile_list" src={'http://localhost:5000/' + x.profile} /></td>
                                 <td>{x.nickname}</td>
                               </tr>
@@ -507,11 +542,17 @@ function Read() {
                 </People>
 
 
-                <Logined_user>
+                <Logined_user div_state={div_state}>
                   <input id="revise_btn" type="button" value="수정" />
-                  <input id="delete_btn" type="button" value="삭제" />
+                  <input id="delete_btn" type="button" value="삭제" onClick={
+                    () => {
+                      if (window.confirm("정말 게시글을 삭제하겠습니까?")) {                
+                        delete_content();                
+                      } else {  }              
+                    }
+                  }/>
                 </Logined_user>
-                <Like>
+                <Like div_state={div_state}>
                   <Heart src={heart_src} onClick={like_request} />
                   <p onClick={like_div_display}>{likecount}</p>
                 </Like>

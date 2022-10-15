@@ -78,18 +78,38 @@ router.get('/:board/total_contents', function(req, res){
   });
 })
 
+router.route('/:board/contents/:num')
+  .get((req, res) => {
+    sql = "SELECT * FROM contents WHERE board = ? and num = ?";
 
-router.get('/:board/contents/:num', function(req, res){ 
-  sql = "SELECT * FROM contents WHERE board = ? and num = ?";
+    var insertValArr = [req.params.board, req.params.num];
+  
+    connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+      if (error) throw error;
+      res.send(rows);
+    });
+  })
+  .post((req, res) => { /* 조회수 */
+    sql = "UPDATE contents SET clickcount = ? WHERE board = ? and num = ?";
+
+    let clickcount = req.body.params.clickcount;
+    var insertValArr = [clickcount, req.params.board, req.params.num];
+
+    connection.query(sql, insertValArr, function(error, rows){ // db에 조회수 저장
+      if (error) throw error;
+      res.send(rows);
+    });
+  })
+  .delete((req, res) => { /* 게시글 삭제 */
+  sql = "DELETE FROM contents WHERE board = ? and num = ?";
 
   var insertValArr = [req.params.board, req.params.num];
 
-  connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+  connection.query(sql, insertValArr, function(error, rows){ // db에 조회수 저장
     if (error) throw error;
-    res.send(rows);
+    res.send({status: 'success'});
   });
 })
-
 
 
 /* 좋아요 기능*/
@@ -226,18 +246,7 @@ router.get('/:board/contents/:num/like_list', function(req, res){
 
 
 
-/* 조회수 */
-router.post('/:board/contents/:num', function(req, res){ 
-  sql = "UPDATE contents SET clickcount = ? WHERE board = ? and num = ?";
 
-  let clickcount = req.body.params.clickcount;
-  var insertValArr = [clickcount, req.params.board, req.params.num];
-
-  connection.query(sql, insertValArr, function(error, rows){ // db에 조회수 저장
-    if (error) throw error;
-    res.send(rows);
-  });
-})
 
 /* 총 댓글 출력 */
 router.get('/:board/contents/:num/total_commtents', function(req, res){ 
