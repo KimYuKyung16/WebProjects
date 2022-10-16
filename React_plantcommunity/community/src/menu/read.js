@@ -543,6 +543,10 @@ function Read() {
 
 
                 <Logined_user div_state={div_state}>
+                  <div class="like_div">
+                    <Heart src="/image/full_heart.png" />
+                    <p onClick={like_div_display}>{likecount}</p>
+                  </div>
                   <input id="revise_btn" type="button" value="수정" onClick={
                     () => {
                       navigate(`/${board}/contents/${board_num}/revise`)
