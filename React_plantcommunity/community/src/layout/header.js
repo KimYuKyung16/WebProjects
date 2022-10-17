@@ -37,14 +37,41 @@ font-size: 2.5rem;
 }
 `;
 
-// const appear = keyframes`
-// 0% {
-//   transform: translateY(-100%);
-// }
-// 100% {
-//   transform: translateY(0%);
-// }
-// `
+const appear = keyframes`
+0% {
+  transform: translateX(-150%);
+}
+100% {
+  transform: translateX(0%);
+}
+`
+
+const disappear = keyframes`
+0% {
+  transform: translateX(-150%);
+}
+100% {
+  transform: translateX(-150%);
+}
+`
+
+const Info = styled.div`
+position: relative;
+width: 40%;
+// height: 100vh;
+`;
+
+const Test = styled.div`
+background-color: rgb(255, 255, 255);
+position: absolute;
+width: 100%;
+height: 1000px;
+z-index: 3;
+animation: ${(props) => props.click_state} 1.5s linear forwards;
+`;
+
+
+
 
 /* 네비게이션바  */
 const Navbar = styled.nav`
@@ -122,6 +149,16 @@ padding-left: 0;
 }
 `;
 
+/* 네비게이션바 아이콘 (내정보) */
+const NavbarIcon2 = styled.ul`
+display: flex;
+list-style: none;
+font-size: 1.5rem;
+color: black;
+margin-right: 10vw;
+// padding-left: 0;
+`;
+
 /* 네비게이션바 햄버거바 */
 const Navbar_togglebBtn = styled.div`
 display: none;
@@ -141,6 +178,18 @@ function Header(props) {
 
   let [click_count, setClickCount] = useState(1);
   let [active_status, setActiveStatus] = useState('none');
+
+  let [click_state, setClickState] = useState(disappear);
+
+  function clickstate() {
+    if (click_state == disappear) {
+      setClickState(appear);
+      console.log(click_state)
+    } else {
+      setClickState(disappear);
+      console.log(click_state)
+    }
+  }
 
   /* 로그인이 되어있는지 확인 */
   function login_confirm() {
@@ -196,7 +245,15 @@ function Header(props) {
 
   return (
     <>
+      <Info>
+        <Test click_state={click_state}>
+          <p>안녕</p>
+        </Test>
+      </Info>
       <Title_background {...props}>
+        <NavbarIcon2>
+          <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={clickstate}/></li>
+        </NavbarIcon2>
         <Main_title {...props} onClick={home}>Plant Community</Main_title>
         <Navbar_togglebBtn {...props} onClick={active}>
           <FontAwesomeIcon icon={faBars}/>
@@ -213,7 +270,6 @@ function Header(props) {
           <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={login_confirm}/></li>
         </NavbarIcon>
       </Navbar>
-      
     </>
   );
 }

@@ -315,6 +315,16 @@ thead>tr>th {
 }
 
 
+tbody > tr:nth-child(1) > .content_title{
+  color: yellow;
+}
+
+
+tr > td:nth-child(1){
+
+}
+
+
 
 
 

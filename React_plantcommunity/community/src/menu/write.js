@@ -174,6 +174,7 @@ function Write() {
             <option value='plant_introduce'>내 식물 자랑</option>
             <option value='plant_market'>식물 마켓</option>
           </select>
+          <input id="save_btn" onClick={write_process} type="button" value="등록"/>
         </div>
         {/* <CKEditor
             editor={ ClassicEditor }
@@ -258,9 +259,6 @@ function Write() {
           }}
         ></CKEditor>
         </>
-      </div>
-      <div className='btn_div'>
-        <input id="save_btn" onClick={write_process} type="button" value="저장"/>
       </div>
     </>
   );

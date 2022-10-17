@@ -10,7 +10,39 @@ import cookies from 'react-cookies'; // 쿠키
 
 import styled from "styled-components"; // styled in js
 
-const People = styled.div`
+
+const Write_Comment = styled.div`
+display: flex;
+flex-direction: column;
+border: 2px solid rgb(164, 200, 165);
+border-radius: 3px;
+padding: 10px;
+margin-bottom: 20px;
+
+* {
+
+  &:nth-child(1) { // 닉네임
+    color: rgb(100, 100, 100);
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  &:nth-child(2) { // 댓글 내용
+    // width: 70%;
+    // outline: none;
+  }
+
+  // &:nth-child(3) { // 등록 버튼
+  //   font-size: 1.2rem;
+  //   color: rgb(186, 218, 199);
+  // }
+
+}
+`;
+
+
+
+const LikePeople = styled.div`
 display: ${(props) => props.active || 'flex'};
 position: absolute;
 top: 30px;
@@ -513,11 +545,12 @@ function Read() {
                 </ul>
 
 
-                <People active={like_display}>
+
+                <LikePeople active={like_display}>
                   <table>
                     {              
                       like_list.map((x, index) => {
-                        if (typeof(x) == 'string') {
+                        if (typeof(x) == 'string') { 
                           console.log(like_list.length)
                           return(
                             <tr>
@@ -539,7 +572,7 @@ function Read() {
                       })
                     }
                   </table>
-                </People>
+                </LikePeople>
 
 
                 <Logined_user div_state={div_state}>
@@ -575,31 +608,29 @@ function Read() {
           <div id="line_div">
             <hr></hr>
           </div>
-          
-
+            
           <div id="total_comment_div"> {/* 댓글 */}
             <h3>댓글</h3>
-            <div className='input_div'>
+            <Write_Comment> {/* 댓글 작성 칸 */}
               <p>{ nickname }</p>
               <input id="comment_input" className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
               <input className="comment_input_btn" onClick={comment_request} type="button" value="등록"/>
-            </div>
+            </Write_Comment>
             <div class="comment_div"> {/* 댓글 목록 div */}
               {
-
                 comments.map((x, index) => {
                   return(
                     <div id="total_div">
-                      <div id="writer_date_div">
+                      <div id="writer_date_div"> {/* 작성자, 날짜 등 댓글의 상세사항*/}
                         <p>{x.writer}</p>
                         <p>{x.date + ' ' + x.time}</p>
                         <p onClick={() => { what_index(index); setCommentnum(x.num) }}>답글쓰기</p>
                       </div>
-                      <div id="comment_div">
+                      <div id="comment_div"> {/* 현재 댓글 내용 */}
                         <div>{x.comment}</div>
                       </div>
 
-                      <Reply_div display_val={[...comment_display][index]}>
+                      <Reply_div display_val={[...comment_display][index]}> {/* 답글 작성 칸 div */}
                         <div className='input_div2'>
                           <p>{nickname}</p>
                           <input id="reply_input" className="comment_input" onChange={onChangeComment2} type="text" placeholder='댓글 내용을 입력하세요'/>
@@ -607,7 +638,7 @@ function Read() {
                         </div>
                       </Reply_div>
 
-                      <div class="reply">
+                      <div class="reply"> {/* 답글 목록 div */}
                         {
                           test2(x.num).map((y) => {
                             return(
@@ -624,9 +655,7 @@ function Read() {
                               </>
                             )
                           })
-                        }
-                        
-                        
+                        }      
                       </div>
 
                     </div>

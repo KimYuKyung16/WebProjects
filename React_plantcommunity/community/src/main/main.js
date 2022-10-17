@@ -34,6 +34,7 @@ function Main() {
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
   const [contents, setContents] = useState([]);
+  const [popularcontents, setPopularContents] = useState([]);
 
 
   let [total_contents, setTotalcontents] = useState(); // 게시글의 총 개수
@@ -86,8 +87,21 @@ function Main() {
       });
   }
 
+
+  function popular_contents() {
+    axios.get('http://localhost:5000/board/popular_contents') // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      const data = [...response.data];
+      setPopularContents(data);
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
   // Effect가 수행되는 시점에 이미 DOM이 업데이트 되어있음을 보장함.
-  useEffect(() => { each_page_contents(1); }, []) // 처음에 무조건 한 번 실행
+  useEffect(() => { each_page_contents(1); popular_contents(); }, []) // 처음에 무조건 한 번 실행
   useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
  
 
@@ -200,6 +214,43 @@ function Main() {
 
       <div class="line_div">
         <hr class="middle_line" />
+      </div>
+
+      {/* 인기글 */}
+      <div class="popular_contents">
+        <table>
+          <thead>
+            <tr>
+              <th className="num">순위</th>
+              <th className="content_title">제목</th>
+              <th className="date">날짜</th>
+              <th className="click_count">조회수</th>
+            </tr>
+          </thead>
+          <tbody>
+            {popularcontents.map((x, index) => {
+              let link = `/plant_info_share/contents/${x.num}`;
+              // let personal_profile = board_profile_print(x.writer);
+
+              // personal_profile.then((val) => {
+              //   setTest1(val);
+              // })
+
+            
+              // let test3 = test1;
+              // console.log(test3);
+
+              return (
+                <tr>
+                  <td className="num">{index + 1}</td>
+                  <td className="content_title"><Link to = {link}>{x.title}</Link></td>
+                  <td className="date">{x.date}</td>
+                  <td className="click_count">{x.clickcount}</td>
+                </tr>   
+              )        
+            })}
+          </tbody>
+        </table>
       </div>
 
       <div class="main_table">

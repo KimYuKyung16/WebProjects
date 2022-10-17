@@ -15,8 +15,8 @@
   margin: 5px 0px;
 }
 
-.setting > input {
-  width: 75%;
+.setting > input:nth-child(1) {
+  width: 70%;
   padding: 5px;
   outline: none;
 }
@@ -26,16 +26,15 @@
   outline: none;
 }
 
-.btn_div {
-  width: 100%;
-  display: flex;
-  flex-direction: row-reverse;
+.setting > input:nth-child(2) {
+  width: 10%;
 }
+
 
 #save_btn {
   padding: 7px 15px;
-  margin-top: 10px;
-  margin-bottom: 5px;
+  /* margin-top: 10px;
+  margin-bottom: 5px; */
   background-color: rgb(186, 218, 199);
   color: rgb(255, 255, 255);
   font-size: 0.8rem;
@@ -43,7 +42,7 @@
   box-shadow: none;
   text-align: center;
   cursor: pointer;
-  margin-right: 20px;
+  /* margin-right: 20px; */
 }
 
 
@@ -54,3 +53,14 @@
 /* .content_title {
   width: 100%;
 } */
+
+@media screen and (max-width: 700px) {
+  .App {
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+    /* width: 100%; */
+    
+  }
+
+}

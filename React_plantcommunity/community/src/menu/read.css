@@ -3,6 +3,8 @@
   margin: 0;
 }
 
+{/* 댓글 */}
+
 html {
   font-size: 16px;
 }
@@ -97,8 +99,18 @@ html {
   color: rgb(107, 164, 255);
 }
 
+
 .comment_div {
   margin-right: 20px;
+}
+
+.comment_input_btn {
+  width: 10%;
+  background-color: rgb(234, 234, 234);
+  border: 1px solid rgb(207, 207, 207);
+  color:rgb(101, 101, 101);
+  float:right;
+  
 }
 
 #total_div {
@@ -159,7 +171,7 @@ html {
 }
 
 .input_div {
-  border: 1px solid rgb(107, 164, 255);
+  border: 1px solid rgb(164, 200, 165);
   border-radius: 3px;
   padding: 10px;
   margin-bottom: 20px;

@@ -7,6 +7,33 @@ html {
   font-size: 16px;
 }
 
+.info {
+  position: relative;
+  width: 50%;
+}
+
+@keyframes smoothAppear {
+  from {
+    /* opacity: 0; */
+    transform: translateX(-100%);
+  }
+  to {
+    /* opacity: 1; */
+    transform: translateX(0);
+  }
+}
+
+/* .test {
+  background-color: rgb(101, 101, 101);
+  position: absolute;
+  width: 100px;
+  height: 1000px;
+  z-index: 3;
+  animation: smoothAppear 1s;
+} */
+
+
+
 /* .main_title {
   background-color: rgb(255, 255, 255);
   display: flex;
@@ -118,9 +145,9 @@ html {
   }
 
 }
+*/
 
 @media screen and (max-width: 500px) {
 
 
-
-} */
+} 

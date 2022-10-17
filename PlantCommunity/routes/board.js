@@ -34,6 +34,22 @@ router.get('/authentication', function(req, res){
 
 router.use(express.json()); 
 
+
+router.get('/popular_contents', function(req, res){ 
+  sql = "SELECT * FROM contents ORDER BY clickcount DESC LIMIT 5";
+  // var insertValArr = [board, search_val];
+  connection.query(sql, function(error, rows){ // db에 글 저장
+    if (error) throw error;
+    console.log(rows)
+    res.send(rows);
+  });
+})
+
+
+
+
+
+
 let total_contents; // 총 게시글의 개수
 
 /* 식물 정보 공유 게시판에 쓰여진 글 목록 출력 */
@@ -391,6 +407,13 @@ router.get('/:board/search', function(req, res){
     res.send(rows);
   });
 })
+
+
+
+
+
+
+
 
 
 
