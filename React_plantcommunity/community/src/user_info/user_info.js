@@ -10,6 +10,8 @@ import cookies from 'react-cookies'; // 쿠키 저장
 import Header from '../layout/header';
 import { colorConfig } from "../config/color"; // 홈페이지 색감 정보
 
+import Own_contents from "./own_contents";
+import Like_contents from './like_contents';
 
 const Profile = styled.img`
   width: 200px;
@@ -20,7 +22,6 @@ const Main = styled.div`
 display: flex;
 padding: 50px 15vw;
 `;
-
 
 
 function User_info() {
@@ -133,10 +134,50 @@ function User_info() {
     });
   }
 
+  // 현재 component의 상태를 설정하는 변수
+  let [change, setChange] = useState('own_contents');
+
+  // 내가 쓴 글
+  function own_contents() {
+    setChange('own_contents');
+  }
+
+  // 좋아요한 글
+  function like_contents() {
+    setChange('like_contents');
+  }
+
+  // 식물 앨범
+  function plant_album() {
+    setChange('plant_album');
+  }
+
+  function Component() {
+    if ( change === 'own_contents') {
+      return(
+        <>
+          <Own_contents></Own_contents>
+        </>
+      )
+    } else if ( change === 'like_contents') {
+      return(
+        <>
+          <Like_contents></Like_contents>
+        </>
+      )
+    } else {
+      return(
+        <>
+          <p>식물 앨범</p>
+          <p>안녕3</p>
+        </>
+      )
+    }
+  } 
 
 
 
-
+  useEffect(() => { Component(); }, [change])
   useEffect(() => { profile_print(); }, [setProfile])
   useEffect(() => { each_page_contents(1); nickname_print(); }, [])
   useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
@@ -180,43 +221,25 @@ function User_info() {
         </div>
 
         <div id="main_div">
-
-          <div className="content_list_div">
-            <p className="tmp_title">유저가 쓴 글</p>
-            <div className="test">
-              <table id="content_list">
-                <thead>
-                  <tr>
-                    <th className="num">번호</th>
-                    <th className="content_title">제목</th>
-                    <th className="writer">작성자</th>
-                    <th className="date">날짜</th>
-                    <th className="click_count">조회수</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {contents.map((x) => {
-                    let link = `/plant_info_share/contents/${x.num}`;
-
-                    return (
-                      <tr>
-                        <td className="num">{x.num}</td>
-                        <td className="content_title"><Link to = {link}>{x.title}</Link></td>
-                        <td className="writer" id="writer1">{x.writer}</td>
-                        <td className="date">{x.date}</td>
-                        <td className="click_count">{x.clickcount}</td>
-                      </tr>   
-                    )        
-                  })}
-                </tbody>
-              </table>
-
-
-              <div className="pager"> 
-              {page_button_create() /* 페이지 출력*/ } 
-              </div>
-            </div>
+          <div className='menu'>
+            <ul className='menu_list'>
+              <li>
+                <p onClick={ own_contents }>유저가 쓴 글</p>
+              </li>
+              <li>
+                <p onClick={ like_contents }>좋아요한 글</p>
+              </li>
+              <li>
+                <p onClick={ plant_album }>내 식물앨범</p>
+              </li>
+            </ul>
           </div>
+
+          {/* 위 메뉴 클릭에 따라 달라지는 화면 구현 */}
+          <div>
+            {Component()}
+          </div>
+
         </div>
       </Main>
     </>

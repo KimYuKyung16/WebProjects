@@ -228,6 +228,58 @@ router.get('/contents', function(req, res){
 
 
 
+/* 내가 쓴 글 메뉴 */
+// router.get('/own_contents', function(req, res){
+
+//   let html_content = ''
+
+//   res.send(html_content);
+
+// })
+
+
+/* 내가 쓴 글 메뉴 */
+// router.get('/like_contents', function(req, res){
+//   let one_page_contents = parseInt(req.query.one_page_contents); // 한 페이지당 게시글 개수
+
+//   let total_pages = parseInt(total_contents / one_page_contents); // 총 페이지 개수
+//   let remain_contents = total_contents % one_page_contents; // 나머지 게시글 개수 
+  
+//   remain_contents ? total_pages += 1 : total_pages; // 나머지 게시글이 있으면 페이지 개수 추가
+
+//   let current_page = req.query.current_page; // 현재 페이지
+//   let start_value = (current_page-1) * one_page_contents; // 시작값
+//   let output_num; // 출력 개수
+
+//   if (current_page == total_pages) { // 현재 페이지가 마지막 페이지라면
+//     if (current_page == 1) output_num = one_page_contents
+//     else output_num = remain_contents; // 출력 개수는 나머지 게시글의 개수
+//   } else { // 현재 페이지가 마지막 페이지가 아니라면 
+//     output_num = one_page_contents; // 출력 개수는 한 페이지당 게시글의 개수
+//   }
+
+//   const board = req.params.board; // 쿼리스트링으로 들어온 board 변수의 값
+//   console.log(req.params.board,start_value, output_num);
+
+//   sql = "SELECT * FROM users WHERE user_id = ?"
+//   users_connection.query(sql, user_id, function(error, rows){ // db에 글 저장
+//     if (error) throw error;
+//     let like_contents_array = rows[0].like_contents;
+    
+//     sql = "SELECT * FROM contents WHERE num IN ( ? )  ORDER BY num DESC limit ?, ?";
+//     var insertValArr = [like_contents_array, start_value, output_num];
+//     plant_connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+//       if (error) throw error;
+//       res.send(rows);
+//     });
+//   });
+
+// })
+
+
+
+
+
 
 
 

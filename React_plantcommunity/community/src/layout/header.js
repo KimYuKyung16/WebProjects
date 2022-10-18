@@ -261,7 +261,7 @@ function Header(props) {
       </Title_background>
       <Navbar {...props} active={active_status}> 
         <Navbar_menu active={active_status}>
-          <Menu><StyledLink {...props} to="/plant_info_share">식물 기본 정보</StyledLink></Menu>
+          <Menu><StyledLink {...props} to="/plant_info">식물 기본 정보</StyledLink></Menu>
           <Menu><StyledLink {...props} to="/plant_info_share">식물 정보 공유</StyledLink></Menu> 
           <Menu><StyledLink {...props} to="/plant_info_share">내 식물 자랑</StyledLink></Menu>
           <Menu><StyledLink {...props} to="/plant_market">식물 마켓</StyledLink></Menu>

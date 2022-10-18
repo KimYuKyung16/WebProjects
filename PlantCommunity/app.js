@@ -130,6 +130,7 @@ const test = require('./routes/plant_info_share.js'); // 식물 정보 공유 �
 const board = require('./routes/board.js'); // 게시판 메뉴
 const write = require('./routes/write.js'); // 글쓰기 페이지
 
+const plant_info = require('./routes/plant_info.js'); // 글쓰기 페이지
 // const chat = require('./routes/chat.js'); // 글쓰기 페이지
 
 
@@ -164,6 +165,7 @@ app.use('/logout', logout);
 app.use('/signup', signup);
 app.use('/user_info', user_info);
 app.use('/write', write);
+app.use('/plant_info', plant_info);
 
 // app.use('/chat', chat);
 

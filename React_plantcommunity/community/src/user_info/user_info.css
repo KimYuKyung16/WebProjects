@@ -171,6 +171,17 @@ a {
     font-weight: bold;
 }
 
+.menu_list {
+    display: flex;
+    background-color: aqua;
+}
+
+.menu_list > li {
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+
 
 
 @media screen and (max-width: 1400px) {

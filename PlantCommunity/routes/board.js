@@ -11,7 +11,6 @@ const user_dbconfig = require('../config/db.js'); // user_db 모듈 불러오기
 const user_connection = mysql.createConnection(user_dbconfig); // user_db 연결
 
 const options = require('../config/session_db.js'); // session_db 모듈 불러오기
-const db = require('../config/db.js');
 const session_connection = mysql.createConnection(options);
 
 router.get('/', function(req, res){
@@ -135,6 +134,7 @@ router.post('/:board/contents/:num/like', function(req, res){
 
   user_id = user_id || false; // 아이디가 없으면 false
 
+  // plant_db의 contents를 업데이트
   function update_sql(likecount, likeUsers) {
     let modified_like_state = {
       likecount: likecount,
@@ -149,6 +149,81 @@ router.post('/:board/contents/:num/like', function(req, res){
       if (error) throw error;
       res.send(rows);
     });
+  }
+
+  // users_db의 users -> like_contents를 업데이트 (게시글 번호 추가/삭제)
+  function update_sql_users(state) {
+    sql = "SELECT * FROM sessions WHERE session_id = ?";
+    session_connection.query(sql, req.headers.cookies, function(error, rows) {
+      if (error) throw error;
+
+      let session_obj = JSON.parse(rows[0].data);
+      let user_id = session_obj.user_id;
+
+      sql = "SELECT * FROM users WHERE user_id = ?";
+      user_connection.query(sql, user_id, function(error, rows){
+        if (error) throw error;
+
+        console.log(rows[0].like_contents)
+        let object;
+        let exist_like_contents = rows[0].like_contents; 
+        let modified_like_contents;
+
+        let likecontents_obj = JSON.parse(exist_like_contents); 
+
+        let s_object
+
+        console.log('whatobject:', likecontents_obj)
+
+        
+        console.log('기존like값',exist_like_contents);
+        console.log('user_id', user_id);
+
+        if (state === 'add') { // 게시글 번호를 추가할 때
+          if (exist_like_contents === null) { // 기존 like_contents에 아무 값도 없을 때
+            console.log('undefined입니다')
+            modified_like_contents = [];
+            modified_like_contents.push(req.params.num); // 현재 게시글의 번호를 추가
+            console.log(modified_like_contents);
+            object = {likecontents: modified_like_contents}
+            s_object = JSON.stringify(object)
+    
+          } else { // 기존 like_contents에 값이 있을 때
+            console.log('다른 값이 있습니다.')
+            modified_like_contents = likecontents_obj.likecontents;
+            modified_like_contents.push(req.params.num); // 현재 게시글의 번호를 추가
+            console.log(modified_like_contents);
+            object = {likecontents: modified_like_contents}
+            s_object = JSON.stringify(object);
+          }
+
+          console.log(s_object);
+    
+          var insertValArr = [s_object, user_id];
+          sql = "UPDATE users SET like_contents = ? WHERE user_id = ? ";
+          user_connection.query(sql, insertValArr, function(error, rows) {
+            if (error) throw error;
+          });
+
+        } else { // state === 'remove' : 게시글 번호를 삭제할 때
+          let likecontents = likecontents_obj.likecontents;
+          let content_index = likecontents.indexOf(req.params.num); // 좋아요한 게시글 목록에서 해당 게시글의 인덱스 구하기
+          likecontents.splice(content_index, 1); // 인덱스에 해당하는 값을 좋아요한 게시글 목록에서 삭제
+          modified_like_contents = likecontents;
+          object = {likecontents: modified_like_contents}
+          s_object = JSON.stringify(object)
+
+          var insertValArr = [s_object, user_id];
+          sql = "UPDATE users SET like_contents = ? WHERE user_id = ? ";
+          user_connection.query(sql, insertValArr, function(error, rows) {
+            if (error) throw error;
+          });
+        }
+
+      })
+
+    });
+
   }
 
   if (user_id && like_state === false) { // 로그인된 아이디가 있고 좋아요가 안눌러져있을 경우
@@ -169,6 +244,7 @@ router.post('/:board/contents/:num/like', function(req, res){
         likeUsers.push(user_id); // 좋아요를 누른 사람들 목록에 현재 로그인된 아이디 추가
 
         update_sql(likecount, likeUsers);
+        update_sql_users('add');
 
       } else { // db의 likestate에 값이 있을 경우
         console.log("db에 likestate 값이 있습니다.");
@@ -182,6 +258,7 @@ router.post('/:board/contents/:num/like', function(req, res){
         likeUsers.push(user_id); // 좋아요를 누른 사람들 목록에 현재 로그인된 아이디 추가
 
         update_sql(likecount, likeUsers);
+        update_sql_users('add');
       }
     });
 
@@ -204,6 +281,7 @@ router.post('/:board/contents/:num/like', function(req, res){
       console.log(likeUsers);
 
       update_sql(likecount, likeUsers);
+      update_sql_users('remove');
     });
   } else { // 로그인이 되어있지 않을 경우
     console.log("로그인이 되어있지 않습니다.");
