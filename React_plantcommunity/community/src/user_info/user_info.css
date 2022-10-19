@@ -173,7 +173,10 @@ a {
 
 .menu_list {
     display: flex;
-    background-color: aqua;
+    /* background-color: aqua; */
+    margin-bottom: 20px;
+    color:rgb(72, 116, 83);
+    font-weight: bold;
 }
 
 .menu_list > li {

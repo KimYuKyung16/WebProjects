@@ -29,40 +29,40 @@ function User_info() {
 
   let [profile, setProfile] = useState(); // 등록되어있는 내 프로필 사진
 
-  const [contents, setContents] = useState([]);
+  // const [contents, setContents] = useState([]);
 
-  let [total_contents, setTotalcontents] = useState(); // 게시글의 총 개수
-  let one_page_contents = 10; // 한 페이지 당 게시글의 개수
+  // let [total_contents, setTotalcontents] = useState(); // 게시글의 총 개수
+  // let one_page_contents = 10; // 한 페이지 당 게시글의 개수
 
-  let [total_pages, setTotalpages] = useState(1); // 총 페이지 개수
-  let [remain_contents, setRemaincontents] = useState(); // 나머지 게시글 개수
+  // let [total_pages, setTotalpages] = useState(1); // 총 페이지 개수
+  // let [remain_contents, setRemaincontents] = useState(); // 나머지 게시글 개수
 
 
 
-  function each_page_contents(current_page) {
-    axios.get('http://localhost:5000/user_info/contents', { // 서버로 post 요청
-      params: {
-        current_page: current_page, 
-        one_page_contents: one_page_contents
-      }  
-    })
-    .then(function (response) { // 서버에서 응답이 왔을 때
-      const data = [...response.data];
-      setContents(data);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
+  // function each_page_contents(current_page) {
+  //   axios.get('http://localhost:5000/user_info/contents', { // 서버로 post 요청
+  //     params: {
+  //       current_page: current_page, 
+  //       one_page_contents: one_page_contents
+  //     }  
+  //   })
+  //   .then(function (response) { // 서버에서 응답이 왔을 때
+  //     const data = [...response.data];
+  //     setContents(data);
+  //   })
+  //   .catch(function (error) {
+  //     console.log(error);
+  //   });
+  // }
 
   // 클로저를 이용해서 가장 마지막 값만 출력되는 오류를 해결
-  function page_button_create() { // 페이지 버튼 생성
-    let button_array = [];
-    for (let i=1; i<total_pages+1; i++) {
-      button_array.push(<input class="page_btn" key={i} type="button" value={i} onClick={ () => {each_page_contents(i)} } />)
-    }
-    return button_array;
-  }
+  // function page_button_create() { // 페이지 버튼 생성
+  //   let button_array = [];
+  //   for (let i=1; i<total_pages+1; i++) {
+  //     button_array.push(<input class="page_btn" key={i} type="button" value={i} onClick={ () => {each_page_contents(i)} } />)
+  //   }
+  //   return button_array;
+  // }
 
 
   function logout() { // 서버 세션도 없애기 위해 서버에 요청하기
@@ -104,23 +104,23 @@ function User_info() {
 
   /* 내가 쓴 글 */
 
-  function total_contents_request() { // 게시글의 총 개수
-    axios.get('http://localhost:5000/user_info/total_contents') // 서버로 get 요청
-      .then(function (response) { // 서버에서 응답이 왔을 때
-        setTotalcontents(response.data[0].count);
+  // function total_contents_request() { // 게시글의 총 개수
+  //   axios.get('http://localhost:5000/user_info/total_contents') // 서버로 get 요청
+  //     .then(function (response) { // 서버에서 응답이 왔을 때
+  //       setTotalcontents(response.data[0].count);
    
-        setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
-        setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
+  //       setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
+  //       setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
        
-        if (remain_contents) { // 현재 페이지가 1페이지가 아니고 나머지 페이지가 있다면
-          setTotalpages(total_pages => total_pages+1) // 총 페이지에 +1
-        } 
-        console.log(response.data[0].count);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+  //       if (remain_contents) { // 현재 페이지가 1페이지가 아니고 나머지 페이지가 있다면
+  //         setTotalpages(total_pages => total_pages+1) // 총 페이지에 +1
+  //       } 
+  //       console.log(response.data[0].count);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // }
 
   let [nickname, setNickname] = useState();
 
@@ -179,8 +179,8 @@ function User_info() {
 
   useEffect(() => { Component(); }, [change])
   useEffect(() => { profile_print(); }, [setProfile])
-  useEffect(() => { each_page_contents(1); nickname_print(); }, [])
-  useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
+  useEffect(() => { nickname_print(); }, [])
+  // useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
 
 
     /* 홈페이지 메인 타이틀 세팅값 */
@@ -200,16 +200,16 @@ function User_info() {
       <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
       <Main>
         <div id="user_div">
-          <h1>현재 유저 정보</h1>
+          <h1>내 정보</h1>
           <table id="user_table">
             <tr>
               <td>
-                <p id="user_profile">유저의 프로필 사진</p>
+                <p id="user_profile">프로필 사진</p>
                 <Profile src={profile}></Profile>
               </td>
             </tr>
             <tr>
-              <td id="user_nickname">유저의 닉네임: {nickname}</td> 
+              <td id="user_nickname">닉네임: {nickname}</td> 
             </tr>
             <tr>
               <td><input id="info_revise_btn" type="button" value="내 정보 수정하기" onClick={() => {navigate('/user_info/profile');}}/></td>
@@ -224,7 +224,7 @@ function User_info() {
           <div className='menu'>
             <ul className='menu_list'>
               <li>
-                <p onClick={ own_contents }>유저가 쓴 글</p>
+                <p onClick={ own_contents }>내가 쓴 글</p>
               </li>
               <li>
                 <p onClick={ like_contents }>좋아요한 글</p>

@@ -14,6 +14,7 @@ function Like_contents() {
   let [total_pages, setTotalpages] = useState(1); // 총 페이지 개수
   let [remain_contents, setRemaincontents] = useState(); // 나머지 게시글 개수
 
+  let [state, setState] = useState('none');
 
   function each_page_contents(current_page) {
     axios.get('http://localhost:5000/user_info/like_contents', { // 서버로 post 요청
@@ -23,9 +24,13 @@ function Like_contents() {
       }  
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
+      setState(response.data.state);
+
       console.log(response.data);
-      // const data = [...response.data];
-      // setContents(data);
+
+      const data = [...response.data];
+      setContents(data);
+     
     })
     .catch(function (error) {
       console.log(error);
@@ -41,9 +46,88 @@ function Like_contents() {
     return button_array;
   }
 
+  /* 내가 좋아요한 글 */
+  function total_contents_request() { // 게시글의 총 개수
+    axios.get('http://localhost:5000/user_info/like_total_contents') // 서버로 get 요청
+      .then(function (response) { // 서버에서 응답이 왔을 때
+
+        setTotalcontents(response.count);
+    
+        setTotalpages(parseInt(total_contents / one_page_contents));// 총 페이지 개수 설정
+        setRemaincontents(total_contents % one_page_contents); // 나머지 게시글 개수 설정
+        
+        if (remain_contents) { // 현재 페이지가 1페이지가 아니고 나머지 페이지가 있다면
+          setTotalpages(total_pages => total_pages+1) // 총 페이지에 +1
+        } 
+        // console.log(response.data[0].count);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  function component() {
+    console.log(state);
+    if (state === 'none') {
+      return(
+        <>
+          <tbody>
+            <tr>
+              <td colspan ='4'>좋아요한 글이 없습니다. ㅠ_ㅠ</td>
+            </tr>
+          </tbody>     
+        </>
+      )
+    } else {
+      return(
+        <>
+          <tbody>
+            {contents.map((x) => {
+              let link = `/plant_info_share/contents/${x.num}`;
+
+              return (
+                <tr>
+                  <td className="num">{x.num}</td>
+                  <td className="content_title"><Link to = {link}>{x.title}</Link></td>
+                  <td className="writer" id="writer1">{x.writer}</td>
+                  <td className="date">{x.date}</td>
+                  <td className="click_count">{x.clickcount}</td>
+                </tr>   
+              )        
+            })}
+          </tbody>
+        </>
+      )
+    }
+  }
+
+  useEffect(() => { each_page_contents(1); }, [])
+  useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
+  
+
+  
   return(
     <>
-      <p>좋아요한 글</p>
+       <p className="tmp_title">좋아요한 글</p>
+        <div className="test">
+          <table id="content_list">
+            <thead>
+              <tr>
+                <th className="num">번호</th>
+                <th className="content_title">제목</th>
+                <th className="writer">작성자</th>
+                <th className="date">날짜</th>
+                <th className="click_count">조회수</th>
+              </tr>
+            </thead>
+            {component()}
+          </table>
+  
+          <div className="pager"> 
+            { page_button_create() } 
+          </div>
+        </div>
+      
     </>
   );
 }
