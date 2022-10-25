@@ -21,6 +21,11 @@ const Profile = styled.img`
 const Main = styled.div`
 display: flex;
 padding: 50px 15vw;
+
+@media screen and (max-width: 700px) {  
+  flex-direction: column;
+  padding: 0 20px;
+}
 `;
 
 
@@ -70,7 +75,8 @@ function User_info() {
     .then(function (response) { // 서버에서 응답이 왔을 때
       alert("로그아웃 되었습니다."); 
       cookies.remove('login_cookie', { path: '/' })
-      navigate('/login'); // 메인페이지로 이동
+      // cookies.remove('user_cookie', { path: '/' })
+      window.location.replace('/login'); // 메인페이지로 이동
     })
     .catch(function (error) {
       console.log(error);
@@ -94,7 +100,13 @@ function User_info() {
     axios.post(`http://localhost:5000/user_info/profile_print`)
     .then(function (response) { 
       console.log(response.data)
-      setProfile('http://localhost:5000/' + response.data); // 서버에 있는 이미지 링크주소
+
+      if (response.data === '\\image\\default_profile.png') { // 프로필 사진이 없을 경우: 기본 프로필 사진
+        // setProfile('/image/default_profile.png'); 
+        setProfile(response.data); // 서버에 있는 이미지 링크주소
+      } else { // 프로필 사진이 있을 경우: 본인 프로필 사진
+        setProfile('http://localhost:5000/' + response.data); // 서버에 있는 이미지 링크주소
+      }
     })
     .catch(function (error) {
       console.log(error);

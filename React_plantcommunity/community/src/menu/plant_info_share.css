@@ -193,3 +193,18 @@ thead {
 }
 
 
+.search_div {
+    display: flex;
+    flex-direction: row;
+}
+
+@media screen and (max-width: 500px){
+    .content_div {
+        padding: 0;
+    }
+
+    #write_button {
+        width: 20%;
+    }
+
+} 

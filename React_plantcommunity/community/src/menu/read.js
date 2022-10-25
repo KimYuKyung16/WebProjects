@@ -12,7 +12,7 @@ import styled from "styled-components"; // styled in js
 
 
 const Write_Comment = styled.div`
-display: flex;
+display: ${(props) => props.comment_display_state || 'flex'};
 flex-direction: column;
 border: 2px solid rgb(164, 200, 165);
 border-radius: 3px;
@@ -64,6 +64,7 @@ margin: 10px 0 10px 60px;
 `;
 
 const Logined_user = styled.div`
+width: 30%;
 display: ${(props) => props.div_state.logined_user_div || 'none'};
 `;
 
@@ -102,6 +103,10 @@ transform: rotate(45deg);
 const Heart = styled.img`
 width: 30px;
 height: 30px;
+`;
+
+const Comment_Reply = styled.p`
+display: ${(props) => props.comment_display_state || 'flex'};
 `;
 
 
@@ -154,8 +159,13 @@ function Read() {
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response);
-      like_state_request();
-      like_list_request();
+
+      if (response.data.state === false) { // 로그인이 되어있지 않다면
+        alert("로그인을 먼저 해주세요");
+      } else { // 로그인 상태라면
+        like_state_request();
+        like_list_request();
+      }
     })
     .catch(function (error) {
       console.log(error);
@@ -454,28 +464,42 @@ function Read() {
     return value.comment_num == what_num;
   }
 
+  let [comment_display_state, setCommentDisplayState] = useState('flex');
   let [nickname, setNickname] = useState();
 
   // 이 함수에서 현재 로그인된 유저의 아이디 값과 닉네임값을 가져올 수 있다.
   function nickname_print() {
     axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
-      setNickname(response.data.nickname);
-      setUserID(response.data.user_id);
+
+      if (response.data.state === false) {
+        setNickname("로그인 먼저 해주세요");
+        setCommentDisplayState('none');
+      } else {
+        setNickname(response.data.nickname);
+        setUserID(response.data.user_id);
+      }
     })
     .catch(function (error) {
       console.log(error);
     });
   }
 
+  
+
 
   
   function div_change() {
     // 현재 로그인된 아이디와 이 글 작성자의 아이디가 같다면
-    if (user_id === content.user_id) {
-      setDivState({logined_user_div: 'flex', like_div: 'none'});
-    } else {
+
+    if (user_id === undefined) { // 로그인이 되어있지 않은 상태라면
       setDivState({logined_user_div: 'none', like_div: 'flex'});
+    } else { // 로그인이 되어있는 상태라면
+      if (user_id === content.user_id) {
+        setDivState({logined_user_div: 'flex', like_div: 'none'});
+      } else {
+        setDivState({logined_user_div: 'none', like_div: 'flex'});
+      }
     }
 
     console.log(div_state);
@@ -611,7 +635,7 @@ function Read() {
             
           <div id="total_comment_div"> {/* 댓글 */}
             <h3>댓글</h3>
-            <Write_Comment> {/* 댓글 작성 칸 */}
+            <Write_Comment comment_display_state={comment_display_state}> {/* 댓글 작성 칸 */}
               <p>{ nickname }</p>
               <input id="comment_input" className="comment_input" onChange={onChangeComment} type="text" placeholder='댓글 내용을 입력하세요'/>
               <input className="comment_input_btn" onClick={comment_request} type="button" value="등록"/>
@@ -624,7 +648,7 @@ function Read() {
                       <div id="writer_date_div"> {/* 작성자, 날짜 등 댓글의 상세사항*/}
                         <p>{x.writer}</p>
                         <p>{x.date + ' ' + x.time}</p>
-                        <p onClick={() => { what_index(index); setCommentnum(x.num) }}>답글쓰기</p>
+                        <Comment_Reply comment_display_state={comment_display_state} onClick={() => { what_index(index); setCommentnum(x.num) }}>답글쓰기</Comment_Reply>
                       </div>
                       <div id="comment_div"> {/* 현재 댓글 내용 */}
                         <div>{x.comment}</div>

@@ -208,7 +208,12 @@ router.get('/contents', function(req, res){
   var insertValArr = [user_id, start_value, output_num];
   plant_connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
     if (error) throw error;
-    res.send(rows);
+
+    if (rows.length === 0) { // 내가 쓴 글이 없을 경우
+      res.send({state: 'none'})
+    } else { // 내가 쓴 글이 있을 경우
+      res.send(rows)
+    }
   });
 })
 

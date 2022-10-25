@@ -74,7 +74,14 @@ router.get('/:board', function(req, res){
   const board = req.params.board; // 쿼리스트링으로 들어온 board 변수의 값
   console.log(req.params.board,start_value, output_num);
 
-  sql = "SELECT * FROM contents WHERE board = ? ORDER BY num DESC limit ?, ?";
+  sql = `SELECT *
+    FROM plant_db.contents AS C
+    INNER JOIN users.users AS U
+    ON C.user_id = U.user_id
+    WHERE board = ?
+    ORDER BY num DESC limit ?, ?`;
+
+  // sql = "SELECT * FROM contents WHERE board = ? ORDER BY num DESC limit ?, ?";
   var insertValArr = [board, start_value, output_num];
   connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
     if (error) throw error;
@@ -478,7 +485,14 @@ router.get('/:board/search', function(req, res){
 
   console.log(board, search_val);
 
-  sql = "SELECT * FROM contents WHERE board = ? and title LIKE ? ORDER BY num DESC";
+  sql = `SELECT *
+  FROM plant_db.contents AS C
+  INNER JOIN users.users AS U
+  ON C.user_id = U.user_id
+  WHERE board = ? and title LIKE ? 
+  ORDER BY num DESC`;
+
+  // sql = "SELECT * FROM contents WHERE board = ? and title LIKE ? ORDER BY num DESC";
   var insertValArr = [board, search_val];
   connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
     if (error) throw error;

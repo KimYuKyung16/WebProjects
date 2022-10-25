@@ -14,6 +14,8 @@ function Own_contents() {
   let [total_pages, setTotalpages] = useState(1); // 총 페이지 개수
   let [remain_contents, setRemaincontents] = useState(); // 나머지 게시글 개수
 
+  let [state, setState] = useState('none');
+
 
   function each_page_contents(current_page) {
     axios.get('http://localhost:5000/user_info/contents', { // 서버로 post 요청
@@ -23,6 +25,8 @@ function Own_contents() {
       }  
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
+      setState(response.data.state);
+
       const data = [...response.data];
       setContents(data);
     })
@@ -59,6 +63,42 @@ function Own_contents() {
       });
   }
 
+  function component() {
+    console.log(state);
+    if (state === 'none') {
+      return(
+        <>
+          <tbody>
+            <tr>
+              <td colspan ='4'>작성한 글이 없습니다. ㅠ_ㅠ</td>
+            </tr>
+          </tbody>     
+        </>
+      )
+    } else {
+      return(
+        <>
+          <tbody>
+            {contents.map((x) => {
+              let link = `/plant_info_share/contents/${x.num}`;
+
+              return (
+                <tr>
+                  <td className="num">{x.num}</td>
+                  <td className="content_title"><Link to = {link}>{x.title}</Link></td>
+                  <td className="date">{x.date}</td>
+                  <td className="click_count">{x.clickcount}</td>
+                </tr>   
+              )        
+            })}
+          </tbody>
+        </>
+      )
+    }
+  }
+
+
+
   useEffect(() => { each_page_contents(1); }, [])
   useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
 
@@ -73,26 +113,12 @@ function Own_contents() {
             <tr>
               <th className="num">번호</th>
               <th className="content_title">제목</th>
-              <th className="writer">작성자</th>
+              {/* <th className="writer">작성자</th> */}
               <th className="date">날짜</th>
               <th className="click_count">조회수</th>
             </tr>
           </thead>
-          <tbody>
-            {contents.map((x) => {
-              let link = `/plant_info_share/contents/${x.num}`;
-
-              return (
-                <tr>
-                  <td className="num">{x.num}</td>
-                  <td className="content_title"><Link to = {link}>{x.title}</Link></td>
-                  <td className="writer" id="writer1">{x.writer}</td>
-                  <td className="date">{x.date}</td>
-                  <td className="click_count">{x.clickcount}</td>
-                </tr>   
-              )        
-            })}
-          </tbody>
+          {component()}
         </table>
 
         <div className="pager"> 

@@ -186,6 +186,7 @@ function Revise() {
             <option value='plant_introduce'>내 식물 자랑</option>
             <option value='plant_market'>식물 마켓</option>
           </select>
+          <input id="save_btn" onClick={revise_process} type="button" value="저장"/>
         </div>
         <>
         <CKEditor
@@ -252,9 +253,6 @@ function Revise() {
           }}
         ></CKEditor>
         </>
-      </div>
-      <div className='btn_div'>
-        <input id="save_btn" onClick={revise_process} type="button" value="저장"/>
       </div>
     </>
   );

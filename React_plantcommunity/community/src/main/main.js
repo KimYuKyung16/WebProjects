@@ -19,6 +19,12 @@ const UserDiv = styled.div`
   display: none;
   `;
 
+const Profile = styled.img`
+width: 30px;
+height: 30px;
+border-radius: 70%;
+`;
+
 function Main() {
 
   const title_setting = {
@@ -218,6 +224,7 @@ function Main() {
 
       {/* 인기글 */}
       <div class="popular_contents">
+        <h2 className="subject">인기글</h2>
         <table>
           <thead>
             <tr>
@@ -254,6 +261,7 @@ function Main() {
       </div>
 
       <div class="main_table">
+      <h2 className="subject">전체글</h2>
         <table>
           <thead>
             <tr>
@@ -281,7 +289,7 @@ function Main() {
                 <tr>
                   <td className="num">{x.num}</td>
                   <td className="content_title"><Link to = {link}>{x.title}</Link></td>
-                  <td className="writer" id="writer1">{x.writer}</td>
+                  <td className="writer" id="writer1"><Profile src={x.profile === "\\image\\default_profile.png" ? x.profile : "http://localhost:5000/" + x.profile}></Profile>{x.writer}</td>
                   <td className="date">{x.date}</td>
                   <td className="click_count">{x.clickcount}</td>
                 </tr>   

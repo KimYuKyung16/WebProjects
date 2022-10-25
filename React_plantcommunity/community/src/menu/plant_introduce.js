@@ -99,7 +99,7 @@ const Profile = styled.img`
 `;
 
 
-function Plant_info_share() {
+function Plant_introduce() {
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
   let params = useParams();
@@ -145,7 +145,7 @@ function Plant_info_share() {
 
   /* 검색어에 해당하는 게시글 출력 */
   function search_conents() {
-    axios.get('http://localhost:5000/board/plant_info_share/search', { // 서버로 post 요청
+    axios.get('http://localhost:5000/board/plant_introduce/search', { // 서버로 post 요청
       params: {
         search_val : search_value
       }
@@ -161,7 +161,7 @@ function Plant_info_share() {
   
 
   function each_page_contents(current_page) {
-    axios.get('http://localhost:5000/board/plant_info_share', { // 서버로 post 요청
+    axios.get('http://localhost:5000/board/plant_introduce', { // 서버로 post 요청
       params: {
         current_page: current_page, 
         one_page_contents: one_page_contents
@@ -196,7 +196,7 @@ function Plant_info_share() {
 
   
   function total_contents_request() { // 게시글의 총 개수
-    axios.get('http://localhost:5000/board/plant_info_share/total_contents') // 서버로 post 요청
+    axios.get('http://localhost:5000/board/plant_introduce/total_contents') // 서버로 post 요청
       .then(function (response) { // 서버에서 응답이 왔을 때
         setTotalcontents(response.data[0].count);
    
@@ -288,7 +288,7 @@ function Plant_info_share() {
         <div class="search">
           
           <Search>
-            <h2 class="">식물 정보 공유</h2>
+            <h2 class="">내 식물 자랑</h2>
             <div className='search_div'>
               <input class="search_input" placeholder="글 제목 검색" onChange={search_change} type="search" value={search_value}/>
               <FontAwesomeIcon icon={faMagnifyingGlass} />
@@ -307,7 +307,7 @@ function Plant_info_share() {
           </thead>
           <tbody>
             {contents.map((x) => {
-              let link = `/plant_info_share/contents/${x.num}`;
+              let link = `/plant_introduce/contents/${x.num}`;
               // let personal_profile = board_profile_print(x.writer);
 
               // personal_profile.then((val) => {
@@ -343,4 +343,4 @@ function Plant_info_share() {
   );
 }
 
-export default Plant_info_share;
+export default Plant_introduce;

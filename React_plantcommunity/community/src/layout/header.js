@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import './header.css';
 import { useNavigate, Link } from "react-router-dom"; // 라우팅
@@ -11,6 +11,8 @@ import cookies from 'react-cookies'; // 쿠키
 
 import styled, { keyframes } from "styled-components"; // styled in js
 
+import Own_contents from "../user_info/own_contents";
+import Like_contents from '../user_info/like_contents';
 
 /* 홈페이지 메인 타이틀 배경 */
 const Title_background = styled.header`
@@ -48,6 +50,15 @@ const appear = keyframes`
 
 const disappear = keyframes`
 0% {
+  transform: translateX(0%);
+}
+100% {
+  transform: translateX(-150%);
+}
+`
+
+const default_disappear = keyframes`
+0% {
   transform: translateX(-150%);
 }
 100% {
@@ -58,16 +69,30 @@ const disappear = keyframes`
 const Info = styled.div`
 position: relative;
 width: 40%;
-// height: 100vh;
+
+@media screen and (max-width: 500px) {     
+  width: 60%;
+}
 `;
 
 const Test = styled.div`
-background-color: rgb(255, 255, 255);
+display: flex;
+flex-direction: column;
+background-color: rgb(246, 251, 248);
 position: absolute;
 width: 100%;
-height: 1000px;
+height: 100vh;
 z-index: 3;
 animation: ${(props) => props.click_state} 1.5s linear forwards;
+overflow: auto;
+border: 2px solid rgb(186, 218, 199);
+box-sizing: border-box;
+
+-ms-overflow-style: none; /* IE and Edge */
+scrollbar-width: none; /* Firefox */
+::-webkit-scrollbar{
+  display:none;
+}
 `;
 
 
@@ -151,12 +176,19 @@ padding-left: 0;
 
 /* 네비게이션바 아이콘 (내정보) */
 const NavbarIcon2 = styled.ul`
-display: flex;
+display: none;
+position: absolute;
+left: 15px;
 list-style: none;
 font-size: 1.5rem;
-color: black;
-margin-right: 10vw;
+color: ${(props) => props.navbar_setting.navbar_textcolor};
+// margin-right: 10vw;
 // padding-left: 0;
+
+
+@media screen and (max-width: 1300px) { 
+  display: flex;
+}
 `;
 
 /* 네비게이션바 햄버거바 */
@@ -172,6 +204,11 @@ color: ${(props) => props.navbar_setting.navbar_textcolor};
 }
 `;
 
+const Profile = styled.img`
+  width: 200px;
+  height: 200px;
+`;
+
 function Header(props) {
 
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
@@ -179,13 +216,16 @@ function Header(props) {
   let [click_count, setClickCount] = useState(1);
   let [active_status, setActiveStatus] = useState('none');
 
-  let [click_state, setClickState] = useState(disappear);
+  let [click_state, setClickState] = useState(default_disappear);
 
   function clickstate() {
     if (click_state == disappear) {
       setClickState(appear);
       console.log(click_state)
-    } else {
+    } else if (click_state == default_disappear) {
+      setClickState(appear);
+    }
+    else {
       setClickState(disappear);
       console.log(click_state)
     }
@@ -223,6 +263,27 @@ function Header(props) {
   //       }  
   // }
 
+    /* 로그인이 되어있는지 확인 */
+    function login_confirm2() {
+      let authentication;
+  
+      axios.get('http://localhost:5000/login/authentication') // 서버로 post 요청
+        .then(function (response) { // 서버에서 응답이 왔을 때
+          if (response.data.authenticator === true) { // 로그인이 되어있을 떄
+          authentication = true;
+          nickname_print(); 
+          profile_print();
+          clickstate();
+          } else { // 로그인이 안되어있을 때
+          // authentication = false;
+          navigate('/login'); // 로그인 페이지로 이동
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+
   function active() {
     console.log('실행');
     setClickCount(click_count + 1);
@@ -243,16 +304,145 @@ function Header(props) {
     navigate('/');
   }
 
+  let [profile, setProfile] = useState(); // 등록되어있는 내 프로필 사진
+  let [nickname, setNickname] = useState();
+
+  function logout() { // 서버 세션도 없애기 위해 서버에 요청하기
+    axios.delete('http://localhost:5000/logout')
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      alert("로그아웃 되었습니다."); 
+      cookies.remove('login_cookie', { path: '/' })
+      // cookies.remove('user_cookie', { path: '/' })
+      window.location.replace('/login'); // 메인페이지로 이동
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  function profile_print() {
+    axios.post(`http://localhost:5000/user_info/profile_print`)
+    .then(function (response) { 
+      console.log(response.data)
+
+      if (response.data === '\\image\\default_profile.png') { // 프로필 사진이 없을 경우: 기본 프로필 사진
+        // setProfile('/image/default_profile.png'); 
+        setProfile(response.data); // 서버에 있는 이미지 링크주소
+      } else { // 프로필 사진이 있을 경우: 본인 프로필 사진
+        setProfile('http://localhost:5000/' + response.data); // 서버에 있는 이미지 링크주소
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  function nickname_print() {
+    axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      setNickname (response.data.nickname);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  // 현재 component의 상태를 설정하는 변수
+  let [change, setChange] = useState('own_contents');
+
+  // 내가 쓴 글
+  function own_contents() {
+    setChange('own_contents');
+  }
+
+  // 좋아요한 글
+  function like_contents() {
+    setChange('like_contents');
+  }
+
+  // 식물 앨범
+  function plant_album() {
+    setChange('plant_album');
+  }
+
+  function Component() {
+    if ( change === 'own_contents') {
+      return(
+        <>
+          <Own_contents></Own_contents>
+        </>
+      )
+    } else if ( change === 'like_contents') {
+      return(
+        <>
+          <Like_contents></Like_contents>
+        </>
+      )
+    } else {
+      return(
+        <>
+          <p>식물 앨범</p>
+          <p>안녕3</p>
+        </>
+      )
+    }
+  } 
+
+  // useEffect(() => { Component(); }, [change])
+  // useEffect(() => { profile_print(); }, [profile])
+  // useEffect(() => { nickname_print(); profile_print(); }, [click_state])
+
   return (
     <>
       <Info>
         <Test click_state={click_state}>
-          <p>안녕</p>
+          <img id="close_btn" width="15" height="15" src="/image/close_btn.png" onClick={() => {setClickState(disappear);}} /> 
+          <div id="user_div">
+            <h1>내 정보</h1>
+            <table id="user_table">
+              <tr>
+                <td>
+                  <p id="user_profile">프로필 사진</p>
+                  <Profile src={profile}></Profile>
+                </td>
+              </tr>
+              <tr>
+                <td id="user_nickname">닉네임: {nickname}</td> 
+              </tr>
+              <tr>
+                <td><input id="info_revise_btn" type="button" value="내 정보 수정하기" onClick={() => {navigate('/user_info/profile');}}/></td>
+              </tr>
+              <tr>
+                <td><input onClick={logout} id="logout_btn" type="button" value="로그아웃" /></td> 
+              </tr>
+            </table>
+          </div>
+
+          <div id="main_div">
+          <div className='menu'>
+            <ul className='menu_list'>
+              <li>
+                <p onClick={ own_contents }>내가 쓴 글</p>
+              </li>
+              <li>
+                <p onClick={ like_contents }>좋아요한 글</p>
+              </li>
+              <li>
+                <p onClick={ plant_album }>내 식물앨범</p>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            {Component()}
+          </div>
+
+        </div>
         </Test>
       </Info>
       <Title_background {...props}>
-        <NavbarIcon2>
-          <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={clickstate}/></li>
+        <NavbarIcon2 {...props}>
+          <li><FontAwesomeIcon icon={faCircleUser} id="my_info" onClick={login_confirm2}/></li>
         </NavbarIcon2>
         <Main_title {...props} onClick={home}>Plant Community</Main_title>
         <Navbar_togglebBtn {...props} onClick={active}>
@@ -263,7 +453,7 @@ function Header(props) {
         <Navbar_menu active={active_status}>
           <Menu><StyledLink {...props} to="/plant_info">식물 기본 정보</StyledLink></Menu>
           <Menu><StyledLink {...props} to="/plant_info_share">식물 정보 공유</StyledLink></Menu> 
-          <Menu><StyledLink {...props} to="/plant_info_share">내 식물 자랑</StyledLink></Menu>
+          <Menu><StyledLink {...props} to="/plant_introduce">내 식물 자랑</StyledLink></Menu>
           <Menu><StyledLink {...props} to="/plant_market">식물 마켓</StyledLink></Menu>
         </Navbar_menu>
         <NavbarIcon {...props} active={active_status}>

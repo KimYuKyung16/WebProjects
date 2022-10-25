@@ -3,7 +3,6 @@
   margin: 0;
 }
 
-{/* 댓글 */}
 
 html {
   font-size: 16px;
@@ -63,15 +62,20 @@ html {
 
 #revise_btn, #delete_btn {
   height: 60%;
-  width: 45%;
+  width: 40%;
   /* padding: 0px 12px; */
-  background-color: rgb(107, 164, 255);
+  background-color: rgb(144, 193, 162);
   color:rgb(255, 255, 255);
   font-size: 0.8em;
   box-shadow: none;
   border-radius: 3px;
   border: none;
   cursor: pointer;
+  margin-left: 5px;
+}
+
+#revise_btn {
+  margin-left: 15px;
 }
 
 #board-li2 {

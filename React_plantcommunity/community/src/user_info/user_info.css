@@ -7,6 +7,13 @@ body {
     /* background-color: rgb(236, 236, 236); */
 }
 
+#user_table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 
 #test12 {
     display: flex;
@@ -184,6 +191,10 @@ a {
     cursor: pointer;
 }
 
+#user_profile {
+    text-align: center;
+}
+
 
 
 
@@ -227,22 +238,27 @@ a {
         /* background-color: black; */
     }
 
-
+/* 
     #user_table {
         display: flex;
         flex-direction: column;
+        background-color: aquamarine;
+        align-items: center;
+        justify-content: center;
+    } */
+
+    #user_profile {
+        text-align: center;
     }
 
     #profile {
         width: 50%;
-        ;
         height: auto;
     }
 
-    #user_div {
-        text-align: center;
+    #info_revise_btn, #logout_btn {
+        width: 200px;
     }
-
 
 }
 
@@ -273,7 +289,7 @@ a {
 
     #info_revise_btn,
     #logout_btn {
-        width: 30%;
+        width: 200px;
     }
 
 

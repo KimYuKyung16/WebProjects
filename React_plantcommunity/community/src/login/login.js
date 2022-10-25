@@ -92,7 +92,8 @@ function Login(location) {
         } else { // 로그인 쿠키가 있다면 쿠키 생성X
           console.log("쿠키 존재");
         }
-        navigate('/'); // 메인페이지로 이동
+        // navigate('/'); // 메인페이지로 이동
+        window.location.replace('/');
       } else {
         alert("로그인에 실패하셨습니다.");
       }  

@@ -9,6 +9,7 @@ import Profile from "./user_info/profile";
 
 import Plant_info from "./plant_info/plant_info";
 import Plant_info_share from "./menu/plant_info_share";
+import Plant_introduce from "./menu/plant_introduce";
 import Write from "./menu/write";
 import Read from "./menu/read";
 import Revise from "./menu/revise";
@@ -35,7 +36,8 @@ function App() {
         <Route path="/plant_market" element={<Market />}></Route>
         <Route path="/plant_market/contents/:num" element={<MarketRead />}></Route>
 
-        <Route path="/:board" element={<Plant_info_share />}></Route>
+        <Route path="/plant_info_share" element={<Plant_info_share />}></Route>
+        <Route path="/plant_introduce" element={<Plant_introduce />}></Route>
         <Route path="/:board/contents/:num" element={<Read />}></Route>
         <Route path="/write" element={<Write />}></Route>
         <Route path="/:board/contents/:num/revise" element={<Revise />}></Route>

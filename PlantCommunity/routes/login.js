@@ -158,8 +158,13 @@ router.get('/authentication/nickname', function(req, res){
     //   // let session_obj = JSON.parse(rows[0].data);
     //   res.send({'authenticator': true});
     // }
-    let session_obj = JSON.parse(rows[0].data);
-    res.send({'nickname':session_obj.nickname, 'user_id':session_obj.user_id});
+
+    if (rows.length === 0) {
+      res.send({'state':false});
+    } else {
+      let session_obj = JSON.parse(rows[0].data);
+      res.send({'nickname':session_obj.nickname, 'user_id':session_obj.user_id});
+    }
   });
   
 })
