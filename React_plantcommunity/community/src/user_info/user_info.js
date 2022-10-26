@@ -146,25 +146,10 @@ function User_info() {
     });
   }
 
-  // 현재 component의 상태를 설정하는 변수
+  // 현재 menu_component의 상태를 설정하는 변수
   let [change, setChange] = useState('own_contents');
 
-  // 내가 쓴 글
-  function own_contents() {
-    setChange('own_contents');
-  }
-
-  // 좋아요한 글
-  function like_contents() {
-    setChange('like_contents');
-  }
-
-  // 식물 앨범
-  function plant_album() {
-    setChange('plant_album');
-  }
-
-  function Component() {
+  function menu_component() {
     if ( change === 'own_contents') {
       return(
         <>
@@ -189,7 +174,7 @@ function User_info() {
 
 
 
-  useEffect(() => { Component(); }, [change])
+  useEffect(() => { menu_component(); }, [change])
   useEffect(() => { profile_print(); }, [setProfile])
   useEffect(() => { nickname_print(); }, [])
   // useEffect(() => { total_contents_request(); }, [total_contents, remain_contents]) // 뒤에 변수들의 값이 변할 때마다 실행
@@ -236,20 +221,20 @@ function User_info() {
           <div className='menu'>
             <ul className='menu_list'>
               <li>
-                <p onClick={ own_contents }>내가 쓴 글</p>
+                <p onClick={ () => { setChange('own_contents') } }>내가 쓴 글</p>
               </li>
               <li>
-                <p onClick={ like_contents }>좋아요한 글</p>
+                <p onClick={ () => { setChange('like_contents') } }>좋아요한 글</p>
               </li>
               <li>
-                <p onClick={ plant_album }>내 식물앨범</p>
+                <p onClick={ () => { setChange('plant_album'); } }>내 식물앨범</p>
               </li>
             </ul>
           </div>
 
           {/* 위 메뉴 클릭에 따라 달라지는 화면 구현 */}
           <div>
-            {Component()}
+            {menu_component()}
           </div>
 
         </div>
