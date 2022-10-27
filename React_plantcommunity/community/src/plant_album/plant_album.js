@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, resolvePath } from "react-router-dom";
 
-import Header from "../layout/header";
 import { colorConfig } from '../config/color';
 
 import axios from "axios";
@@ -31,7 +30,7 @@ function Plant_album() {
 
   return (
     <>
-      <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
+      <p className="tmp_title">내 식물 앨범</p>
 
     </>
   );

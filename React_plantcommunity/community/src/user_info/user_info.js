@@ -12,6 +12,8 @@ import { colorConfig } from "../config/color"; // 홈페이지 색감 정보
 
 import Own_contents from "./own_contents";
 import Like_contents from './like_contents';
+import Plant_album from '../plant_album/plant_album';
+
 
 const Profile = styled.img`
   width: 200px;
@@ -165,8 +167,7 @@ function User_info() {
     } else {
       return(
         <>
-          <p>식물 앨범</p>
-          <p>안녕3</p>
+          <Plant_album></Plant_album>
         </>
       )
     }
