@@ -67,6 +67,7 @@ function Write() {
   }
 
   const onChangeBoard = (e) => { // 글 저장 게시판을 변경할 때마다
+    console.log(e.target);
     setBoard(e.target.value);
   }
 
@@ -202,39 +203,39 @@ function Write() {
           config={
             {
               extraPlugins:[MyCustomUploadAdapterPlugin],
-              toolbar: {
-                items: [
-                  "heading",
-                  "|",
-                  "fontFamily",
-                  "fontSize",
-                  "fontColor",
-                  "alignment",
-                  "|",
-                  "bold",
-                  "italic",
-                  "strikethrough",
-                  "underline",
-                  "specialCharacters",
-                  "horizontalLine",
-                  "|",
-                  "bulletedList",
-                  "numberedList",
-                  "|",
-                  "indent",
-                  "outdent",
-                  "|",
-                  "link",
-                  "blockQuote",
-                  "CKFinder",
-                  "imageUpload",
-                  "insertTable",
-                  "mediaEmbed",
-                  "|",
-                  "undo",
-                  "redo",
-                ],              
-              },    
+              // toolbar: {
+              //   items: [
+              //     "heading",
+              //     "|",
+              //     "fontFamily",
+              //     "fontSize",
+              //     "fontColor",
+              //     "alignment",
+              //     "|",
+              //     "bold",
+              //     "italic",
+              //     "strikethrough",
+              //     "underline",
+              //     "specialCharacters",
+              //     "horizontalLine",
+              //     "|",
+              //     "bulletedList",
+              //     "numberedList",
+              //     "|",
+              //     "indent",
+              //     "outdent",
+              //     "|",
+              //     "link",
+              //     "blockQuote",
+              //     "CKFinder",
+              //     "imageUpload",
+              //     "insertTable",
+              //     "mediaEmbed",
+              //     "|",
+              //     "undo",
+              //     "redo",
+              //   ],              
+              // },    
             }
           }
           

@@ -1,0 +1,9 @@
+.each_album {
+  padding: 10px 20px;
+  width: 200px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+}
