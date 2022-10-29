@@ -17,9 +17,28 @@ function Plant_album() {
 
   let [change, setChange] = useState('default');
 
+  let [album_name, setAlbumName] = useState(); // 앨범 이름
+  let [plant_name, setPlantName] = useState(); // 식물 이름
+
+  const onChangeAlbumName = (e) => { // 앨범 이름을 변경할 때마다
+    console.log(e.target);
+    setAlbumName(e.target.value);
+  }
+
+  const onChangePlantName = (e) => { // 식물 이름을 변경할 때마다
+    console.log(e.target);
+    setPlantName(e.target.value);
+  }
+
+
   function create_album() {
-    console.log("앨범 생성");
-    axios.post(`http://localhost:5000/plant_album`)
+    const album_set_val = {
+      album_name: album_name,
+      plant_name: plant_name
+    }
+    axios.post(`http://localhost:5000/plant_album`, {
+      album_set_val
+    })
     .then(function (response) { // 앨범 생성이 완료됐을 경우
       console.log(response)
     })
@@ -30,23 +49,41 @@ function Plant_album() {
 
   function component() {
     if (change === 'default') {
-
+      return (
+        <> 
+          <div className="each_album">
+            <img src="/image/add_album.png" width="100" height="100" onClick={() => { setChange('create'); }}/>
+          </div>
+          
+        </>
+      );
+    } else if (change === 'create') {
+      return (
+        <>
+          <div>
+            <p>앨범 이름</p>
+            <input type="text" placeholder='앨범이름을 입력하세요' onChange={onChangeAlbumName}/>
+            <p>키우고 있는 식물의 이름</p>
+            <input type="text" placeholder='식물의 이름을 입력하세요' onChange={onChangePlantName} />
+            <input type="button" value="저장" onClick={create_album}/>
+          </div>
+        </>
+      );
     }
   }
 
-  useEffect(() => { }, []) // 처음에 무조건 한 번 실행
+  useEffect(() => { component() }, [change]) // 처음에 무조건 한 번 실행
 
   return (
     <>
       <p className="tmp_title">내 식물 앨범</p>
 
-      <div className="each_album">
-        <img src="/image/add_album.png" width="100" height="100" onClick={create_album}/>
+      <div>
+        {component()}
       </div>
-      
     </>
   );
-  
+
 }
 
 export default Plant_album;
