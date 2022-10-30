@@ -48,25 +48,32 @@ router.post('/', function(req, res){
 
 })
 
-// router.post('/test', function(req, res){
-//   sql = "SELECT * FROM sessions WHERE session_id = ?";
+router.get('/album_list', function(req, res){
+  sql = "SELECT * FROM sessions WHERE session_id = ?";
 
-//   session_connection.query(sql, req.headers.cookies, function(error, rows) {
-//     if (error) throw error;
+  session_connection.query(sql, req.headers.cookies, function(error, rows) {
+    if (error) throw error;
 
-//     if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
-//       console.log("해당 세션이 없습니다.")
-//     } else { // sessionstore에 해당 session값이 있을 때
-//       let session_obj = JSON.parse(rows[0].data);
+    if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
+      console.log("해당 세션이 없습니다.")
+    } else { // sessionstore에 해당 session값이 있을 때
+      let session_obj = JSON.parse(rows[0].data);
 
-//       let user_id = session_obj.user_id;
-//       let album_nam
+      let user_id = session_obj.user_id;
+      
+      sql = "SELECT * FROM plant_album WHERE user_id = ?"; 
 
-//     }
+      user_connection.query(sql, user_id, function(error, rows){ // db에 글 저장
+        if (error) throw error;
+        res.send(rows);
+      });
 
-//   });
 
-// })
+    }
+
+  });
+
+})
 
 
 /* css적용을 위해 추가 : public 폴더에서 파일 찾기 */

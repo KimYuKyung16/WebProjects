@@ -20,6 +20,8 @@ function Plant_album() {
   let [album_name, setAlbumName] = useState(); // 앨범 이름
   let [plant_name, setPlantName] = useState(); // 식물 이름
 
+  let [data, setData] = useState();
+
   const onChangeAlbumName = (e) => { // 앨범 이름을 변경할 때마다
     console.log(e.target);
     setAlbumName(e.target.value);
@@ -47,10 +49,30 @@ function Plant_album() {
     })
   }
 
+  function get_album() {
+    axios.get(`http://localhost:5000/plant_album/album_list`)
+    .then(function (response) { // 앨범 생성이 완료됐을 경우
+      const data = [...response.data];
+      console.log(data[0].album_name);
+      setData(data);
+    })
+    .catch(function (error) { // 앨범 생성 오류
+      console.log(error);
+    })
+  }
+
+
+
+
+
   function component() {
     if (change === 'default') {
       return (
         <> 
+          <div>
+            <p>앨범이름: {data[0].album_name}</p>
+          </div>
+
           <div className="each_album">
             <img src="/image/add_album.png" width="100" height="100" onClick={() => { setChange('create'); }}/>
           </div>
@@ -72,6 +94,7 @@ function Plant_album() {
     }
   }
 
+  useEffect(() => { get_album() }, []) // 처음에 무조건 한 번 실행
   useEffect(() => { component() }, [change]) // 처음에 무조건 한 번 실행
 
   return (
