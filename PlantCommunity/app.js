@@ -63,8 +63,10 @@ app.get('/chat_namespace', function(req, res){
 
     session_connection.query(sql, req.headers.cookies, function(error, rows) {
       if (error) throw error;
-      let session_obj = JSON.parse(rows[0].data);
-      let user_id = session_obj.user_id; // 현재 로그인되어있는 회원의 아이디 추출
+      // let session_obj = JSON.parse(rows[0].data);
+      // let user_id = session_obj.user_id; // 현재 로그인되어있는 회원의 아이디 추출
+      let user_id = 'coding';
+
 
       if (user_id) {
         const userNamespace = io.of("/" + user_id);
