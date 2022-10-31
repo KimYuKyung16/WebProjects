@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from "react-router";
 import axios from "axios";
 import io from 'socket.io-client'
 
@@ -16,6 +17,19 @@ function Chat() {
   const [chat2, setChat2] = useState([]);
 
   let nickname = '김유경';
+
+  const Chat = () => {
+    // const { user_id } = useLocation();
+    // console.log(user_id);
+
+    const location = useLocation();
+    console.log('아이디', location.user_id);
+    // const { user_id } = location.user_id;
+  }
+
+  console.log(Chat);
+
+
 
   const socket = io.connect('http://localhost:5000',{
     cors: { origin: '*' }
@@ -89,6 +103,7 @@ function Chat() {
   function test() {
     axios.get(`http://localhost:5000/chat_namespace`) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response);
       setNamespace(response.data.namespace);
     })
     .catch(function (error) {

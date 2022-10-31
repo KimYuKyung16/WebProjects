@@ -19,13 +19,12 @@ margin: 10px 0 10px 60px;
 `;
 
 
-
 axios.defaults.headers.common['cookies'] = encodeURIComponent(cookies.load('login_cookie')); // for all requests
 
 
 function MarketRead() {
 
-  // const navigate = useNavigate(); // 페이지 이동을 위해 필요
+  const navigate = useNavigate(); // 페이지 이동을 위해 필요
   let params = useParams();
   // let board = params.board;
   let board_num = params.num;
@@ -399,7 +398,8 @@ function MarketRead() {
 
           </div>
         </div> 
-        <input type="button" value="채팅하기"/>
+        <input type="button" value="채팅하기" onClick={() => {navigate('/chat', { user_id: content.user_id })}}/>
+        <p>{content.user_id}</p>
       </>
   );
 
