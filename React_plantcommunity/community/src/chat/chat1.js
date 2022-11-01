@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
+
 import { useLocation } from "react-router-dom";
-=======
-import { useLocation } from "react-router";
->>>>>>> f1b54b9008549ad49e5f6bd53c01a7d9b8d0fbf4
+
 import axios from "axios";
 import io from 'socket.io-client'
 
@@ -22,26 +20,12 @@ function Chat() {
 
   let nickname = '김유경';
 
-<<<<<<< HEAD
   const location = useLocation();
   console.log('아이디', location.state);
   const location_state = location.state;
 
   let user_id = location_state.user_id;
   console.log(user_id);
-
-=======
-  const Chat = () => {
-    // const { user_id } = useLocation();
-    // console.log(user_id);
-
-    const location = useLocation();
-    console.log('아이디', location.user_id);
-    // const { user_id } = location.user_id;
-  }
-
-  console.log(Chat);
->>>>>>> f1b54b9008549ad49e5f6bd53c01a7d9b8d0fbf4
 
 
 

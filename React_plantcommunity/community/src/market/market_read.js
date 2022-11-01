@@ -398,11 +398,7 @@ function MarketRead() {
 
           </div>
         </div> 
-<<<<<<< HEAD
         <input type="button" value="채팅하기" onClick={() => {navigate('/chat', {state:{ user_id: content.user_id }})}}/>
-=======
-        <input type="button" value="채팅하기" onClick={() => {navigate('/chat', { user_id: content.user_id })}}/>
->>>>>>> f1b54b9008549ad49e5f6bd53c01a7d9b8d0fbf4
         <p>{content.user_id}</p>
       </>
   );
