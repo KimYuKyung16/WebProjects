@@ -150,7 +150,7 @@ function Chat() {
           <input 
             name="name" 
             onChange={e => onTextChange2(e)} 
-            value={state2.name} 
+            value={user_id} 
             label="Name" 
           />
         </div>
