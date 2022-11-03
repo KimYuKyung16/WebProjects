@@ -58,23 +58,34 @@ const io = require('socket.io')(http, {
 app.get('/chat_namespace', function(req, res){
   if (req.headers.cookies) { // 쿠키가 있다면 : 로그인 상태라면
     console.log(req.headers.cookies)
+    let content_num = req.query.content_num;
+    console.log(typeof(content_num))
 
     sql = "SELECT * FROM sessions WHERE session_id = ?";
 
     session_connection.query(sql, req.headers.cookies, function(error, rows) {
       if (error) throw error;
-      // let session_obj = JSON.parse(rows[0].data);
-      // let user_id = session_obj.user_id; // 현재 로그인되어있는 회원의 아이디 추출
-      let user_id = 'coding';
+      let session_obj = JSON.parse(rows[0].data);
+      let user_id = session_obj.user_id; // 현재 로그인되어있는 회원의 아이디 추출
+      console.log(user_id);
+      // let user_id = 'coding';
 
 
       if (user_id) {
-        const userNamespace = io.of("/" + user_id);
+        const userNamespace = io.of("/" + content_num);
   
-        userNamespace.on("connection", (socket) => {
-          socket.on("message", ({name, message}) => {
-            userNamespace.emit('message', {name, message})
+        userNamespace.on("connection", (socket) => { // 네임스페이스로 나누고
+          socket.join(user_id) // 네임스페이스 안에서 룸으로 또 나눔.
+
+          const room = socket.to(user_id);
+
+          socket.on("message", ({nickname, message}) => {
+            room.emit('message', {nickname, message})
           });
+
+          // socket.on("message", ({nickname, message}) => {
+          //   userNamespace.emit('message', {nickname, message})
+          // });
         });
 
         res.send({namespace: user_id});

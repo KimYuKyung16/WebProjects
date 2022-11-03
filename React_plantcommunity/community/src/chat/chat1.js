@@ -12,63 +12,78 @@ import io from 'socket.io-client'
 function Chat() {
   let [namespace, setNamespace] = useState();
 
-  const [state, setState] = useState({message: '', name: ''})
-  const [chat, setChat] = useState([]);
+  // const [state, setState] = useState({message: '', name: ''})
+  // const [chat, setChat] = useState([]);
 
-  const [state2, setState2] = useState({message: '', name: ''})
+  const [state2, setState2] = useState({message: '', nickname: ''})
   const [chat2, setChat2] = useState([]);
 
-  let nickname = '김유경';
+  let [nickname, setNickname] = useState(); // 현재 로그인되어있는 유저의 닉네임
+
+  function nickname_print() {
+    axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      setNickname (response.data.nickname);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
 
   const location = useLocation();
   console.log('아이디', location.state);
   const location_state = location.state;
 
   let user_id = location_state.user_id;
+  let content_num = String(location_state.content_num); // 현재 게시글 번호
   console.log(user_id);
+  console.log(nickname);
+  console.log(typeof(content_num));
 
 
 
-  const socket = io.connect('http://localhost:5000',{
-    cors: { origin: '*' }
-  });
+
+  // const socket = io.connect('http://localhost:5000',{
+  //   cors: { origin: '*' }
+  // });
 
   console.log(namespace);
 
-  const userSocket = io("http://localhost:5000/" + user_id, {
+  const userSocket = io.connect("http://localhost:5000/" + content_num, { // 네임스페이스로 방 구분
     cors: { origin: '*' }
   });
 
 
+  // useEffect(() => {
+  //   socket.on('message', ({name, message}) => {
+  //     setChat([...chat, {name, message}])
+  //   })
+  // })
+
   useEffect(() => {
-    socket.on('message', ({name, message}) => {
-      setChat([...chat, {name, message}])
+    userSocket.on('message', ({nickname, message}) => {
+      setChat2([...chat2, {nickname, message}])
+      console.log(chat2)
     })
   })
 
-  useEffect(() => {
-    userSocket.on('message', ({name, message}) => {
-      setChat2([...chat2, {name, message}])
-    })
-  })
 
 
-
-  const renderChat = () => {
-    return chat.map(({name, message}, index) => (
-      <div key={index}>
-        <h3>
-          {name}: <span>{message}</span>
-        </h3>
-      </div>
-    ))
-  }
+  // const renderChat = () => {
+  //   return chat.map(({name, message}, index) => (
+  //     <div key={index}>
+  //       <h3>
+  //         {name}: <span>{message}</span>
+  //       </h3>
+  //     </div>
+  //   ))
+  // }
 
   const renderChat2 = () => {
-    return chat2.map(({name, message}, index) => (
+    return chat2.map(({nickname, message}, index) => (
       <div key={index}>
         <h3>
-          {name}: <span>{message}</span>
+          {nickname}: <span>{message}</span>
         </h3>
       </div>
     ))
@@ -76,30 +91,32 @@ function Chat() {
 
 
   const onTextChange = e => {
-    setState({...state, [e.target.name]: e.target.value})
+    setState2({...state2, nickname: nickname, message: e.target.value})
+    console.log(state2);
   }
 
-  const onTextChange2 = e => {
-    setState2({...state2, [e.target.name]: e.target.value})
-  }
 
-  const onMessageSubmit = (e) => {
-    e.preventDefault()
-    const {name, message} = state
-    socket.emit('message', {name, message})
-    setState({message: '', name })
-  }
+  // const onMessageSubmit = (e) => {
+  //   e.preventDefault()
+  //   const {name, message} = state
+  //   socket.emit('message', {name, message})
+  //   setState({message: '', name })
+  // }
 
   const onMessageSubmit2 = (e) => {
     e.preventDefault()
-    const {name, message} = state2
-    userSocket.emit('message', {name, message})
-    setState2({message: '', name })
+    const {nickname, message} = state2
+    userSocket.emit('message', {nickname, message})
+    setState2({message: '', nickname: nickname })
   }
 
 
-  function test() {
-    axios.get(`http://localhost:5000/chat_namespace`) // 서버로 post 요청
+  function test() { // 닉네임에 해당하는 네임스페이스 만들기
+    axios.get(`http://localhost:5000/chat_namespace`, {
+      params: {
+        content_num: content_num
+      }   
+    }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response);
       setNamespace(response.data.namespace);
@@ -109,55 +126,18 @@ function Chat() {
     });
   }
 
-  useEffect(() => { test(); }, []) 
+  useEffect(() => { test(); nickname_print(); }, []) 
 
 
 
   return (
     <>
-      <form onSubmit={onMessageSubmit}>
-        <h1>Messanger</h1>
-        <div className='name-field'>
-          <input 
-            name="name" 
-            onChange={e => onTextChange(e)} 
-            value={state.name} 
-            label="Name" 
-          />
-        </div>
-        <div>
-          <input 
-            name="message" 
-            onChange={e => onTextChange(e)} 
-            value={state.message} 
-            label="Message" 
-          />
-        </div>
-        <button>Send Message</button>
-      </form>
-      <div className="render-chat">
-        <h1>Chat Log</h1>
-        {renderChat()}
-      </div>
-
-
-
-
-
       <form onSubmit={onMessageSubmit2}>
         <h1>Messanger</h1>
-        <div className='name-field'>
-          <input 
-            name="name" 
-            onChange={e => onTextChange2(e)} 
-            value={user_id} 
-            label="Name" 
-          />
-        </div>
         <div>
           <input 
             name="message" 
-            onChange={e => onTextChange2(e)} 
+            onChange={e => onTextChange(e)} 
             value={state2.message} 
             label="Message" 
           />
