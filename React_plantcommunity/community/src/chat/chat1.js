@@ -146,6 +146,7 @@ function Chat() {
       </form>
       <div className="render-chat">
         <h1>Chat Log</h1>
+        <h3>{content_num}채팅방입니다.</h3>
         {renderChat2()}
       </div>
     </>
