@@ -10,7 +10,7 @@ import io from 'socket.io-client'
 
 
 function Chat() {
-  let [namespace, setNamespace] = useState();
+  let [namespace, setNamespace] = useState('');
 
   // const [state, setState] = useState({message: '', name: ''})
   // const [chat, setChat] = useState([]);
@@ -18,12 +18,16 @@ function Chat() {
   const [state2, setState2] = useState({message: '', nickname: ''})
   const [chat2, setChat2] = useState([]);
 
+  let [last_chat, setLastChat] = useState(''); // 가장 마지막 채팅내용을 저장
+
   let [nickname, setNickname] = useState(); // 현재 로그인되어있는 유저의 닉네임
+  let [logined_user_id, setLoginedUserId] = useState(''); // 현재 로그인되어있는 유저의 아이디
 
   function nickname_print() {
     axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
-      setNickname (response.data.nickname);
+      setNickname (response.data.nickname); // 현재 로그인되어있는 닉네임 설정
+      setLoginedUserId(response.data.user_id); // 현재 로그인되어있는 아이디 설정
     })
     .catch(function (error) {
       console.log(error);
@@ -34,9 +38,9 @@ function Chat() {
   console.log('아이디', location.state);
   const location_state = location.state;
 
-  let user_id = location_state.user_id;
+  let user_id = location_state.user_id; // 이 게시글을 작성한 유저의 아이디
   let content_num = String(location_state.content_num); // 현재 게시글 번호
-  console.log(user_id);
+  console.log(user_id); 
   console.log(nickname);
   console.log(typeof(content_num));
 
@@ -61,7 +65,8 @@ function Chat() {
   // })
 
   useEffect(() => {
-    userSocket.on('message', ({nickname, message}) => {
+    userSocket.on(logined_user_id, ({nickname, message}) => {
+      setLastChat(message); // 가장 마지막에 보낸 채팅의 내용을 저장
       setChat2([...chat2, {nickname, message}])
       console.log(chat2)
     })
@@ -80,6 +85,7 @@ function Chat() {
   // }
 
   const renderChat2 = () => {
+    console.log(chat2);
     return chat2.map(({nickname, message}, index) => (
       <div key={index}>
         <h3>
@@ -106,12 +112,12 @@ function Chat() {
   const onMessageSubmit2 = (e) => {
     e.preventDefault()
     const {nickname, message} = state2
-    userSocket.emit('message', {nickname, message})
+    userSocket.emit(logined_user_id, {nickname, message})
     setState2({message: '', nickname: nickname })
   }
 
 
-  function test() { // 닉네임에 해당하는 네임스페이스 만들기
+  function test() { //게시글 번호에 해당하는 네임스페이스 만들기
     axios.get(`http://localhost:5000/chat_namespace`, {
       params: {
         content_num: content_num
@@ -119,14 +125,62 @@ function Chat() {
     }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response);
-      setNamespace(response.data.namespace);
+      setNamespace(content_num);
     })
     .catch(function (error) {
       console.log(error);
     });
   }
 
-  useEffect(() => { test(); nickname_print(); }, []) 
+
+
+  function chat_save() {
+    console.log("채팅 저장하는 작업하기")
+    let send_val = {
+      seller_user_id: user_id,
+      content_num: namespace, 
+      participant_user_id: logined_user_id,
+      chat_content: chat2,
+      last_chat: last_chat
+    }
+    axios.post(`http://localhost:5000/chat`, {
+      send_val
+    }) // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  }
+
+
+  function chat_load() {
+    console.log("채팅 불러오는 작업하기")
+    axios.get(`http://localhost:5000/chat`, {
+      params: {
+        seller_user_id: user_id,
+        content_num: namespace, 
+        participant_user_id: logined_user_id,
+      }
+    }) // 서버로 post 요청
+    .then(function (response) { // 서버에서 응답이 왔을 때
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  }
+
+
+
+
+
+  useEffect(() => { test(); nickname_print(); chat_load(); }, []) 
+  useEffect(() => { chat_save(); }, [chat2]) 
+
 
 
 

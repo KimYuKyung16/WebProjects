@@ -77,10 +77,10 @@ app.get('/chat_namespace', function(req, res){
         userNamespace.on("connection", (socket) => { // 네임스페이스로 나누고
           socket.join(user_id) // 네임스페이스 안에서 룸으로 또 나눔.
 
-          const room = socket.to(user_id);
+          // const room = socket.to(user_id);
 
-          socket.on("message", ({nickname, message}) => {
-            room.emit('message', {nickname, message})
+          socket.on(user_id, ({nickname, message}) => {
+            socket.to(user_id).emit(user_id, {nickname, message})
           });
 
           // socket.on("message", ({nickname, message}) => {
@@ -141,7 +141,7 @@ const write = require('./routes/write.js'); // 글쓰기 페이지
 
 const plant_info = require('./routes/plant_info.js'); // 식물 기본 정보
 const plant_album = require('./routes/plant_album.js'); // 내 식물 앨범
-// const chat = require('./routes/chat.js'); // 글쓰기 페이지
+const chat = require('./routes/chat.js'); // 글쓰기 페이지
 
 
 
@@ -180,7 +180,7 @@ app.use('/write', write);
 app.use('/plant_info', plant_info);
 app.use('/plant_album', plant_album);
 
-// app.use('/chat', chat);
+app.use('/chat', chat);
 
 
 // var request = require('request');
