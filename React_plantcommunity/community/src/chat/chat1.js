@@ -23,11 +23,20 @@ function Chat() {
   let [nickname, setNickname] = useState(); // 현재 로그인되어있는 유저의 닉네임
   let [logined_user_id, setLoginedUserId] = useState(''); // 현재 로그인되어있는 유저의 아이디
 
+  // let nickname;
+  // let logined_user_id;
+
   function nickname_print() {
     axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
-      setNickname (response.data.nickname); // 현재 로그인되어있는 닉네임 설정
-      setLoginedUserId(response.data.user_id); // 현재 로그인되어있는 아이디 설정
+      // nickname = response.data.nickname; // 현재 로그인되어있는 닉네임 설정
+      // logined_user_id = response.data.user_id; // 현재 로그인되어있는 아이디 설정
+      setNickname(response.data.nickname)
+      setLoginedUserId(response.data.user_id)
+
+      console.log('닉네임값:', nickname);
+      
+      // chat_load();
     })
     .catch(function (error) {
       console.log(error);
@@ -138,7 +147,7 @@ function Chat() {
     console.log("채팅 저장하는 작업하기")
     let send_val = {
       seller_user_id: user_id,
-      content_num: namespace, 
+      content_num: content_num, 
       participant_user_id: logined_user_id,
       chat_content: chat2,
       last_chat: last_chat
@@ -161,12 +170,13 @@ function Chat() {
     axios.get(`http://localhost:5000/chat`, {
       params: {
         seller_user_id: user_id,
-        content_num: namespace, 
+        content_num: content_num, 
         participant_user_id: logined_user_id,
       }
     }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response.data);
+      // setChat2(response.data)
     })
     .catch(function (error) {
       console.log(error);
@@ -178,8 +188,8 @@ function Chat() {
 
 
 
-  useEffect(() => { test(); nickname_print(); chat_load(); }, []) 
-  useEffect(() => { chat_save(); }, [chat2]) 
+  useEffect(() => { test(); nickname_print(); }, []) 
+  // useEffect(() => { chat_save(); }, [chat2]) 
 
 
 
@@ -196,7 +206,7 @@ function Chat() {
             label="Message" 
           />
         </div>
-        <button>Send Message</button>
+        <button onClick={chat_save}>Send Message</button>
       </form>
       <div className="render-chat">
         <h1>Chat Log</h1>
