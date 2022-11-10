@@ -12,9 +12,6 @@ import io from 'socket.io-client'
 function Chat() {
   let [namespace, setNamespace] = useState('');
 
-  // const [state, setState] = useState({message: '', name: ''})
-  // const [chat, setChat] = useState([]);
-
   const [state2, setState2] = useState({message: '', nickname: ''})
   const [chat2, setChat2] = useState([]);
 
@@ -36,7 +33,7 @@ function Chat() {
 
       console.log('닉네임값:', nickname);
       
-      // chat_load();
+      chat_load();
     })
     .catch(function (error) {
       console.log(error);
@@ -60,7 +57,6 @@ function Chat() {
   //   cors: { origin: '*' }
   // });
 
-  console.log(namespace);
 
   const userSocket = io.connect("http://localhost:5000/" + content_num, { // 네임스페이스로 방 구분
     cors: { origin: '*' }
@@ -74,6 +70,7 @@ function Chat() {
   // })
 
   useEffect(() => {
+    console.log("logined_user_id:",logined_user_id )
     userSocket.on(logined_user_id, ({nickname, message}) => {
       setLastChat(message); // 가장 마지막에 보낸 채팅의 내용을 저장
       setChat2([...chat2, {nickname, message}])
@@ -164,19 +161,20 @@ function Chat() {
 
   }
 
-
+  // 최초로 한 번만 실행되면 됨.
   function chat_load() {
     console.log("채팅 불러오는 작업하기")
     axios.get(`http://localhost:5000/chat`, {
       params: {
         seller_user_id: user_id,
         content_num: content_num, 
-        participant_user_id: logined_user_id,
+        participant_user_id: 'coding',
       }
     }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
-      console.log(response.data);
-      // setChat2(response.data)
+      console.log(response.data[0].chat_content);
+      let chat_content_array = JSON.parse(response.data[0].chat_content)
+      setChat2(chat_content_array)
     })
     .catch(function (error) {
       console.log(error);
@@ -188,7 +186,7 @@ function Chat() {
 
 
 
-  useEffect(() => { test(); nickname_print(); }, []) 
+  useEffect(() => { nickname_print(); test();}, []) 
   // useEffect(() => { chat_save(); }, [chat2]) 
 
 
