@@ -269,15 +269,26 @@ function MarketRead() {
   }
 
   let [nickname, setNickname] = useState();
+  let [logined_user_id, setLoginedUserId] = useState(''); // 현재 로그인되어있는 유저의 아이디
+
 
   function nickname_print() {
     axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
       setNickname (response.data.nickname);
+      setLoginedUserId(response.data.user_id)
     })
     .catch(function (error) {
       console.log(error);
     });
+  }
+
+  function chat_navigate_option() {
+    if (content.user_id === logined_user_id) { // 게시글 글쓴 사람과 로그인 된 아이디가 같으면
+      navigate('/own_chat_list', {state:{ user_id: content.user_id, content_num: content.num }});
+    } else {
+      navigate('/chat', {state:{ user_id: content.user_id, content_num: content.num }})
+    }
   }
 
  
@@ -398,7 +409,7 @@ function MarketRead() {
 
           </div>
         </div> 
-        <input type="button" value="채팅하기" onClick={() => {navigate('/chat', {state:{ user_id: content.user_id, content_num: content.num }})}}/>
+        <input type="button" value="채팅하기" onClick={chat_navigate_option}/>
         <p>{content.user_id}</p>
       </>
   );

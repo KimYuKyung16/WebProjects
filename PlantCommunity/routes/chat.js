@@ -36,7 +36,7 @@ router.route('/')
       sql = "SELECT * FROM chat WHERE content_num = ? and seller_user_id = ? and participant_user_id = ?";
     
       var insertValArr = [content_num, seller_user_id, participant_user_id];
-      connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+      connection.query(sql, insertValArr, function(error, rows){ // 
         if (error) throw error;
         res.send(rows);
       })
@@ -101,6 +101,22 @@ router.route('/')
 
   })
 
+
+
+
+router.route('/list')
+  .get((req, res) => {
+    let content_num = parseInt(req.query.content_num);
+
+    sql = "SELECT * FROM chat WHERE content_num = ?";
+    
+    connection.query(sql, content_num, function(error, rows){ // db에 글 저장
+      if (error) throw error;
+
+      res.send(rows);
+    })
+
+  })
 
 
 

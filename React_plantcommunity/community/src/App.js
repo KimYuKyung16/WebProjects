@@ -17,6 +17,8 @@ import Revise from "./menu/revise";
 import Market from "./market/market_list";
 import MarketRead from "./market/market_read";
 import Chat from "./chat/chat1";
+import Own_chat_list from "./chat/own_chat_list";
+
 import Plant_album from "./plant_album/plant_album";
 
 function App() {
@@ -44,7 +46,7 @@ function App() {
 
 
         <Route path="/chat" element={<Chat />}></Route>
-
+        <Route path="/own_chat_list" element={<Own_chat_list />}></Route>
 
         
       </Routes>
