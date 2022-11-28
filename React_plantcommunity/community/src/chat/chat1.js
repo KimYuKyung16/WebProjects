@@ -108,16 +108,16 @@ function Chat() {
   //   ))
   // }
 
-  const renderChat2 = () => {
-    console.log(chat2);
-    return chat2.map(({nickname, message}, index) => (
-      <div key={index}>
-        <h3>
-          {nickname}: <span>{message}</span>
-        </h3>
-      </div>
-    ))
-  }
+  // const renderChat2 = () => {
+  //   console.log(chat2);
+  //   return chat2.map(({nickname, message}, index) => (
+  //     <div key={index}>
+  //       <h3>
+  //         {nickname}: <span>{message}</span>
+  //       </h3>
+  //     </div>
+  //   ))
+  // }
 
 
   const renderChat = () => {
