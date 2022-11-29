@@ -22,7 +22,7 @@ function Chat() {
   let [namespace, setNamespace] = useState('');
 
   const [state2, setState2] = useState({logined_user_id: '', message: '', nickname: ''})
-  const [chat2, setChat2] = useState([]);
+  const [chat2, setChat2] = useState([{id: '', message: '', nickname: ''}]);
 
   // const [current_chat, setCurrentChat] = useState([]);
 
@@ -55,11 +55,16 @@ function Chat() {
       // nickname = response.data.nickname; // 현재 로그인되어있는 닉네임 설정
       // logined_user_id = response.data.user_id; // 현재 로그인되어있는 아이디 설정
       setNickname(response.data.nickname)
+      setLoginedUserId(response.data.user_id)
 
+      console.log(response.data.user_id)
+      
       if (user_id === response.data.user_id) { // 동일 아이디면
-        setLoginedUserId(participant_user_id)
+        // setLoginedUserId(participant_user_id)
+        setNamespace(participant_user_id)
       } else {
-        setLoginedUserId(response.data.user_id)
+        // setLoginedUserId(response.data.user_id)
+        setNamespace(response.data.user_id)
       }
       
     })
@@ -95,9 +100,11 @@ function Chat() {
 
   useEffect(() => {
     console.log("logined_user_id:",logined_user_id )
-    userSocket.on(logined_user_id, ({user_id, nickname, message}) => {
+    console.log(namespace)
+    userSocket.on(namespace, ({logined_user_id, nickname, message}) => {
+      console.log(message);
       setLastChat(message); // 가장 마지막에 보낸 채팅의 내용을 저장
-      setChat2([...chat2, {user_id, nickname, message}])
+      setChat2([...chat2, {id: logined_user_id, nickname: nickname, message: message}])
       // setCurrentChat([...current_chat, {user_id, nickname, message}]) // 현재 채팅만 저장
       console.log(chat2)
     })
@@ -170,23 +177,24 @@ function Chat() {
 
   const onMessageSubmit2 = (e) => {
     e.preventDefault()
-    const {user_id, nickname, message} = state2
-    userSocket.emit(logined_user_id, {logined_user_id, nickname, message})
+    const {logined_user_id, nickname, message} = state2
+    userSocket.emit(namespace, {logined_user_id, nickname, message})
     console.log(state2)
-    setState2({message: '', nickname: nickname, user_id: user_id })
+    setState2({message: '', nickname: nickname, logined_user_id: logined_user_id })
   }
 
 
   function test() { //게시글 번호에 해당하는 네임스페이스 만들기
+    console.log(namespace)
     axios.get(`http://localhost:5000/chat_namespace`, {
       params: {
         content_num: content_num,
-        user_id: logined_user_id
+        user_id: namespace
       }   
     }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log(response);
-      setNamespace(content_num);
+      // setNamespace(content_num);
     
     })
     .catch(function (error) {
@@ -201,7 +209,7 @@ function Chat() {
     let send_val = {
       seller_user_id: user_id,
       content_num: content_num, 
-      participant_user_id: logined_user_id,
+      participant_user_id: namespace,
       chat_content: chat2,
       last_chat: last_chat
     }
@@ -227,7 +235,7 @@ function Chat() {
       params: {
         seller_user_id: user_id,
         content_num: content_num, 
-        participant_user_id: logined_user_id,
+        participant_user_id: namespace,
       }
     }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
@@ -253,7 +261,7 @@ function Chat() {
   useEffect(() => { nickname_print();}, []) 
   useEffect( 
     () => { chat_load(); test(); }
-    , [logined_user_id]
+    , [namespace]
   );
 
 
@@ -280,10 +288,11 @@ function Chat() {
         <h3>{content_num}채팅방입니다.</h3>
         <>
         {
-          chat2.map(({user_id, nickname, message}, index) => {
+          chat2.map(({id, nickname, message}, index) => {
+            console.log(id)
             return(
               <div key={index}>
-                <Current_chat location={logined_user_id === user_id ? "left": "right" }>
+                <Current_chat location={logined_user_id === id ? "right": "left" }>
                   <h3>
                     {nickname}: <span>{message}</span> 
                   </h3>

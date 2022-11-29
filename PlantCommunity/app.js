@@ -81,8 +81,10 @@ app.get('/chat_namespace', function(req, res){
 
           // const room = socket.to(user_id);
 
-          socket.on(current_user_id, ({user_id, nickname, message}) => {
-            socket.to(current_user_id).emit(user_id, {user_id, nickname, message})
+          // 값 변수 이름도 클라이언트랑 같아야 함.
+          socket.on(current_user_id, ({logined_user_id, nickname, message}) => {
+            socket.to(current_user_id).emit(current_user_id, {logined_user_id, nickname, message})
+            // socket.emit(current_user_id, {user_id2, nickname, message})
           });
 
           // socket.on("message", ({nickname, message}) => {
