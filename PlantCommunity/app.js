@@ -81,8 +81,8 @@ app.get('/chat_namespace', function(req, res){
 
           // const room = socket.to(user_id);
 
-          socket.on(current_user_id, ({nickname, message}) => {
-            socket.to(current_user_id).emit(user_id, {nickname, message})
+          socket.on(current_user_id, ({user_id, nickname, message}) => {
+            socket.to(current_user_id).emit(user_id, {user_id, nickname, message})
           });
 
           // socket.on("message", ({nickname, message}) => {

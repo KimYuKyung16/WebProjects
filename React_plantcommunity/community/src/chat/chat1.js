@@ -17,7 +17,7 @@ background-color: green
 function Chat() {
   let [namespace, setNamespace] = useState('');
 
-  const [state2, setState2] = useState({message: '', nickname: ''})
+  const [state2, setState2] = useState({user_id: '', message: '', nickname: ''})
   const [chat2, setChat2] = useState([]);
 
   let [last_chat, setLastChat] = useState(''); // 가장 마지막 채팅내용을 저장
@@ -91,7 +91,7 @@ function Chat() {
     console.log("logined_user_id:",logined_user_id )
     userSocket.on(logined_user_id, ({nickname, message}) => {
       setLastChat(message); // 가장 마지막에 보낸 채팅의 내용을 저장
-      setChat2([...chat2, {nickname, message}])
+      setChat2([...chat2, {user_id, nickname, message}])
       console.log(chat2)
     })
   })
@@ -135,7 +135,7 @@ function Chat() {
 
 
   const onTextChange = e => {
-    setState2({...state2, nickname: nickname, message: e.target.value})
+    setState2({...state2, user_id: user_id, nickname: nickname, message: e.target.value})
     console.log(state2);
   }
 
@@ -149,9 +149,10 @@ function Chat() {
 
   const onMessageSubmit2 = (e) => {
     e.preventDefault()
-    const {nickname, message} = state2
-    userSocket.emit(logined_user_id, {nickname, message})
-    setState2({message: '', nickname: nickname })
+    const {user_id, nickname, message} = state2
+    userSocket.emit(logined_user_id, {user_id, nickname, message})
+    console.log(state2)
+    setState2({message: '', nickname: nickname, user_id: user_id })
   }
 
 
