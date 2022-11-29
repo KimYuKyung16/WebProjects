@@ -12,13 +12,19 @@ const chat = styled.h3`
 background-color: green
 `;
 
+const Current_chat = styled.div`
+text-align: ${(props) => props.location};
+`;
+
 
 
 function Chat() {
   let [namespace, setNamespace] = useState('');
 
-  const [state2, setState2] = useState({user_id: '', message: '', nickname: ''})
+  const [state2, setState2] = useState({logined_user_id: '', message: '', nickname: ''})
   const [chat2, setChat2] = useState([]);
+
+  // const [current_chat, setCurrentChat] = useState([]);
 
   let [last_chat, setLastChat] = useState(''); // 가장 마지막 채팅내용을 저장
 
@@ -89,9 +95,10 @@ function Chat() {
 
   useEffect(() => {
     console.log("logined_user_id:",logined_user_id )
-    userSocket.on(logined_user_id, ({nickname, message}) => {
+    userSocket.on(logined_user_id, ({user_id, nickname, message}) => {
       setLastChat(message); // 가장 마지막에 보낸 채팅의 내용을 저장
       setChat2([...chat2, {user_id, nickname, message}])
+      // setCurrentChat([...current_chat, {user_id, nickname, message}]) // 현재 채팅만 저장
       console.log(chat2)
     })
   })
@@ -122,20 +129,34 @@ function Chat() {
 
   const renderChat = () => {
     console.log(chat2);
-    return chat2.map(({nickname, message}, index) => (
+    return chat2.map(({logined_user_id, nickname, message}, index) => (
       <div key={index}>
-         <h3>
-           {nickname}: <span>{message}</span>
-         </h3>
+        <current_chat location={user_id}>
+          <h3>
+            {nickname}: <span>{message}</span>
+          </h3>
+         </current_chat>
        </div>
 
     ))
   }
 
+  // const renderCurrentChat = () => {
+  //   console.log(current_chat);
+  //   return current_chat.map(({nickname, message}, index) => (
+  //     <div key={index}>
+  //        <h3>
+  //          {nickname}: <span>{message}</span>
+  //        </h3>
+  //      </div>
+
+  //   ))
+  // }
+
 
 
   const onTextChange = e => {
-    setState2({...state2, user_id: user_id, nickname: nickname, message: e.target.value})
+    setState2({...state2, logined_user_id: logined_user_id, nickname: nickname, message: e.target.value})
     console.log(state2);
   }
 
@@ -150,7 +171,7 @@ function Chat() {
   const onMessageSubmit2 = (e) => {
     e.preventDefault()
     const {user_id, nickname, message} = state2
-    userSocket.emit(logined_user_id, {user_id, nickname, message})
+    userSocket.emit(logined_user_id, {logined_user_id, nickname, message})
     console.log(state2)
     setState2({message: '', nickname: nickname, user_id: user_id })
   }
@@ -258,7 +279,19 @@ function Chat() {
         <h1>Chat Log</h1>
         <h3>{content_num}채팅방입니다.</h3>
         <>
-          {renderChat()}
+        {
+          chat2.map(({user_id, nickname, message}, index) => {
+            return(
+              <div key={index}>
+                <Current_chat location={logined_user_id === user_id ? "left": "right" }>
+                  <h3>
+                    {nickname}: <span>{message}</span> 
+                  </h3>
+                </Current_chat>
+              </div>
+            )
+          })
+        }
         </>       
       </div>
     </>

@@ -72,7 +72,7 @@ router.route('/')
           sql = "UPDATE chat SET chat_content = ?, last_chat = ? WHERE content_num = ? and seller_user_id = ? and participant_user_id = ?";
 
           var insertValArr = [s_chat_content, last_chat, content_num, seller_user_id, participant_user_id];
-          connection.query(sql, insertValArr, function(error, rows){ // db에 조회수 저장
+          connection.query(sql, insertValArr, function(error, rows){ 
             if (error) throw error;
             res.send(rows);
           });
@@ -83,7 +83,7 @@ router.route('/')
           sql = "INSERT INTO chat (seller_user_id, content_num, participant_user_id, chat_content, last_chat) VALUES (?, ?, ?, ?, ?)";
   
           var insertValArr = [seller_user_id, content_num, participant_user_id, s_chat_content, last_chat];
-          connection.query(sql, insertValArr, function(error, rows){ // db에 조회수 저장
+          connection.query(sql, insertValArr, function(error, rows){ 
             if (error) throw error;
             res.send(rows);
           });
