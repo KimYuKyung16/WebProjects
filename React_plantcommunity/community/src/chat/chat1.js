@@ -7,13 +7,26 @@ import io, { Socket } from 'socket.io-client'
 
 import styled from "styled-components"; // styled in js
 
+import './chat.css';
 
-const chat = styled.h3`
-background-color: green
+
+const Chat_content = styled.div`
+display: flex;
+justify-content: ${(props) => props.location};
+width: 500px;
+/* background-color: aqua; */
 `;
 
-const Current_chat = styled.div`
-text-align: ${(props) => props.location};
+
+const Message = styled.div`
+background-color: ${(props) => props.backgroundcolor};
+/* text-align: ${(props) => props.location}; */
+/* display: flex; */
+/* justify-content: ${(props) => props.location}; */
+width: 300px;
+padding: 10px;
+margin: 5px 0px;
+border-radius: 10px;
 `;
 
 
@@ -72,12 +85,6 @@ function Chat() {
       console.log(error);
     });
   }
-
-
-
-
-
-
 
 
   // const socket = io.connect('http://localhost:5000',{
@@ -292,11 +299,12 @@ function Chat() {
             console.log(id)
             return(
               <div key={index}>
-                <Current_chat location={logined_user_id === id ? "right": "left" }>
-                  <h3>
-                    {nickname}: <span>{message}</span> 
-                  </h3>
-                </Current_chat>
+                <Chat_content location={logined_user_id === id ? "right": "left" }>
+                  {/* <p>{nickname}</p> */}
+                  <Message location={logined_user_id === id ? "right": "left" } backgroundcolor={logined_user_id === id ? "rgb(186, 218, 199)": "rgb(225, 225, 225)"}>
+                    <p>{message}</p>
+                  </Message>               
+                </Chat_content>
               </div>
             )
           })
