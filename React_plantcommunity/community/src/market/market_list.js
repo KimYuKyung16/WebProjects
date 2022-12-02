@@ -24,6 +24,36 @@ const navbar_setting = {
   navbar_textcolor: colorConfig.sub_color
 }
 
+const MarketList = styled.div`
+/* background-color: aqua; */
+width: 80%;
+height: 100%;
+margin: 20px 10%;
+display: flex;
+flex-wrap: wrap;
+/* justify-content: space-between; */
+`;
+
+const EachMarket = styled.div`
+width: 30%;
+height: 250px;
+display: flex;
+flex-direction: column;
+align-items: center;
+margin: 10px;
+`;
+
+const Thumbnail = styled.img`
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 20px;
+border: 1px solid gray;
+`;
+
+const ContentTitle = styled.h3`
+color: rgb(145, 170, 155);
+`;
 
 function Market() {
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
@@ -122,21 +152,23 @@ function Market() {
     <>
       <Header title_setting={title_setting} navbar_setting={navbar_setting}/>
 
-      {contents.map((x) => {
-            let link = `/plant_market/contents/${x.num}`;
+      <MarketList>
+        {contents.map((x) => {
+              let link = `/plant_market/contents/${x.num}`;
 
-            return (
-              <div onClick={() => test(link)}>
-                <img src={x.thumbnail} />
-                <h4>{x.title}</h4>
-                {/* <td className="num">{x.num}</td>
-                <td className="content_title"><Link to = {link}>{x.title}</Link></td>
-                <td className="writer" id="writer1">{x.writer}</td>
-                <td className="date">{x.date}</td>
-                <td className="click_count">{x.clickcount}</td> */}
-              </div>   
-            )        
-          })}
+              return (
+                <EachMarket onClick={() => test(link)}>
+                  <Thumbnail src={x.thumbnail} />
+                  <ContentTitle>{x.title}</ContentTitle> 
+                  {/* <td className="num">{x.num}</td>
+                  <td className="content_title"><Link to = {link}>{x.title}</Link></td>
+                  <td className="writer" id="writer1">{x.writer}</td>
+                  <td className="date">{x.date}</td>
+                  <td className="click_count">{x.clickcount}</td> */}
+                </EachMarket>   
+              )        
+            })}
+      </MarketList>
 
       <div className="button_div">
         <input onClick={login_confirm} id="write_button" type="button" value="글쓰기" />

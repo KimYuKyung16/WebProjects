@@ -7,11 +7,38 @@ import io, { Socket } from 'socket.io-client'
 
 import styled from "styled-components"; // styled in js
 
+import './own_chat_list.css';
+
+import ChatContents1 from "./chat1";
+
 const Profile = styled.img`
-  width: 30px;
-  height: 30px;
-  border-radius: 70%;
+  width: 50px;
+  height: 50px;
+  /* border-radius: 70%; */
+  border-radius: 10px;
 `;
+
+const Test = styled.div`
+display: flex;
+flex-direction: row;
+height: 100%;
+/* background-color: aqua; */
+`;
+
+const ChatList = styled.div`
+width: 30%;
+height: 100%;
+`;
+
+const ChatContents = styled.div`
+width:70%;
+height: 100vh;
+background-color: rgb(231, 231, 231);
+padding: 30px;
+box-sizing: border-box;
+`;
+
+
 
 function Own_chat_list() {
   
@@ -22,6 +49,8 @@ function Own_chat_list() {
   let content_num = String(location_state.content_num); // 현재 게시글 번호
 
   let [chat_list, setChatList] = useState([]);
+
+  let [participant, setParticipant] = useState('');
   
   console.log(content_num)
 
@@ -45,37 +74,63 @@ function Own_chat_list() {
   }
 
   useEffect(() => { chat_list_print(); }, []) 
+  useEffect(() => { each_chat_load(); }, [participant]) 
 
-  // content_num == 2 인 경우
+  function each_chat_load() {
+    if (participant === '') {
+      return(
+        <>
+          <p>채팅이 없습니다.</p>
+        </>
+      )
+    } else {
+      return(
+        <>
+          <ChatContents1 user_id={user_id} content_num={content_num} participant_user_id={participant}></ChatContents1>
+        </>
+      )
+    } 
+  } 
 
   return (
     <>
-      <h2>채팅 리스트 확인</h2>
-      <table>
-          <thead>
-            <tr>
-              {/* <th className="num">번호</th> */}
-              <th className="writer">작성자</th>
-              <th className="content_title" colSpan="2">채팅 내용</th>       
-              {/* <th className="date">날짜</th>> */}
-            </tr>
-          </thead>
-          <tbody>
-            {chat_list.map((x) => {
-                  // let link = `/plant_info_share/contents/${x.num}`;
+      <Test>
+        <ChatList>
+          <table>
+              <thead>
+                <tr>
+                  {/* <th className="num">번호</th> */}
+                  {/* <th className="writer">작성자</th> */}
+                  <th className="content_title" colSpan="2">채팅 내용</th>       
+                  {/* <th className="date">날짜</th>> */}
+                </tr>
+              </thead>
+              <tbody>
+                {chat_list.map((x) => {
+                      // let link = `/plant_info_share/contents/${x.num}`;
 
-                  return (
-                    <tr>
-                      {/* <td className="num">{x.num}</td> */}
-                      <td className="participant" id="participant"><Profile src={x.profile === "\\image\\default_profile.png" ? x.profile : "http://localhost:5000/" + x.profile}></Profile>{x.participant_user_id}</td>
-                      <td className="last_chat">{x.last_chat}</td>
-                      <td><input type="button" value="채팅하기" onClick={ () => {navigate('/chat', {state:{ user_id: user_id, content_num: content_num, participant_user_id: x.participant_user_id }})} } /></td>
-                      {/* <td className="date">{x.date}</td> */}
-                    </tr>   
-                  )        
-              })}
-        </tbody>
-      </table>
+                      return (
+                        <tr>
+                          {/* <td className="num">{x.num}</td> */}
+                          <td className="participant" id="participant">
+                            <Profile src={x.profile === "\\image\\default_profile.png" ? x.profile : "image/default_profile.png"}></Profile>
+                            {x.participant_user_id}
+                          </td>
+                          <td className="last_chat" onClick={() => {setParticipant(x.participant_user_id); console.log(participant)}}>{x.last_chat}</td>
+                          {/* onClick={ () => {navigate('/chat', {state:{ user_id: user_id, content_num: content_num, participant_user_id: x.participant_user_id }})} } */}
+                          {/* <td><input type="button" value="채팅하기" /></td> */}
+                          {/* <td className="date">{x.date}</td> */}
+                        </tr>   
+                      )        
+                  })}
+            </tbody>
+          </table>
+        </ChatList>
+        <ChatContents>
+          {each_chat_load()}
+          {/* <ChatContents1 user_id={user_id} content_num={content_num} participant_user_id={participant}></ChatContents1> */}
+        </ChatContents>
+      </Test>
     </>
   );
 }

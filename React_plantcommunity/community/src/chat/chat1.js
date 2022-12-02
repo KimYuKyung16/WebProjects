@@ -7,6 +7,11 @@ import io, { Socket } from 'socket.io-client'
 
 import styled from "styled-components"; // styled in js
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // 아이콘 사용 위해 필요
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'; // 내 정보 아이콘
+
+
+
 import './chat.css';
 
 
@@ -15,6 +20,33 @@ display: flex;
 justify-content: ${(props) => props.location};
 width: 500px;
 /* background-color: aqua; */
+`;
+
+const SubmitList = styled.form`
+display: flex;
+justify-content: space-between;
+flex-direction: row;
+position: absolute;
+bottom: 30px;
+width: 500px;
+`;
+
+const SubmitInput = styled.input`
+display: flex;
+width: 88%;
+height: 40px;
+`;
+
+const SubmitBtn = styled.button`
+display: flex;
+justify-content: center;
+align-items: center;
+width: 10%;
+background-color: rgb(51, 131, 201);
+color: white;
+border-radius: 10px;
+border: none;
+font-size: 1rem;
 `;
 
 
@@ -31,11 +63,11 @@ border-radius: 10px;
 
 
 
-function Chat() {
+function Chat(props) {
   let [namespace, setNamespace] = useState('');
 
   const [state2, setState2] = useState({logined_user_id: '', message: '', nickname: ''})
-  const [chat2, setChat2] = useState([{id: '', message: '', nickname: ''}]);
+  const [chat2, setChat2] = useState([]);
 
   // const [current_chat, setCurrentChat] = useState([]);
 
@@ -44,18 +76,36 @@ function Chat() {
   let [nickname, setNickname] = useState(); // 현재 로그인되어있는 유저의 닉네임
   let [logined_user_id, setLoginedUserId] = useState(''); // 현재 로그인되어있는 유저의 아이디
 
-
+  let user_id;
+  let content_num;
+  let participant_user_id;
   // let nickname;
   // let logined_user_id;
 
   const location = useLocation();
-  console.log('아이디', location.state);
-  const location_state = location.state;
+  let location_state;
+  // console.log('아이디', location.state);
+  // const location_state = location.state;
 
-  let user_id = location_state.user_id; // 이 게시글을 작성한 유저의 아이디
-  let content_num = String(location_state.content_num); // 현재 게시글 번호
+  // let user_id = location_state.user_id; // 이 게시글을 작성한 유저의 아이디
+  // let content_num = String(location_state.content_num); // 현재 게시글 번호
 
-  let participant_user_id = location_state.participant_user_id;
+  // let participant_user_id = location_state.participant_user_id;
+
+  if (props.user_id === undefined) {
+    location_state = location.state;
+
+    user_id = location_state.user_id; // 이 게시글을 작성한 유저의 아이디
+    content_num = String(location_state.content_num); // 현재 게시글 번호
+    participant_user_id = location_state.participant_user_id;
+  } else {
+    user_id = props.user_id;
+    content_num = String(props.content_num);
+    participant_user_id = props.participant_user_id;
+  }
+
+  
+
 
   console.log(user_id); 
   console.log(nickname);
@@ -271,6 +321,11 @@ function Chat() {
     , [namespace]
   );
 
+  useEffect( 
+    () => { chat_save(); }
+    , [chat2]
+  );
+
 
 
 
@@ -278,21 +333,10 @@ function Chat() {
 
   return (
     <>
-      <form onSubmit={onMessageSubmit2}>
-        <h1>Messanger</h1>
-        <div>
-          <input 
-            name="message" 
-            onChange={e => onTextChange(e)} 
-            value={state2.message} 
-            label="Message" 
-          />
-        </div>
-        <button onClick={chat_save}>Send Message</button>
-      </form>
+    <div>
       <div className="render-chat">
-        <h1>Chat Log</h1>
-        <h3>{content_num}채팅방입니다.</h3>
+        {/* <h1>Chat Log</h1> */}
+        {/* <h3>{content_num}채팅방입니다.</h3> */}
         <>
         {
           chat2.map(({id, nickname, message}, index) => {
@@ -301,7 +345,7 @@ function Chat() {
               <div key={index}>
                 <Chat_content location={logined_user_id === id ? "right": "left" }>
                   {/* <p>{nickname}</p> */}
-                  <Message location={logined_user_id === id ? "right": "left" } backgroundcolor={logined_user_id === id ? "rgb(186, 218, 199)": "rgb(225, 225, 225)"}>
+                  <Message location={logined_user_id === id ? "right": "left" } backgroundcolor={logined_user_id === id ? "rgb(186, 218, 199)": "rgb(205, 205, 205)"}>
                     <p>{message}</p>
                   </Message>               
                 </Chat_content>
@@ -311,6 +355,17 @@ function Chat() {
         }
         </>       
       </div>
+      <SubmitList onSubmit={onMessageSubmit2}>
+        {/* <h1>Messanger</h1> */}
+          <SubmitInput 
+            name="message" 
+            onChange={e => onTextChange(e)} 
+            value={state2.message} 
+            label="Message" 
+          />
+          <SubmitBtn><FontAwesomeIcon icon={faPaperPlane}/></SubmitBtn>
+      </SubmitList>
+    </div>
     </>
   );
 }

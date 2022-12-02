@@ -5,6 +5,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import Header from '../layout/header';
 import { colorConfig } from "../config/color"; // 홈페이지 색감 정보
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // 아이콘 사용 위해 필요
+import { faCircleUser } from '@fortawesome/free-solid-svg-icons'; // 내 정보 아이콘
+import { faBars } from '@fortawesome/free-solid-svg-icons'; // 햄버거바 아이콘
+import { faComment } from '@fortawesome/free-solid-svg-icons'; // 채팅 아이콘
+
 import cookies from 'react-cookies'; // 쿠키
 
 import styled from "styled-components"; // styled in js
@@ -16,6 +21,33 @@ display: ${(props) => props.display_val || 'none'};
 border: 1px solid rgb(107, 164, 255);
 border-radius: 3px;
 margin: 10px 0 10px 60px;
+`;
+
+const ChatBtn = styled.div`
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+font-size: 30px;
+position: fixed;
+bottom: 20px;
+right: 10px;
+background-color: rgb(145, 170, 155);
+border: 1px solid white;
+color: white;
+width: 80px;
+height: 80px;
+border-radius: 100px;
+cursor: pointer;
+
+* {
+  &:nth-child(2) { // 닉네임
+    color: white;
+    font-weight: bold;
+    font-size: 0.7rem;
+  }
+
+}
 `;
 
 
@@ -333,8 +365,14 @@ function MarketRead() {
                   <li>조회수:{content.clickcount}</li>
                 </ul>
                 <div id="action_div">
-                  <input id="revise_btn" type="button" value="수정" />
-                  <input id="delete_btn" type="button" value="삭제" />
+                <ChatBtn onClick={chat_navigate_option}>
+                  <FontAwesomeIcon icon={faComment}/>
+                  <p>채팅</p>
+                </ChatBtn>
+                
+                {/* <FontAwesomeIcon icon="fa-solid fa-comment" /> */}
+                  {/* <input id="revise_btn" type="button" value="수정" />
+                  <input id="delete_btn" type="button" value="삭제" /> */}
                 </div>
               </li>
               <li id="content-li3">
@@ -409,8 +447,8 @@ function MarketRead() {
 
           </div>
         </div> 
-        <input type="button" value="채팅하기" onClick={chat_navigate_option}/>
-        <p>{content.user_id}</p>
+        {/* <ChatBtn type="button" value="채팅하기" onClick={chat_navigate_option}/> */}
+        {/* <p>{content.user_id}</p> */}
       </>
   );
 
