@@ -53,6 +53,10 @@ let total_contents; // 총 게시글의 개수
 
 /* 식물 정보 공유 게시판에 쓰여진 글 목록 출력 */
 router.get('/:board', function(req, res){ 
+  console.log(req.query)
+  let whatfunction = req.query.function; // 기본 출력인지 검색 출력인지
+  let search_val = `%${req.query.search_val}%`;
+
   let one_page_contents = parseInt(req.query.one_page_contents); // 한 페이지당 게시글 개수
 
   let total_pages = parseInt(total_contents / one_page_contents); // 총 페이지 개수
@@ -60,13 +64,17 @@ router.get('/:board', function(req, res){
   
   remain_contents ? total_pages += 1 : total_pages; // 나머지 게시글이 있으면 페이지 개수 추가
 
-  let current_page = req.query.current_page; // 현재 페이지
+  let current_page = parseInt(req.query.current_page); // 현재 페이지
   let start_value = (current_page-1) * one_page_contents; // 시작값
   let output_num; // 출력 개수
 
+  console.log('total_contents:',total_contents, 'one_page_contents',one_page_contents)
+  console.log(typeof(total_pages), typeof(remain_contents), typeof(current_page), current_page);
+
   if (current_page == total_pages) { // 현재 페이지가 마지막 페이지라면
-    if (current_page == 1) output_num = one_page_contents
-    else output_num = remain_contents; // 출력 개수는 나머지 게시글의 개수
+    // if (current_page === 1) output_num = one_page_contents
+    // else output_num = remain_contents; // 출력 개수는 나머지 게시글의 개수
+    output_num = remain_contents;
   } else { // 현재 페이지가 마지막 페이지가 아니라면 
     output_num = one_page_contents; // 출력 개수는 한 페이지당 게시글의 개수
   }
@@ -74,19 +82,42 @@ router.get('/:board', function(req, res){
   const board = req.params.board; // 쿼리스트링으로 들어온 board 변수의 값
   console.log(req.params.board,start_value, output_num);
 
-  sql = `SELECT *
+  if (whatfunction === 'default') {
+    sql = `SELECT *
     FROM plant_db.contents AS C
     INNER JOIN users.users AS U
     ON C.user_id = U.user_id
     WHERE board = ?
     ORDER BY num DESC limit ?, ?`;
 
-  // sql = "SELECT * FROM contents WHERE board = ? ORDER BY num DESC limit ?, ?";
-  var insertValArr = [board, start_value, output_num];
-  connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+    // sql = "SELECT * FROM contents WHERE board = ? ORDER BY num DESC limit ?, ?";
+    var insertValArr = [board, start_value, output_num];
+    connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
     if (error) throw error;
-    res.send(rows);
-  });
+      res.send(rows);
+    });
+  } else {
+    sql = `SELECT *
+    FROM plant_db.contents AS C
+    INNER JOIN users.users AS U
+    ON C.user_id = U.user_id
+    WHERE board = ? and title LIKE ? 
+    ORDER BY num DESC limit ?, ?`;
+  
+    // sql = "SELECT * FROM contents WHERE board = ? and title LIKE ? ORDER BY num DESC";
+    var insertValArr = [board, search_val, start_value, output_num];
+    console.log("테스트:", board, search_val, start_value, output_num)
+    connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
+      if (error) throw error;
+      console.log(rows);
+      res.send(rows);
+    });
+  
+
+
+  }
+
+  
 })
 
 /* 식물 정보 공유 게시판에 쓰여진 글 총 개수 출력 */
@@ -96,6 +127,7 @@ router.get('/:board/total_contents', function(req, res){
   connection.query(sql, req.params.board, function(error, rows){ // db에 글 저장
     if (error) throw error;
     total_contents = rows[0].count;
+    console.log(total_contents)
     res.send(rows);
   });
 })
@@ -496,9 +528,14 @@ router.get('/:board/search', function(req, res){
   var insertValArr = [board, search_val];
   connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
     if (error) throw error;
-    res.send(rows);
+    console.log(rows);
+    console.log(rows.length);
+    total_contents = rows.length;
+    res.send({rows: rows, count: rows.length});
   });
 })
+
+
 
 
 
