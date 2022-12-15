@@ -1,14 +1,15 @@
+const dayjs = require("dayjs"); // 날짜 라이브러리
+
 const express = require('express');
 var fs = require('fs');
 const app = express();
 const cors = require('cors');
 const ejs = require("ejs");
 
-
-
 const cookieParser = require('cookie-parser');
 
 app.use(cookieParser());
+
 
 app.use(cors({
   origin: 'http://localhost:3001',
@@ -24,6 +25,11 @@ var sessionStore = new MySQLStore(options);
 const mysql = require('mysql'); // mysql 모듈
 const session_connection = mysql.createConnection(options);
 
+const dbconfig = require('./config/db.js'); // db 모듈 불러오기
+const connection = mysql.createConnection(dbconfig); // db 연결
+
+const bcrypt = require('bcrypt');
+
 /* 세션 관련 미들웨어 */
 app.use( 
   session({
@@ -32,7 +38,7 @@ app.use(
     store: sessionStore,
     resave: false, //세션에 변경사항이 없어도 항상 저장할 지 설정하는 값
     saveUninitialized: false,
-    // cookie: { maxAge: 24000 * 60 * 1},
+    // cookie: { maxAge: 10},
   })
 );
 
@@ -51,6 +57,79 @@ const io = require('socket.io')(http, {
 //     io.emit('message', {name, message})
 //   })
 // })
+
+app.use(express.json()); 
+
+app.post('/process/login', function(req, res) { // 클라이언트에서 요청한 값
+  input_id = req.body.id;
+  input_pw = req.body.pw;
+
+  console.log(req.session);
+
+  sql = "SELECT * FROM users WHERE user_id = ?";
+
+  connection.query(sql, input_id, function(error, rows) {
+    if (error) throw error;
+
+    if (rows.length == 0) { // 아이디가 없을 때
+      console.log("존재하지않는 회원입니다");
+      res.send({'login_status' : 'fail'});
+    } else { // 아이디가 존재할 때
+      const same = bcrypt.compareSync(input_pw, rows[0].user_pw); // 패스워드 비교값
+      if (same == true) { // 입력받은 패스워드와 db에 저장된 패스워드가 일치할 때
+        console.log("회원입니다. 로그인에 성공하셨습니다");
+        // req.session.user_cookie = req.sessionID; // 세션id 발급
+        // const expires = new Date(); 
+        const expires = 100;
+        console.log(dayjs().format()) 
+        // expires.setFullYear(expires.getFullYear() + 10);
+
+        req.session.nickname = rows[0].nickname; // 세션에 닉네임 저장
+        req.session.user_id = rows[0].user_id; // 세션에 아이디 저장
+        // req.session.cookie.expires = expires;
+        req.session.cookie.maxAge = 1000 * 5; // 세션 만료 시간을 1시간으로 설정 (단위: ms, 1000은 1초)
+    
+
+        console.log(req.sessionID)
+
+        // res.writeHead(200, {
+        //   'Set-Cookie':['test=testing', 'kyk=hahaha'] 
+        // });
+
+        // res.end();
+
+        req.session.save(() => {
+          res.send({'login_status' : 'success', 'user_cookie' : req.sessionID});
+        });
+        
+
+
+        // const cookieConfig = {
+        //   httpOnly: true, 
+        //   maxAge: 1000000,
+        // };
+
+        // res.cookie('cookie', 'delicious', cookieConfig);
+        // res.send('set cookie');
+
+        // req.session.save(() => {
+        //   res.send({'login_status' : 'success', 'cookie': req.session.user_cookie, 'nickname': rows[0].nickname});
+        // });
+
+      } else {
+        console.log("패스워드가 틀렸습니다");
+        res.send({'login_status' : 'fail'});
+      }
+    }
+ 
+  });
+
+})
+
+
+
+
+
 
 //////////////////////
 
