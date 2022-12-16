@@ -11,6 +11,16 @@ import axios from "axios";
 import styled from "styled-components"; // styled in js
 import { text } from '@fortawesome/fontawesome-svg-core';
 
+const title_setting = {
+  title_backcolor: colorConfig.sub_color,
+  title_textcolor: colorConfig.main_color
+}
+
+const navbar_setting = {
+  navbar_backcolor: colorConfig.sub_color,
+  navbar_textcolor: colorConfig.main_color
+}
+
 const LoginDiv = styled.div`
   display: block;
   `;
@@ -26,16 +36,7 @@ border-radius: 70%;
 `;
 
 function Main() {
-
-  const title_setting = {
-    title_backcolor: colorConfig.sub_color,
-    title_textcolor: colorConfig.main_color
-  }
-
-  const navbar_setting = {
-    navbar_backcolor: colorConfig.sub_color,
-    navbar_textcolor: colorConfig.main_color
-  }
+  axios.defaults.withCredentials = true; // 요청, 응답에 쿠키를 포함하기 위해 필요
 
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
 

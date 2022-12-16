@@ -14,6 +14,19 @@ import { fbConfig } from '../config/firebase';
 
 import cookies from 'react-cookies'; // 쿠키 저장
 
+/* 홈페이지 메인 타이틀 세팅값 */
+const title_setting = {
+  title_backcolor: colorConfig.main_color,
+  title_textcolor: colorConfig.sub_color
+}
+
+/* 네비게이션바 세팅값 */
+const navbar_setting = {
+  navbar_backcolor: colorConfig.main_color,
+  navbar_textcolor: colorConfig.sub_color
+}
+
+
 const firebaseConfig = fbConfig;
 const app = initializeApp(firebaseConfig); // Initialize Firebase
 // const analytics = getAnalytics(app);
@@ -48,6 +61,7 @@ function authpopup(){
 }
 
 
+
 function Login(location) {
   const navigate = useNavigate(); // 페이지 이동을 위해 필요
 
@@ -57,78 +71,17 @@ function Login(location) {
   let onChangeId = (e) => { setId(e.target.value) }; // 변경된 아이디 저장
   let onChangePw = (e) => { setPw(e.target.value) }; // 변경된 패스워드 저장
 
-  var login_cookie = cookies.load('login_cookie');
-
-  // axios.defaults.withCredentials = true; // withCredentials 전역 설정
-
-   
-  // function login_response(){
-  //   axios.post('http://localhost:5000/login/process', { // 서버로 post 요청
-  //     id: id,
-  //     pw: pw
-  //   })
-  //   .then(function (response) { // 서버에서 응답이 왔을 때
-  //     if (response.data.login_status === 'success') { // 로그인에 성공했다면
-  //       console.log(login_cookie)
-  //       console.log('user_cookie:', response.data.user_cookie);
-  //       if (login_cookie == undefined) { // 로그인 쿠키가 없다면 쿠키 생성
-  //         const expires = new Date();
-  //         expires.setFullYear(expires.getFullYear() + 10);
-  //         console.log(expires.getFullYear());
-  //         cookies.save('login_cookie', response.data.user_cookie, //쿠키 생성하기
-  //           {
-  //             path: '/', // 모든 페이지에서 쿠키 사용 가능
-  //             expires, 
-  //             secure: true
-  //           }   
-  //         )
-  //         // cookies.save('nickname', response.data.nickname, //쿠키 생성하기
-  //         //   {
-  //         //     path: '/', // 모든 페이지에서 쿠키 사용 가능
-  //         //     expires, 
-  //         //     secure: true
-  //         //   }   
-  //         // )
-  //       } else { // 로그인 쿠키가 있다면 쿠키 생성X
-  //         console.log("쿠키 존재");
-  //       }
-  //       // navigate('/'); // 메인페이지로 이동
-  //       window.location.replace('/');
-  //     } else {
-  //       alert("로그인에 실패하셨습니다.");
-  //     }  
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   });
-  // }
+  axios.defaults.withCredentials = true; // withCredentials 전역 설정
 
   function login_response(){
-    axios.post('http://localhost:5000/process/login', { // 서버로 post 요청
+    axios.post('http://localhost:5000/login/process', { // 서버로 post 요청
       id: id,
       pw: pw
     })
     .then(function (response) { // 서버에서 응답이 왔을 때
       console.log("test");
       if (response.data.login_status === 'success') { // 로그인에 성공했다면
-        console.log(login_cookie)
-        console.log('user_cookie:', response.data.user_cookie);
-        if (login_cookie) { // 로그인 쿠키가 있다면 쿠키 생성X
-          console.log("쿠키 존재");      
-        } else { // 로그인 쿠키가 없다면 쿠키 생성
-          const expires = new Date();
-          expires.setFullYear(expires.getFullYear() + 10);
-          console.log(expires.getFullYear());
-          cookies.save('login_cookie', response.data.user_cookie, //쿠키 생성하기
-            {
-              path: '/', // 모든 페이지에서 쿠키 사용 가능
-              expires, 
-              secure: true
-            }   
-          )
-        }
-        // navigate('/'); // 메인페이지로 이동
-        window.location.replace('/');
+        navigate('/'); // 메인페이지로 이동
       } else {
         alert("로그인에 실패하셨습니다.");
       }  
@@ -138,23 +91,6 @@ function Login(location) {
     });
   }
 
-
-
-
-
-
-  /* 홈페이지 메인 타이틀 세팅값 */
-  const title_setting = {
-    title_backcolor: colorConfig.main_color,
-    title_textcolor: colorConfig.sub_color
-  }
-
-  /* 네비게이션바 세팅값 */
-  const navbar_setting = {
-    navbar_backcolor: colorConfig.main_color,
-    navbar_textcolor: colorConfig.sub_color
-  }
-  
 
   return (
     <>
@@ -181,7 +117,6 @@ function Login(location) {
       </div>
     </>
   );
-
 }
 
 export default Login;

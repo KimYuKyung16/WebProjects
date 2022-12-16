@@ -233,56 +233,36 @@ function Header(props) {
 
   /* 로그인이 되어있는지 확인 */
   function login_confirm() {
-    let authentication;
-
-    axios.get('http://localhost:5000/login/authentication') // 서버로 post 요청
+    axios.get('http://localhost:5000/login/authentication') 
       .then(function (response) { // 서버에서 응답이 왔을 때
-       if (response.data.authenticator === true) { // 로그인이 되어있을 떄
-        authentication = true;
-        navigate('/user_info'); // 내 정보 페이지로 이동
-       } else { // 로그인이 안되어있을 때
-        // authentication = false;
-        navigate('/login'); // 로그인 페이지로 이동
-       }
+        if (response.data.authenticator === true) { // 로그인이 되어있을 경우
+          navigate('/user_info'); // 내 정보 페이지로 이동
+        } else { // 로그인이 안되어있을 경우
+          navigate('/login'); // 로그인 페이지로 이동
+        }
       })
       .catch(function (error) {
         console.log(error);
       });
-
-      // if (authentication) { navigate('/write'); }
-      // else { navigate('/login'); }
-
   }
-  // function login_confirm() {
-  //   var login_cookie = cookies.load('user_login');
 
-  //       if (login_cookie !== undefined) { // 로그인이 되어있을 때
-  //         navigate('/user_info'); // 내 정보 페이지로 이동
-  //       } else { // 로그인이 되어있지 않을 때
-  //         navigate('/login'); // 로그인 페이지로 이동
-  //       }  
-  // }
 
-    /* 로그인이 되어있는지 확인 */
-    function login_confirm2() {
-      let authentication;
-  
-      axios.get('http://localhost:5000/login/authentication') // 서버로 post 요청
-        .then(function (response) { // 서버에서 응답이 왔을 때
-          if (response.data.authenticator === true) { // 로그인이 되어있을 떄
-          authentication = true;
-          nickname_print(); 
-          profile_print();
-          clickstate();
-          } else { // 로그인이 안되어있을 때
-          // authentication = false;
+  /* 로그인이 되어있는지 확인 */
+  function login_confirm2() {
+    axios.get('http://localhost:5000/login/authentication')
+      .then(function (response) { // 서버에서 응답이 왔을 때
+        if (response.data.authenticator === true) { // 로그인이 되어있을 떄
+          nickname_print(); // 닉네임 춫력
+          profile_print(); // 프로필 사진 출력
+          clickstate(); // 햄버거바 여닫이를 위한 click횟수
+        } else { // 로그인이 안되어있을 때
           navigate('/login'); // 로그인 페이지로 이동
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
   function active() {
     console.log('실행');
@@ -338,7 +318,7 @@ function Header(props) {
   }
 
   function nickname_print() {
-    axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
+    axios.get('http://localhost:5000/login/authentication')
     .then(function (response) { // 서버에서 응답이 왔을 때
       setNickname (response.data.nickname);
     })
@@ -387,10 +367,6 @@ function Header(props) {
       )
     }
   } 
-
-  // useEffect(() => { Component(); }, [change])
-  // useEffect(() => { profile_print(); }, [profile])
-  // useEffect(() => { nickname_print(); profile_print(); }, [click_state])
 
   return (
     <>

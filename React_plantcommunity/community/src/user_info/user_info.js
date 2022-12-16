@@ -139,7 +139,7 @@ function User_info() {
   let [nickname, setNickname] = useState();
 
   function nickname_print() {
-    axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
+    axios.get('http://localhost:5000/login/authentication') // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
       setNickname (response.data.nickname);
     })
