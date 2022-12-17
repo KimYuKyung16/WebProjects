@@ -3,7 +3,7 @@ const router = express.Router();
 var fs = require('fs');
 const ejs = require("ejs");
 
-var bodyParser = require('body-parser') //router.use(bodyParser.urlencoded({extended:true}));
+const { parseCookies } = require('./cookieparse.js'); // 쿠키 파싱
 
 const mysql = require('mysql'); // mysql 모듈
 const users_dbconfig = require('../config/db.js'); // db 모듈 불러오기
@@ -11,7 +11,6 @@ const users_connection = mysql.createConnection(users_dbconfig); // db 연결
 
 const plant_dbconfig = require('../config/plant_db.js'); // db 모듈 불러오기
 const plant_connection = mysql.createConnection(plant_dbconfig); // db 연결
-
 
 const options = require('../config/session_db.js'); // session_db 모듈 불러오기
 const session_connection = mysql.createConnection(options);
@@ -23,7 +22,7 @@ try {
 	fs.readdirSync('uploads'); // 폴더 확인
 } catch(err) {
 	console.error('uploads 폴더가 없습니다. 폴더를 생성합니다.');
-    fs.mkdirSync('uploads'); // 폴더 생성
+  fs.mkdirSync('uploads'); // 폴더 생성
 }
  
 const upload = multer({
@@ -40,15 +39,7 @@ const upload = multer({
 });
 
 
-// router.get('/', function(req, res){
-//   fs.readFile('./views/user_info.ejs', "utf-8", function(error, data){
-//     res.writeHead(200, {'Content-Type': 'text/html' });
-//     res.end(ejs.render(data));
-//   })
-// })
-
-// router.use(bodyParser.urlencoded({extended:true}));
-// router.use(express.json()); 
+router.use(express.json()); 
 
 /* 프로필 설정 */
 router.post('/profile', upload.single('uploadImage'), function(req, res){
@@ -92,29 +83,28 @@ router.post('/picture', upload.single('uploadImage'), function(req, res){
 
 })
 
-
 /* 저장되어있는 프로필 불러오기 */
 router.post('/profile_print', function(req, res){
-  sql = "SELECT * FROM sessions WHERE session_id = ?";
+  let cookies; // 쿠키값
 
-  session_connection.query(sql, req.headers.cookies, function(error, rows) {
-    if (error) throw error;
+  if (req.headers.cookie) { // 헤더에 cookie가 있으면 cookie 파싱
+    cookies = parseCookies(req.headers.cookie);
+  } else {
+    console.log("쿠키가 없습니다.");
+  }
 
-    if (rows.length == 0) { // sessionstore에 해당 session값이 없을 때
-      console.log("해당 세션이 없습니다.")
-    } else { // sessionstore에 해당 session값이 있을 때
-      let session_obj = JSON.parse(rows[0].data);
-      let nickname = session_obj.nickname;
+  if (req.session.authenticator && req.sessionID === cookies.user_cookie) { // 세션이 있다면 인증O, 로그인 상태O
+    let nickname = req.session.nickname;
+    sql = "SELECT * FROM users WHERE nickname = ?"; 
 
-      var insertValArr = [nickname];
-      sql = "SELECT * FROM users WHERE nickname = ?"; 
-  
-      users_connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
-        if (error) throw error;
-        res.send(rows[0].profile);
-      });
-    } 
-  });
+    users_connection.query(sql, nickname, function(error, rows){ // db에 글 저장
+      if (error) throw error;
+      res.send(rows[0].profile);
+    });
+  } else {
+    // res.send({);
+    console.log("세션이 없습니다.")
+  }
 
 })
 

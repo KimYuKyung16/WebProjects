@@ -142,9 +142,11 @@ app.get('/chat_namespace', function(req, res){
 
 
 /* 라우터 설정 */
-const login = require('./routes/login.js'); // 로그인 메뉴
-const logout = require('./routes/logout.js'); // 로그아웃 메뉴
-const signup = require('./routes/signup.js'); // 회원가입 메뉴
+
+// 로그인 관련 라우터들
+const login = require('./routes/login/login.js'); // 로그인 메뉴
+const logout = require('./routes/login/logout.js'); // 로그아웃 메뉴
+const signup = require('./routes/login/signup.js'); // 회원가입 메뉴
 const user_info = require('./routes/user_info.js'); // 내 정보
 
 const test = require('./routes/plant_info_share.js'); // 식물 정보 공유 메뉴
