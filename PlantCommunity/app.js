@@ -150,7 +150,11 @@ const signup = require('./routes/login/signup.js'); // 회원가입 메뉴
 const user_info = require('./routes/user_info.js'); // 내 정보
 
 const test = require('./routes/plant_info_share.js'); // 식물 정보 공유 메뉴
-const board = require('./routes/board.js'); // 게시판 메뉴
+
+
+const list = require('./routes/menus/boards/list.js'); // 게시판 메뉴
+const board = require('./routes/menus/boards/board.js'); // 게시판 메뉴
+
 const write = require('./routes/write.js'); // 글쓰기 페이지
 
 const plant_info = require('./routes/plant_info.js'); // 식물 기본 정보
@@ -185,6 +189,10 @@ app.use('/test', test);
 // app.use('/signup', signup);
 // app.use('/user_info', user_info);
 // app.use('/contents', write);
+
+app.use('/board', list);
+
+
 app.use('/board', board);
 app.use('/login', login);
 app.use('/logout', logout);
