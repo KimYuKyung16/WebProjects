@@ -1,3 +1,4 @@
+/********** 게시판 관련 Controller */
 
 // router.use(express.json()); 
 
@@ -6,14 +7,18 @@ let total_contents; // 총 게시글의 개수
 const { contentsCount, listDefault, listSearch } = require("../models/boards.js");
 const { contentRead, clickCount, contentDelete } = require("../models/boards.js");
 
-/* 2. 게시판에 쓰여진 글 목록 출력 */
-exports.listGetMid = (req, res) => { 
+/* 1. 게시글 총 개수 */
+exports.contentsCountMid = (req, res) => { 
   // 1) 게시판에 쓰여진 글 총 개수 출력
   contentsCount(req.params.board, function (err, result) {
     if (err) throw err;
     total_contents = result;
+    res.send({'count': result});
   });
+}
 
+/* 2. 게시판에 쓰여진 글 목록 출력 */
+exports.listGetMid = (req, res) => { 
   // 2) 게시판에 쓰여진 글 목록 출력
   let whatfunction = req.query.function; // 기본 출력인지 검색 출력인지
   let search_val = `%${req.query.search_val}%`; // 검색 단어
