@@ -48,10 +48,21 @@ exports.myLikeListModify = function(user_id, res) {
 };
 
 // 좋아요 누른 사람의 개인별 정보 가져오기
-exports.likeUserInfo = function(user_id, res) {
+exports.likeUserInfo = function(insertValArr, res) {
   sql = "SELECT * FROM users WHERE user_id IN ( ? )";
 
-  user_connection.query(sql, user_id, function(error, rows){ 
+  user_connection.query(sql, insertValArr, function(error, rows){ 
+    if (error) res(error, null);
+    res(null, rows);
+  });
+};
+
+
+// 좋아요 누른 사람들 목록 출력
+exports.contentLikeList = function(insertValArr, res) {
+  sql = "SELECT * FROM contents WHERE board = ? and num = ?";
+
+  plant_connection.query(sql, insertValArr, function(error, rows){ // db에 글 저장
     if (error) res(error, null);
     res(null, rows);
   });

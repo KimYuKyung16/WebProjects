@@ -40,7 +40,7 @@ exports.likePostMid = (req, res) => {
     if (req.session.user_id) {
       let user_id = req.session.user_id; // 사용자의 user_id
 
-      boardLikeModel.myLikeListModify(user_id, function (err, rows) { // db에 likestate 변경 후 저장
+      boardLikeModel.myLikeList(user_id, function (err, rows) { // db에 likestate 변경 후 저장
         if (err) throw err;
 
         console.log(rows[0].like_contents)
@@ -93,7 +93,7 @@ exports.likePostMid = (req, res) => {
   if (user_id && like_state === false) { // 로그인된 아이디가 있고 좋아요가 안눌러져있을 경우
     let insertValArr = [req.params.board, req.params.num];
 
-    boardLikeModel.curLike(insertValArr, function (err, rows) { // db에 likestate 변경 후 저장
+    boardLikeModel.contentLikeList(insertValArr, function (err, rows) { // db에 likestate 변경 후 저장
       if (err) throw err;
       let db_likestate = rows[0].likestate; // db의 likestate 값
 
@@ -128,7 +128,7 @@ exports.likePostMid = (req, res) => {
   } else if (user_id && like_state === true) { // 로그인된 아이디가 있고 좋아요가 눌러져있을 경우 : 좋아요수 -, 좋아요목록 - 
     var insertValArr = [req.params.board, req.params.num];
 
-    boardLikeModel.curLike(insertValArr, function (err, rows) { // db에 likestate 변경 후 저장
+    boardLikeModel.contentLikeList(insertValArr, function (err, rows) { // db에 likestate 변경 후 저장
       if (err) throw err;
       let db_likestate = rows[0].likestate; // db의 likestate 값
 
@@ -156,20 +156,26 @@ exports.likePostMid = (req, res) => {
 exports.likeListGetMid = (req, res) => { 
   let insertValArr = [req.params.board, req.params.num];
 
-  boardLikeModel.curLike(insertValArr, function (err, rows) { // db에 likestate 변경 후 저장
+  boardLikeModel.contentLikeList(insertValArr, function (err, rows) { // db에 likestate 변경 후 저장
     if (err) throw err;
-
+    console.log(rows);
     let db_likestate = rows[0].likestate; // db의 likestate 값
 
     let likestate_obj = JSON.parse(db_likestate); // db의 likestate값을 뽑아내기 위해서 obj형태로 바꾸기
     let likeUsers = likestate_obj.likeUsers; // 좋아요를 누른 사람들 목록
 
-    console.log(likeUsers);
+    console.log('likeUser값:',likeUsers.length);
 
-    var insertValArr = [likeUsers];
-    
-    boardLikeModel.likeUserInfo(insertValArr, function (err, rows) { // db에 likestate 변경 후 저장
-      res.send(rows);
-    });
+    if (likeUsers.length) {
+      console.log("likeUsers값이 있습니다.")
+      let insertValArr = [likeUsers];
+      boardLikeModel.likeUserInfo(insertValArr, function (err, rows) { // db에 likestate 변경 후 저장
+        if (err) throw err;
+        res.send(rows);
+      });
+    } else {
+      console.log("likeUsers값이 없습니다.")
+      res.send();
+    }
   });
 }
