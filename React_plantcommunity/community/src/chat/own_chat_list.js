@@ -74,7 +74,7 @@ function Own_chat_list() {
   }
 
   useEffect(() => { chat_list_print(); }, []) 
-  useEffect(() => { each_chat_load(); }, [participant]) 
+  useEffect(() => { each_chat_load(); chat_list_print();}, [participant]) 
 
   function each_chat_load() {
     if (participant === '') {

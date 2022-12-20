@@ -10,9 +10,9 @@ import styled from "styled-components"; // styled in js
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // 아이콘 사용 위해 필요
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'; // 내 정보 아이콘
 
-
-
 import './chat.css';
+
+import { useDidMountEffect } from './useDidMountEffect';
 
 
 const Chat_content = styled.div`
@@ -113,14 +113,13 @@ function Chat(props) {
   console.log(participant_user_id); // 값이 없으면 undefined가 뜬다.
 
   function nickname_print() {
-    axios.get('http://localhost:5000/login/authentication/nickname') // 서버로 post 요청
+    axios.get('http://localhost:5000/login/authentication') // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
-      // nickname = response.data.nickname; // 현재 로그인되어있는 닉네임 설정
-      // logined_user_id = response.data.user_id; // 현재 로그인되어있는 아이디 설정
-      setNickname(response.data.nickname)
-      setLoginedUserId(response.data.user_id)
-
-      console.log(response.data.user_id)
+      console.log(response.data);
+      if (response.data.authenticator === true) {
+        setNickname(response.data.nickname)
+        setLoginedUserId(response.data.user_id)
+      } 
       
       if (user_id === response.data.user_id) { // 동일 아이디면
         // setLoginedUserId(participant_user_id)
@@ -166,6 +165,7 @@ function Chat(props) {
       console.log(chat2)
     })
   })
+
 
 
 
@@ -259,7 +259,7 @@ function Chat(props) {
     });
   }
 
-
+  let [chatsave, setChatSave] = useState();
 
   function chat_save() {
     console.log("채팅 저장하는 작업하기")
@@ -274,6 +274,7 @@ function Chat(props) {
       send_val
     }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
+      setChatSave(true);
       console.log(response.data);
     })
     .catch(function (error) {
@@ -281,6 +282,11 @@ function Chat(props) {
     });
 
   }
+
+    useEffect(() => {
+    if (userSocket) {userSocket.disconnect()};
+  }, [chatsave])
+
 
   // 최초로 한 번만 실행되면 됨.
   function chat_load() {
@@ -296,7 +302,7 @@ function Chat(props) {
       }
     }) // 서버로 post 요청
     .then(function (response) { // 서버에서 응답이 왔을 때
-      console.log(response.data[0].chat_content);
+      console.log(response.data[0]);
       let chat_content_array = JSON.parse(response.data[0].chat_content)
       // console.log(chat_content_array)
       
@@ -304,6 +310,8 @@ function Chat(props) {
       // console.log(result)
 
       setChat2(chat_content_array)
+      console.log(response.data[0].last_chat)
+      setLastChat(response.data[0].last_chat);
     })
     .catch(function (error) {
       console.log(error);
@@ -315,17 +323,24 @@ function Chat(props) {
 
 
 
-  useEffect(() => { nickname_print();}, []) 
+
+
+
+
+  useEffect(() => { nickname_print();}, [participant_user_id]) 
   useEffect( 
     () => { chat_load(); test(); }
     , [namespace]
   );
 
-  useEffect( 
-    () => { chat_save(); }
-    , [chat2]
-  );
+  // useEffect( 
+  //   () => { chat_save(); }
+  //   , [chat2]
+  // );
 
+  useDidMountEffect(() => {
+    chat_save(); 
+  }, [chat2]);
 
 
 
@@ -363,7 +378,7 @@ function Chat(props) {
             value={state2.message} 
             label="Message" 
           />
-          <SubmitBtn><FontAwesomeIcon icon={faPaperPlane}/></SubmitBtn>
+          <SubmitBtn onClick={chat_save}><FontAwesomeIcon icon={faPaperPlane}/></SubmitBtn>
       </SubmitList>
     </div>
     </>
