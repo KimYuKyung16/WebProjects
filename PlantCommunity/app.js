@@ -58,52 +58,38 @@ app.use(express.json()); // post나 get 등으로 요청을 받아들일 때 파
 
 /* 채팅 기능 구현 */
 app.get('/chat_namespace', function(req, res){
-  if (req.headers.cookies) { // 쿠키가 있다면 : 로그인 상태라면
+  if (req.session) { // 세션이 있다면 : 로그인 상태라면
     console.log(req.headers.cookies)
     let content_num = req.query.content_num;
     let current_user_id = req.query.user_id;
     console.log(typeof(content_num))
     console.log(current_user_id)
 
-    sql = "SELECT * FROM sessions WHERE session_id = ?";
+    let user_id = req.session.user_id;
 
-    session_connection.query(sql, req.headers.cookies, function(error, rows) {
-      if (error) throw error;
-      let session_obj = JSON.parse(rows[0].data);
-      let user_id = session_obj.user_id; // 현재 로그인되어있는 회원의 아이디 추출
-      console.log(user_id);
+    if (user_id) {
+      const userNamespace = io.of("/" + content_num);
 
-
-
-      if (user_id) {
-        const userNamespace = io.of("/" + content_num);
-  
-        userNamespace.on("connection", (socket) => { // 네임스페이스로 나누고
-          socket.join(current_user_id) // 네임스페이스 안에서 룸으로 또 나눔.
-
-          // const room = socket.to(user_id);
-
-          // 값 변수 이름도 클라이언트랑 같아야 함.
-          socket.on(current_user_id, ({logined_user_id, nickname, message}) => {
-            socket.to(current_user_id).emit(current_user_id, {logined_user_id, nickname, message})
-            // socket.emit(current_user_id, {user_id2, nickname, message})
-          });
-
-          // socket.on("message", ({nickname, message}) => {
-          //   userNamespace.emit('message', {nickname, message})
-          // });
-
-          socket.on("disconnetion", () => {
-            console.log("연결이 끊겼습니다.")
-          })
-
-
+      userNamespace.on("connection", (socket) => { // 네임스페이스로 나누고
+        // console.log(socket);
+        socket.join(current_user_id) // 네임스페이스 안에서 룸으로 또 나눔.
+        // const room = socket.to(user_id);
+        // 값 변수 이름도 클라이언트랑 같아야 함.
+        socket.on(current_user_id, ({logined_user_id, nickname, message}) => {
+          socket.to(current_user_id).emit(current_user_id, {logined_user_id, nickname, message})
+          // socket.emit(current_user_id, {user_id2, nickname, message})
         });
-
-        res.send({namespace: user_id});
-      }
-    })
-    
+        // socket.on("message", ({nickname, message}) => {
+        //   userNamespace.emit('message', {nickname, message})
+        // });
+        socket.on("disconnetion", () => {
+          socket.removeAllListeners();
+          socket.disconnect();
+          console.log("연결이 끊겼습니다.")
+        })
+      });
+      res.send({namespace: user_id});
+    } 
   } else { // 인증된 사용자가 아니라면(세션X)
     console.log('로그인이 되어있지 않습니다.')
     res.send('false');

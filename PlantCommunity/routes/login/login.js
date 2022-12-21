@@ -74,7 +74,7 @@ router.get('/authentication', function(req, res){
   if (req.session.authenticator && req.sessionID === cookies.user_cookie) { // 세션이 있다면 인증O, 로그인 상태O
     res.send({'authenticator': true, 'nickname': req.session.nickname, 'user_id':req.session.user_id});
   } else {
-    res.send({'authenticator': false, 'state':false});
+    res.send({'authenticator': false});
   }
 })
 
